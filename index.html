@@ -8,12 +8,12 @@
 <meta name="apple-mobile-web-app-title" content="MG CONSULTORIA">
 <link rel="manifest" href="manifest.json">
 <title>MG CONSULTORIA</title>
-<!-- brand-meta: mgconsultoria-v0.5.0-iframe -->
+<!-- brand-meta: mgconsultoria-v0.6.0-login -->
 <style>
   :root{
     --bg:#0a0a0a;--bg-card:#141414;--orange:#ff6b1a;--orange-soft:rgba(255,107,26,.12);
     --orange-line:#ff6b1a55;--text:#f2f2f2;--text-dim:#9a9a9a;--text-faint:#6b6b6b;
-    --border:#262626;--success:#42b883;--warn:#ffd23f;
+    --border:#262626;--success:#42b883;--warn:#ffd23f;--danger:#ff4d4d;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   html,body{height:100%;}
@@ -23,10 +23,42 @@
     -webkit-font-smoothing:antialiased;display:flex;flex-direction:column;overflow:hidden;
   }
 
-  .topbar{background:linear-gradient(180deg,#111 0%,#0a0a0a 100%);border-bottom:1px solid var(--border);padding:14px 16px 10px;text-align:center;flex:0 0 auto;}
-  .star{font-size:20px;color:var(--orange);display:block;line-height:1;text-shadow:0 0 16px var(--orange-soft);}
-  .brand{font-size:11px;letter-spacing:0.16em;color:var(--text-dim);font-weight:600;text-transform:uppercase;margin-top:4px;}
-  .brand strong{color:var(--orange);}
+  /* ===== TELA DE LOGIN ===== */
+  .auth-screen{position:fixed;inset:0;z-index:200;background:var(--bg);
+    display:none;flex-direction:column;align-items:center;justify-content:center;padding:28px 22px;overflow-y:auto;}
+  .auth-box{width:100%;max-width:360px;text-align:center;}
+  .auth-star{font-size:34px;color:var(--orange);display:block;text-shadow:0 0 22px var(--orange-soft);margin-bottom:6px;}
+  .auth-brand{font-size:13px;letter-spacing:0.2em;color:var(--text-dim);font-weight:700;text-transform:uppercase;}
+  .auth-brand strong{color:var(--orange);}
+  .auth-title{font-size:20px;font-weight:800;margin:22px 0 4px;}
+  .auth-sub{font-size:12.5px;color:var(--text-faint);margin-bottom:22px;line-height:1.5;}
+  .auth-field{text-align:left;margin-bottom:14px;}
+  .auth-field label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-dim);font-weight:700;margin-bottom:6px;}
+  .auth-field input{width:100%;background:#0d0d0d;border:1px solid var(--border);border-radius:10px;
+    color:var(--text);font-size:16px;padding:13px 14px;outline:none;}
+  .auth-field input:focus{border-color:var(--orange);}
+  .auth-btn{width:100%;background:var(--orange);color:#0a0a0a;border:none;border-radius:10px;
+    font-size:15px;font-weight:800;padding:14px;cursor:pointer;margin-top:6px;transition:transform .12s;}
+  .auth-btn:active{transform:scale(0.98);}
+  .auth-btn:disabled{opacity:0.6;cursor:default;}
+  .auth-msg{font-size:12.5px;margin-top:16px;min-height:18px;line-height:1.5;}
+  .auth-msg.erro{color:var(--danger);}
+  .auth-msg.ok{color:var(--success);}
+  .auth-link{display:inline-block;margin-top:18px;font-size:12.5px;color:var(--text-dim);
+    text-decoration:underline;cursor:pointer;background:none;border:none;}
+  .auth-hidden{display:none !important;}
+
+  /* ===== APP (depois do login) ===== */
+  .app-shell{display:none;flex-direction:column;height:100%;}
+  .app-shell.ativo{display:flex;}
+
+  .topbar{background:linear-gradient(180deg,#111 0%,#0a0a0a 100%);border-bottom:1px solid var(--border);padding:12px 16px 9px;flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;}
+  .topbar-l{display:flex;flex-direction:column;align-items:flex-start;line-height:1.1;}
+  .topbar .star{font-size:18px;color:var(--orange);text-shadow:0 0 16px var(--orange-soft);}
+  .topbar .brand{font-size:9.5px;letter-spacing:0.14em;color:var(--text-dim);font-weight:600;text-transform:uppercase;margin-top:2px;}
+  .topbar .brand strong{color:var(--orange);}
+  .logout-btn{background:none;border:1px solid var(--border);color:var(--text-dim);font-size:11px;font-weight:700;border-radius:8px;padding:7px 11px;cursor:pointer;}
+  .logout-btn:active{border-color:var(--orange);color:var(--orange);}
 
   .client-bar{padding:10px 14px;background:#100d0a;border-bottom:1px solid var(--border);flex:0 0 auto;}
   .client-bar-label{font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--orange);font-weight:800;margin-bottom:6px;display:flex;align-items:center;gap:5px;}
@@ -37,8 +69,10 @@
   .client-meta{display:flex;gap:8px;margin-top:7px;font-size:10px;flex-wrap:wrap;}
   .cm-tag{border-radius:5px;padding:2px 7px;font-weight:700;}
   .cm-tag.aluno{background:rgba(66,184,131,.12);border:1px solid rgba(66,184,131,.35);color:var(--success);}
-  .cm-tag.dieta{background:rgba(255,210,63,.1);border:1px solid rgba(255,210,63,.27);color:var(--warn);}
   .cm-tag.none{color:var(--text-faint);}
+
+  .aluno-bar{padding:10px 14px;background:#100d0a;border-bottom:1px solid var(--border);flex:0 0 auto;font-size:12px;color:var(--text-dim);}
+  .aluno-bar b{color:var(--text);}
 
   .main-switch{display:flex;background:#0a0a0a;border-bottom:1px solid var(--border);flex:0 0 auto;}
   .main-btn{flex:1;background:#0a0a0a;border:none;border-bottom:3px solid transparent;color:var(--text-dim);padding:13px;font-size:14px;font-weight:800;letter-spacing:1px;cursor:pointer;transition:all .15s;}
@@ -47,165 +81,302 @@
   .frames{flex:1 1 auto;position:relative;min-height:0;}
   .frames iframe{position:absolute;inset:0;width:100%;height:100%;border:none;background:var(--bg);}
   .frames iframe.hidden{visibility:hidden;pointer-events:none;}
-
   .loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--text-faint);font-size:13px;z-index:5;background:var(--bg);}
   .loading.gone{display:none;}
+
+  .full-msg{position:fixed;inset:0;z-index:150;background:var(--bg);display:none;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;padding:30px;}
+  .full-msg.ativo{display:flex;}
+  .full-msg .ic{font-size:44px;margin-bottom:16px;}
+  .full-msg .tt{font-size:18px;font-weight:800;margin-bottom:10px;}
+  .full-msg .tx{font-size:13px;color:var(--text-dim);line-height:1.6;max-width:340px;margin-bottom:8px;}
 </style>
 </head>
 <body>
 
-<div class="topbar">
-  <span class="star">★</span>
-  <div class="brand">MG <strong>CONSULTORIA</strong></div>
-</div>
+<!-- ====== TELA DE LOGIN ====== -->
+<div class="auth-screen" id="authScreen">
+  <div class="auth-box">
+    <span class="auth-star">★</span>
+    <div class="auth-brand">MG <strong>CONSULTORIA</strong></div>
 
-<div class="client-bar">
-  <div class="client-bar-label">★ Cliente</div>
-  <div class="client-row">
-    <select class="client-select" id="clientSelect" onchange="MGC.trocarCliente(this.value)"></select>
-    <button class="client-add" onclick="MGC.novoCliente()" title="Adicionar cliente">+</button>
+    <div id="formLogin">
+      <div class="auth-title">Entrar</div>
+      <div class="auth-sub">Acesse com seu e-mail e senha.</div>
+      <div class="auth-field">
+        <label>E-mail</label>
+        <input type="email" id="loginEmail" autocomplete="username" inputmode="email" placeholder="seu@email.com">
+      </div>
+      <div class="auth-field">
+        <label>Senha</label>
+        <input type="password" id="loginSenha" autocomplete="current-password" placeholder="********">
+      </div>
+      <button class="auth-btn" id="btnLogin" onclick="AUTH.entrar()">Entrar</button>
+      <div class="auth-msg" id="loginMsg"></div>
+      <button class="auth-link" onclick="AUTH.mostrarReset()">Esqueci minha senha</button>
+    </div>
+
+    <div id="formReset" class="auth-hidden">
+      <div class="auth-title">Recuperar senha</div>
+      <div class="auth-sub">Enviaremos um link de redefinicao para seu e-mail.</div>
+      <div class="auth-field">
+        <label>E-mail</label>
+        <input type="email" id="resetEmail" inputmode="email" placeholder="seu@email.com">
+      </div>
+      <button class="auth-btn" id="btnReset" onclick="AUTH.enviarReset()">Enviar link</button>
+      <div class="auth-msg" id="resetMsg"></div>
+      <button class="auth-link" onclick="AUTH.mostrarLogin()">Voltar ao login</button>
+    </div>
   </div>
-  <div class="client-meta" id="clientMeta"></div>
 </div>
 
-<div class="main-switch">
-  <button class="main-btn active" id="btnTreino" onclick="MGC.trocarSecao('treino')">🏋️ TREINO</button>
-  <button class="main-btn" id="btnDieta" onclick="MGC.trocarSecao('dieta')">🥗 DIETA</button>
+<!-- ====== MENSAGEM CHEIA (acesso vencido / inativo) ====== -->
+<div class="full-msg" id="fullMsg">
+  <div class="ic" id="fullMsgIc">🔒</div>
+  <div class="tt" id="fullMsgTt">Acesso indisponivel</div>
+  <div class="tx" id="fullMsgTx"></div>
+  <button class="auth-link" onclick="AUTH.sair()">Sair</button>
 </div>
 
-<div class="frames">
-  <div class="loading" id="loading">Carregando…</div>
-  <iframe id="frameTreino" src="treino.html" title="Treino"></iframe>
-  <iframe id="frameDieta" src="dieta.html" title="Dieta" class="hidden"></iframe>
+<!-- ====== APP ====== -->
+<div class="app-shell" id="appShell">
+  <div class="topbar">
+    <div class="topbar-l">
+      <span class="star">★</span>
+      <div class="brand">MG <strong>CONSULTORIA</strong></div>
+    </div>
+    <button class="logout-btn" onclick="AUTH.sair()">Sair</button>
+  </div>
+
+  <div class="client-bar" id="clientBar">
+    <div class="client-bar-label">★ Cliente</div>
+    <div class="client-row">
+      <select class="client-select" id="clientSelect" onchange="MGC.trocarCliente(this.value)"></select>
+      <button class="client-add" onclick="MGC.novoCliente()" title="Adicionar cliente">+</button>
+    </div>
+    <div class="client-meta" id="clientMeta"></div>
+  </div>
+
+  <div class="aluno-bar" id="alunoBar" style="display:none;">
+    <span id="alunoBarNome"></span>
+  </div>
+
+  <div class="main-switch">
+    <button class="main-btn active" id="btnTreino" onclick="MGC.trocarSecao('treino')">🏋️ TREINO</button>
+    <button class="main-btn" id="btnDieta" onclick="MGC.trocarSecao('dieta')">🥗 DIETA</button>
+  </div>
+
+  <div class="frames">
+    <div class="loading" id="loading">Carregando...</div>
+    <iframe id="frameTreino" src="treino.html" title="Treino"></iframe>
+    <iframe id="frameDieta" src="dieta.html" title="Dieta" class="hidden"></iframe>
+  </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+// ===== CONFIG SUPABASE =====
+const SUPABASE_URL = 'https://jhmktwskyftemjghumvj.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_9rt1QTT4pOnuneV9NQxytg_nxc8_LD6';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ===== AUTH =====
+const AUTH = (function(){
+  let perfil = null;
+  function $(id){ return document.getElementById(id); }
+  function msg(el, txt, tipo){ const e=$(el); e.textContent=txt||''; e.className='auth-msg'+(tipo?(' '+tipo):''); }
+  function mostrarLogin(){ $('formLogin').classList.remove('auth-hidden'); $('formReset').classList.add('auth-hidden'); }
+  function mostrarReset(){ $('formReset').classList.remove('auth-hidden'); $('formLogin').classList.add('auth-hidden'); }
+
+  async function entrar(){
+    const email = $('loginEmail').value.trim();
+    const senha = $('loginSenha').value;
+    if (!email || !senha){ msg('loginMsg','Preencha e-mail e senha.','erro'); return; }
+    $('btnLogin').disabled = true; msg('loginMsg','Entrando...');
+    try{
+      const { error } = await sb.auth.signInWithPassword({ email, password: senha });
+      if (error){ msg('loginMsg', traduzErro(error.message), 'erro'); $('btnLogin').disabled=false; return; }
+      await aposLogin();
+    }catch(e){ msg('loginMsg','Erro de conexao. Tente de novo.','erro'); $('btnLogin').disabled=false; }
+  }
+
+  async function enviarReset(){
+    const email = $('resetEmail').value.trim();
+    if (!email){ msg('resetMsg','Informe seu e-mail.','erro'); return; }
+    $('btnReset').disabled=true; msg('resetMsg','Enviando...');
+    try{
+      const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: window.location.href });
+      if (error){ msg('resetMsg', traduzErro(error.message),'erro'); }
+      else { msg('resetMsg','Se o e-mail existir, o link foi enviado. Verifique a caixa de entrada e o spam.','ok'); }
+    }catch(e){ msg('resetMsg','Erro de conexao.','erro'); }
+    $('btnReset').disabled=false;
+  }
+
+  async function carregarPerfil(){
+    const { data:{ user } } = await sb.auth.getUser();
+    if (!user) return null;
+    const { data, error } = await sb.from('profiles').select('*').eq('id', user.id).maybeSingle();
+    if (error){ console.error('perfil:', error); return null; }
+    return data;
+  }
+
+  function acessoLiberado(p){
+    if (!p) return false;
+    if (p.papel === 'coach') return true;
+    if (!p.ativo) return false;
+    if (p.acesso_ate){
+      const hoje = new Date(); hoje.setHours(0,0,0,0);
+      const lim = new Date(p.acesso_ate + 'T23:59:59');
+      if (lim < hoje) return false;
+    }
+    return true;
+  }
+
+  function mostrarBloqueio(p){
+    $('authScreen').style.display='none';
+    $('appShell').classList.remove('ativo');
+    $('fullMsg').classList.add('ativo');
+    if (p && !p.ativo){
+      $('fullMsgIc').textContent='🔒';
+      $('fullMsgTt').textContent='Acesso pausado';
+      $('fullMsgTx').textContent='Seu acesso esta temporariamente pausado. Fale com seu coach para reativar.';
+    } else {
+      $('fullMsgIc').textContent='⏳';
+      $('fullMsgTt').textContent='Consultoria vencida';
+      $('fullMsgTx').textContent='Sua consultoria expirou. Fale com seu coach para renovar e voltar a acessar seus treinos e dieta.';
+    }
+  }
+
+  async function aposLogin(){
+    perfil = await carregarPerfil();
+    if (!perfil){
+      msg('loginMsg','Preparando seu perfil...');
+      await new Promise(r=>setTimeout(r,1200));
+      perfil = await carregarPerfil();
+    }
+    if (!acessoLiberado(perfil)){ mostrarBloqueio(perfil); return; }
+    $('authScreen').style.display='none';
+    $('fullMsg').classList.remove('ativo');
+    $('appShell').classList.add('ativo');
+    MGC.iniciar(perfil);
+  }
+
+  async function sair(){
+    try{ await sb.auth.signOut(); }catch(e){}
+    location.reload();
+  }
+
+  function traduzErro(m){
+    m = (m||'').toLowerCase();
+    if (m.includes('invalid login')) return 'E-mail ou senha incorretos.';
+    if (m.includes('email not confirmed')) return 'E-mail ainda nao confirmado.';
+    if (m.includes('rate limit')) return 'Muitas tentativas. Aguarde um momento.';
+    return 'Nao foi possivel entrar. Verifique os dados.';
+  }
+
+  async function init(){
+    const { data:{ session } } = await sb.auth.getSession();
+    if (session){ await aposLogin(); }
+    else { $('authScreen').style.display='flex'; mostrarLogin(); }
+  }
+
+  return { init, entrar, enviarReset, mostrarReset, mostrarLogin, sair, getPerfil:()=>perfil };
+})();
+
+// ===== MGC (orquestrador dos iframes) =====
 const MGC = (function(){
-  // --- acesso ao banco comum (mgcoach_comum) a partir da casca ---
-  const COMUM_DB = 'mgcoach_comum';
-  const COMUM_STORE = 'pessoas';
-  let _cdb = null;
+  const COMUM_DB='mgcoach_comum', COMUM_STORE='pessoas';
+  let _cdb=null;
   function comumDB(){
-    return new Promise((res, rej) => {
-      if (_cdb) return res(_cdb);
-      const r = indexedDB.open(COMUM_DB, 1);
-      r.onupgradeneeded = e => {
-        const db = e.target.result;
-        if (!db.objectStoreNames.contains(COMUM_STORE))
-          db.createObjectStore(COMUM_STORE, { keyPath: 'id' });
-      };
-      r.onsuccess = e => { _cdb = e.target.result; res(_cdb); };
-      r.onerror = e => rej(e.target.error);
+    return new Promise((res,rej)=>{
+      if(_cdb)return res(_cdb);
+      const r=indexedDB.open(COMUM_DB,1);
+      r.onupgradeneeded=e=>{const db=e.target.result; if(!db.objectStoreNames.contains(COMUM_STORE))db.createObjectStore(COMUM_STORE,{keyPath:'id'});};
+      r.onsuccess=e=>{_cdb=e.target.result;res(_cdb);};
+      r.onerror=e=>rej(e.target.error);
     });
   }
-  async function comumOp(mode, fn){
-    const db = await comumDB();
-    return new Promise((res, rej) => {
-      const tx = db.transaction(COMUM_STORE, mode);
-      const st = tx.objectStore(COMUM_STORE);
-      const out = fn(st);
-      tx.oncomplete = () => res(out && out.result !== undefined ? out.result : out);
-      tx.onerror = () => rej(tx.error);
+  async function comumOp(mode,fn){
+    const db=await comumDB();
+    return new Promise((res,rej)=>{
+      const tx=db.transaction(COMUM_STORE,mode),st=tx.objectStore(COMUM_STORE);
+      const out=fn(st);
+      tx.oncomplete=()=>res(out&&out.result!==undefined?out.result:out);
+      tx.onerror=()=>rej(tx.error);
     });
   }
-  function listarPessoas(){ return comumOp('readonly', st => st.getAll()); }
-  function getPessoa(id){ return comumOp('readonly', st => st.get(id)); }
-  function gerarPessoaId(){ return 'pessoa_' + Date.now() + '_' + Math.random().toString(36).slice(2,7); }
-  async function salvarPessoa(p){
-    if (!p.id) p.id = gerarPessoaId();
-    await comumOp('readwrite', st => st.put(p));
-    return p;
-  }
+  function listarPessoas(){ return comumOp('readonly',st=>st.getAll()); }
+  function gerarPessoaId(){ return 'pessoa_'+Date.now()+'_'+Math.random().toString(36).slice(2,7); }
+  async function salvarPessoa(p){ if(!p.id)p.id=gerarPessoaId(); await comumOp('readwrite',st=>st.put(p)); return p; }
 
-  let secao = 'treino';
-  let pessoaAtivaId = null;
-  let pessoas = [];
-  let prontos = { treino:false, dieta:false };
-
-  function frame(sec){ return document.getElementById(sec==='treino'?'frameTreino':'frameDieta'); }
-  function enviar(sec, msg){ try{ const f=frame(sec); if(f&&f.contentWindow) f.contentWindow.postMessage(msg,'*'); }catch(e){} }
+  let secao='treino', pessoaAtivaId=null, pessoas=[], prontos={treino:false,dieta:false}, perfil=null;
+  function frame(s){ return document.getElementById(s==='treino'?'frameTreino':'frameDieta'); }
+  function enviar(s,m){ try{ const f=frame(s); if(f&&f.contentWindow) f.contentWindow.postMessage(m,'*'); }catch(e){} }
 
   function renderSelect(){
-    const sel = document.getElementById('clientSelect');
-    const ord = pessoas.slice().sort((a,b)=>(a.nome||'').localeCompare(b.nome||''));
-    if (ord.length === 0){
-      sel.innerHTML = '<option value="">— Nenhum cliente · toque em + —</option>';
-    } else {
-      sel.innerHTML = ord.map(p =>
-        '<option value="'+p.id+'"'+(p.id===pessoaAtivaId?' selected':'')+'>'+(p.nome||'(sem nome)')+'</option>').join('');
-    }
+    const sel=document.getElementById('clientSelect');
+    const ord=pessoas.slice().sort((a,b)=>(a.nome||'').localeCompare(b.nome||''));
+    sel.innerHTML = ord.length===0
+      ? '<option value="">— Nenhum cliente · toque em + —</option>'
+      : ord.map(p=>'<option value="'+p.id+'"'+(p.id===pessoaAtivaId?' selected':'')+'>'+(p.nome||'(sem nome)')+'</option>').join('');
     renderMeta();
   }
   function renderMeta(){
-    const meta = document.getElementById('clientMeta');
-    if (!pessoaAtivaId){ meta.innerHTML = '<span class="cm-tag none">Nenhum cliente selecionado</span>'; return; }
-    // tags simples: indica que o cliente está ativo (vínculo profundo na Frente B)
-    meta.innerHTML = '<span class="cm-tag aluno">★ Cliente ativo</span>';
+    const meta=document.getElementById('clientMeta');
+    meta.innerHTML = pessoaAtivaId ? '<span class="cm-tag aluno">★ Cliente ativo</span>' : '<span class="cm-tag none">Nenhum cliente selecionado</span>';
   }
-
   async function trocarCliente(id){
-    pessoaAtivaId = id || null;
-    renderMeta();
-    if (!pessoaAtivaId) return;
-    // avisa os dois módulos (o oculto também, pra já estar pronto ao trocar)
-    enviar('treino', { tipo:'mgc:selecionarCliente', pessoaId: pessoaAtivaId });
-    enviar('dieta',  { tipo:'mgc:selecionarCliente', pessoaId: pessoaAtivaId });
+    pessoaAtivaId=id||null; renderMeta();
+    if(!pessoaAtivaId)return;
+    enviar('treino',{tipo:'mgc:selecionarCliente',pessoaId:pessoaAtivaId});
+    enviar('dieta', {tipo:'mgc:selecionarCliente',pessoaId:pessoaAtivaId});
   }
-
   async function novoCliente(){
-    const nome = prompt('Nome do novo cliente:');
-    if (!nome || !nome.trim()) return;
-    const p = await salvarPessoa({ id:null, nome: nome.trim() });
-    pessoas = await listarPessoas();
-    pessoaAtivaId = p.id;
-    renderSelect();
-    await trocarCliente(p.id);
+    const nome=prompt('Nome do novo cliente:'); if(!nome||!nome.trim())return;
+    const p=await salvarPessoa({id:null,nome:nome.trim()});
+    pessoas=await listarPessoas(); pessoaAtivaId=p.id; renderSelect(); await trocarCliente(p.id);
   }
-
   function trocarSecao(s){
-    secao = s;
-    document.getElementById('btnTreino').classList.toggle('active', s==='treino');
-    document.getElementById('btnDieta').classList.toggle('active', s==='dieta');
-    document.getElementById('frameTreino').classList.toggle('hidden', s!=='treino');
-    document.getElementById('frameDieta').classList.toggle('hidden', s!=='dieta');
+    secao=s;
+    document.getElementById('btnTreino').classList.toggle('active',s==='treino');
+    document.getElementById('btnDieta').classList.toggle('active',s==='dieta');
+    document.getElementById('frameTreino').classList.toggle('hidden',s!=='treino');
+    document.getElementById('frameDieta').classList.toggle('hidden',s!=='dieta');
   }
-
   function aoModuloPronto(modulo){
-    prontos[modulo] = true;
-    if (prontos.treino || prontos.dieta){
-      const l = document.getElementById('loading'); if (l) l.classList.add('gone');
-    }
-    // se já há cliente, reenvia pro módulo que acabou de ficar pronto
-    if (pessoaAtivaId) enviar(modulo, { tipo:'mgc:selecionarCliente', pessoaId: pessoaAtivaId });
+    prontos[modulo]=true;
+    if(prontos.treino||prontos.dieta){ const l=document.getElementById('loading'); if(l)l.classList.add('gone'); }
+    if(pessoaAtivaId) enviar(modulo,{tipo:'mgc:selecionarCliente',pessoaId:pessoaAtivaId});
   }
-
   window.addEventListener('message', function(ev){
-    const d = ev.data || {};
-    if (d && d.tipo === 'mgc:moduloPronto' && d.modulo) aoModuloPronto(d.modulo);
+    const d=ev.data||{};
+    if(d&&d.tipo==='mgc:moduloPronto'&&d.modulo) aoModuloPronto(d.modulo);
   });
 
-  async function init(){
-    try{ pessoas = await listarPessoas(); }catch(e){ pessoas = []; }
-    renderSelect();
-    if (pessoas.length > 0){
-      const primeiro = pessoas.slice().sort((a,b)=>(a.nome||'').localeCompare(b.nome||''))[0];
-      pessoaAtivaId = primeiro.id;
-      renderSelect();
-      // o envio efetivo acontece quando os módulos avisarem que estão prontos
+  async function iniciar(p){
+    perfil=p;
+    const ehCoach = p && p.papel==='coach';
+    document.getElementById('clientBar').style.display = ehCoach ? 'block' : 'none';
+    document.getElementById('alunoBar').style.display  = ehCoach ? 'none' : 'block';
+    if(!ehCoach){
+      document.getElementById('alunoBarNome').innerHTML = 'Ola, <b>'+(p.nome||'aluno')+'</b> — seu treino e dieta';
     }
-    // fallback: esconder loading após 4s mesmo sem 'pronto'
-    setTimeout(()=>{ const l=document.getElementById('loading'); if(l)l.classList.add('gone'); }, 4000);
-    // registrar SW
-    if ('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
-    console.log('★ MG CONSULTORIA v0.5.0 — casca iframe inicializada');
+    if(ehCoach){
+      try{ pessoas=await listarPessoas(); }catch(e){ pessoas=[]; }
+      renderSelect();
+      if(pessoas.length>0){ pessoaAtivaId=pessoas.slice().sort((a,b)=>(a.nome||'').localeCompare(b.nome||''))[0].id; renderSelect(); }
+    }
+    setTimeout(()=>{ const l=document.getElementById('loading'); if(l)l.classList.add('gone'); },4000);
+    if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
+    console.log('★ MGC v0.6.0 — app iniciado como', ehCoach?'COACH':'ALUNO');
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-  else init();
-
-  return { trocarCliente, novoCliente, trocarSecao };
+  return { iniciar, trocarCliente, novoCliente, trocarSecao };
 })();
 window.MGC = MGC;
+window.AUTH = AUTH;
+
+AUTH.init();
 </script>
 </body>
 </html>
