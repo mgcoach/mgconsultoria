@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="MG CONSULTORIA">
 <link rel="manifest" href="manifest.json">
 <title>MG CONSULTORIA</title>
-<!-- brand-meta: mgconsultoria-v0.6.0-login -->
+<!-- brand-meta: mgconsultoria-v0.6.1-diag -->
 <style>
   :root{
     --bg:#0a0a0a;--bg-card:#141414;--orange:#ff6b1a;--orange-soft:rgba(255,107,26,.12);
@@ -212,11 +212,15 @@ const AUTH = (function(){
     $('btnReset').disabled=false;
   }
 
+  let _diag = {}; // guarda diagnóstico do login pra exibir se algo falhar
   async function carregarPerfil(){
     const { data:{ user } } = await sb.auth.getUser();
-    if (!user) return null;
+    _diag.userId = user ? user.id : '(sem user)';
+    _diag.userEmail = user ? user.email : '(sem email)';
+    if (!user) { _diag.passo = 'getUser vazio'; return null; }
     const { data, error } = await sb.from('profiles').select('*').eq('id', user.id).maybeSingle();
-    if (error){ console.error('perfil:', error); return null; }
+    if (error){ _diag.erro = (error.message||'')+' | code:'+(error.code||'?'); console.error('perfil:', error); return null; }
+    _diag.perfilLido = data ? JSON.stringify({papel:data.papel, ativo:data.ativo, acesso_ate:data.acesso_ate}) : '(perfil NULL — nao achou linha)';
     return data;
   }
 
@@ -245,6 +249,20 @@ const AUTH = (function(){
       $('fullMsgTt').textContent='Consultoria vencida';
       $('fullMsgTx').textContent='Sua consultoria expirou. Fale com seu coach para renovar e voltar a acessar seus treinos e dieta.';
     }
+    // DIAGNOSTICO (temporario) — mostra na tela o que o app leu
+    try{
+      var d = document.getElementById('fullMsgDiag');
+      if(!d){ d=document.createElement('div'); d.id='fullMsgDiag';
+        d.style.cssText='margin-top:18px;font-size:10px;color:#888;max-width:340px;text-align:left;background:#111;border:1px solid #333;border-radius:8px;padding:10px;font-family:monospace;white-space:pre-wrap;word-break:break-all;';
+        document.getElementById('fullMsg').insertBefore(d, document.querySelector('#fullMsg .auth-link'));
+      }
+      d.textContent = 'DIAGNOSTICO:\n'+
+        'userId: '+(_diag.userId||'?')+'\n'+
+        'email: '+(_diag.userEmail||'?')+'\n'+
+        'perfilLido: '+(_diag.perfilLido||'(nao leu)')+'\n'+
+        'erro: '+(_diag.erro||'(nenhum)')+'\n'+
+        'passo: '+(_diag.passo||'-');
+    }catch(e){}
   }
 
   async function aposLogin(){
