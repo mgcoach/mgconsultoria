@@ -1,6 +1,6 @@
 // MG CONSULTORIA — Service Worker
 // App unificado (Treino + Dieta). Fase 2 · Etapa 1.
-const CACHE_NAME = 'mgconsultoria-v0-5-0';
+const CACHE_NAME = 'mgconsultoria-v0-6-2';
 const ASSETS = [
   './',
   './index.html',

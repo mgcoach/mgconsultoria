@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="MG CONSULTORIA">
 <link rel="manifest" href="manifest.json">
 <title>MG CONSULTORIA</title>
-<!-- brand-meta: mgconsultoria-v0.6.1-diag -->
+<!-- brand-meta: mgconsultoria-v0.6.2-clean -->
 <style>
   :root{
     --bg:#0a0a0a;--bg-card:#141414;--orange:#ff6b1a;--orange-soft:rgba(255,107,26,.12);
@@ -249,7 +249,10 @@ const AUTH = (function(){
       $('fullMsgTt').textContent='Consultoria vencida';
       $('fullMsgTx').textContent='Sua consultoria expirou. Fale com seu coach para renovar e voltar a acessar seus treinos e dieta.';
     }
-    // DIAGNOSTICO (temporario) — mostra na tela o que o app leu
+    // DIAGNOSTICO — só aparece em modo debug (adicione ?debug no fim do endereço).
+    // Cliente normal nunca vê isto.
+    var _debugOn = location.search.indexOf('debug') !== -1 || location.hash.indexOf('debug') !== -1;
+    if(!_debugOn) return;
     try{
       var d = document.getElementById('fullMsgDiag');
       if(!d){ d=document.createElement('div'); d.id='fullMsgDiag';
@@ -385,7 +388,17 @@ const MGC = (function(){
       if(pessoas.length>0){ pessoaAtivaId=pessoas.slice().sort((a,b)=>(a.nome||'').localeCompare(b.nome||''))[0].id; renderSelect(); }
     }
     setTimeout(()=>{ const l=document.getElementById('loading'); if(l)l.classList.add('gone'); },4000);
-    if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
+    if('serviceWorker' in navigator){
+      navigator.serviceWorker.register('sw.js').then(function(reg){
+        // se um novo SW assumir o controle, recarrega 1x pra pegar a versão nova
+        var recarregou = false;
+        navigator.serviceWorker.addEventListener('controllerchange', function(){
+          if(recarregou) return; recarregou = true; location.reload();
+        });
+        // procura atualização sempre que o app abre
+        reg.update().catch(function(){});
+      }).catch(function(){});
+    }
     console.log('★ MGC v0.6.0 — app iniciado como', ehCoach?'COACH':'ALUNO');
   }
 
