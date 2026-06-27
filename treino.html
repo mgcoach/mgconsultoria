@@ -5841,19 +5841,39 @@ async function salvarAluno(aluno, criarVersao = true) {
 
 // ===== Ponte de sincronizacao com a nuvem (via casca/postMessage) =====
 function sincronizarTreinoNuvem(aluno){
-  if (!aluno) return;
-  if (!(window.parent && window.parent !== window)) return;
+  if (!aluno) { return; }
+  if (!(window.parent && window.parent !== window)) {
+    if(location.search.indexOf('debug')!==-1) toast('debug: sem parent (fora da casca)','aviso');
+    return;
+  }
   var clienteLocalId = aluno.pessoaId || aluno.id || null;
-  if (!clienteLocalId) return;
+  if (!clienteLocalId) {
+    if(location.search.indexOf('debug')!==-1) toast('debug: sem clienteLocalId','aviso');
+    return;
+  }
   var nome = (aluno.dados && aluno.dados.nome) ? aluno.dados.nome : '';
-  window.parent.postMessage({
-    tipo: 'mgc:salvarTreinoNuvem',
-    clienteLocalId: String(clienteLocalId),
-    clienteNome: nome,
-    titulo: nome ? ('Treino - ' + nome) : 'Treino',
-    dados: { dados: aluno.dados || {}, treino: aluno.treino || {} }
-  }, '*');
+  try {
+    window.parent.postMessage({
+      tipo: 'mgc:salvarTreinoNuvem',
+      clienteLocalId: String(clienteLocalId),
+      clienteNome: nome,
+      titulo: nome ? ('Treino - ' + nome) : 'Treino',
+      dados: { dados: aluno.dados || {}, treino: aluno.treino || {} }
+    }, '*');
+    if(location.search.indexOf('debug')!==-1) toast('debug: enviado p/ nuvem ('+clienteLocalId+')','ok');
+  } catch(e){
+    if(location.search.indexOf('debug')!==-1) toast('debug: erro postMessage '+e.message,'aviso');
+  }
 }
+
+// recebe confirmacao da casca sobre o save na nuvem
+window.addEventListener('message', function(ev){
+  var d = ev.data || {};
+  if (d && d.tipo === 'mgc:treinoSalvoNuvem'){
+    if (d.ok) toast('☁️ Treino salvo na nuvem','ok');
+    else toast('☁️❌ Nuvem: '+(d.erro||'falha'),'aviso');
+  }
+});
 
 async function excluirAluno(id) {
   await dbDelete(STORE_ALUNOS, id);
