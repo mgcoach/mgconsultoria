@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="MG CONSULTORIA">
 <link rel="manifest" href="manifest.json">
 <title>MG CONSULTORIA</title>
-<!-- brand-meta: mgconsultoria-v0.6.2-clean -->
+<!-- brand-meta: mgconsultoria-v0.7.0-sync-treino -->
 <style>
   :root{
     --bg:#0a0a0a;--bg-card:#141414;--orange:#ff6b1a;--orange-soft:rgba(255,107,26,.12);
@@ -369,9 +369,55 @@ const MGC = (function(){
     if(prontos.treino||prontos.dieta){ const l=document.getElementById('loading'); if(l)l.classList.add('gone'); }
     if(pessoaAtivaId) enviar(modulo,{tipo:'mgc:selecionarCliente',pessoaId:pessoaAtivaId});
   }
+  // ===== Serviço de nuvem: recebe pedidos dos iframes e usa o Supabase (sessão da casca) =====
+  async function nuvemSalvarTreino(payload, fonte){
+    try{
+      const { data:{ user } } = await sb.auth.getUser();
+      if(!user){ return; }
+      const registro = {
+        coach_id: user.id,
+        aluno_id: null,
+        cliente_local_id: payload.clienteLocalId || null,
+        cliente_nome: payload.clienteNome || null,
+        titulo: payload.titulo || null,
+        dados: payload.dados || {},
+        atualizado_em: new Date().toISOString()
+      };
+      // upsert por (coach_id, cliente_local_id)
+      const { error } = await sb.from('treinos')
+        .upsert(registro, { onConflict: 'coach_id,cliente_local_id' });
+      if(error){ console.error('nuvemSalvarTreino:', error);
+        try{ fonte && fonte.postMessage({tipo:'mgc:treinoSalvoNuvem', ok:false, erro:error.message}, '*'); }catch(e){}
+        return; }
+      try{ fonte && fonte.postMessage({tipo:'mgc:treinoSalvoNuvem', ok:true, clienteLocalId:payload.clienteLocalId}, '*'); }catch(e){}
+    }catch(e){ console.error('nuvemSalvarTreino ex:', e); }
+  }
+
+  async function nuvemBaixarTreino(payload, fonte){
+    try{
+      const { data:{ user } } = await sb.auth.getUser();
+      if(!user){ return; }
+      const { data, error } = await sb.from('treinos')
+        .select('dados, atualizado_em, cliente_nome')
+        .eq('coach_id', user.id)
+        .eq('cliente_local_id', payload.clienteLocalId)
+        .maybeSingle();
+      if(error){ console.error('nuvemBaixarTreino:', error); return; }
+      try{ fonte && fonte.postMessage({
+        tipo:'mgc:treinoBaixadoNuvem',
+        clienteLocalId: payload.clienteLocalId,
+        encontrado: !!data,
+        dados: data ? data.dados : null,
+        atualizadoEm: data ? data.atualizado_em : null
+      }, '*'); }catch(e){}
+    }catch(e){ console.error('nuvemBaixarTreino ex:', e); }
+  }
+
   window.addEventListener('message', function(ev){
     const d=ev.data||{};
     if(d&&d.tipo==='mgc:moduloPronto'&&d.modulo) aoModuloPronto(d.modulo);
+    if(d&&d.tipo==='mgc:salvarTreinoNuvem') nuvemSalvarTreino(d, ev.source);
+    if(d&&d.tipo==='mgc:baixarTreinoNuvem') nuvemBaixarTreino(d, ev.source);
   });
 
   async function iniciar(p){

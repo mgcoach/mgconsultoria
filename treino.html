@@ -5834,7 +5834,25 @@ async function salvarAluno(aluno, criarVersao = true) {
       nota: aluno._notaVersao || ''
     });
   }
+  // Sincroniza com a nuvem (local-first: já salvou local, agora sobe em 2º plano)
+  try { sincronizarTreinoNuvem(aluno); } catch(e){ console.error('sync nuvem:', e); }
   return aluno;
+}
+
+// ===== Ponte de sincronizacao com a nuvem (via casca/postMessage) =====
+function sincronizarTreinoNuvem(aluno){
+  if (!aluno) return;
+  if (!(window.parent && window.parent !== window)) return;
+  var clienteLocalId = aluno.pessoaId || aluno.id || null;
+  if (!clienteLocalId) return;
+  var nome = (aluno.dados && aluno.dados.nome) ? aluno.dados.nome : '';
+  window.parent.postMessage({
+    tipo: 'mgc:salvarTreinoNuvem',
+    clienteLocalId: String(clienteLocalId),
+    clienteNome: nome,
+    titulo: nome ? ('Treino - ' + nome) : 'Treino',
+    dados: { dados: aluno.dados || {}, treino: aluno.treino || {} }
+  }, '*');
 }
 
 async function excluirAluno(id) {
