@@ -6469,10 +6469,9 @@ window.addEventListener('beforeunload', () => {
   }
 
   // selecionar cliente vindo da casca (pessoaId do mgcoach_comum)
-  async function selecionarClienteExterno(pessoaId){
+  async function selecionarClienteExterno(pessoaId, pessoaDados){
     try{
-      if (typeof db === 'undefined' || !db){ setTimeout(()=>selecionarClienteExterno(pessoaId), 200); return; }
-      // garante que o aluno do treino é indexado pelo pessoaId
+      if (typeof db === 'undefined' || !db){ setTimeout(()=>selecionarClienteExterno(pessoaId, pessoaDados), 200); return; }
       alunoAtivoId = pessoaId;
       const aluno = await buscarAluno(pessoaId);
       if (aluno){
@@ -6481,15 +6480,17 @@ window.addEventListener('beforeunload', () => {
         try { migrarStringsComDescanso(); } catch(e){}
         atualizarBarraAlunoAtivo(aluno);
       } else {
-        const p = await getPessoa(pessoaId);
+        // cliente novo (sem treino ainda): usa os dados que a casca mandou
+        let p = pessoaDados;
+        if (!p) { try { p = await getPessoa(pessoaId); } catch(e){} }
         limparAlunoCompleto();
+        alunoAtivoId = pessoaId;
         if (p){
-          aplicarDadosAluno({nome:p.nome||'',sexo:p.sexo||'',tel:p.contato||'',
-            altura:p.altura||'',nasc:p.nascimento||'',idade:p.idade||''});
+          aplicarDadosAluno({nome:p.nome||'',sexo:p.sexo||'',tel:p.contato||p.tel||'',
+            altura:p.altura||'',nasc:p.nascimento||p.nasc||'',idade:p.idade||''});
           atualizarBarraAlunoAtivo({dados:{nome:p.nome||''}});
         }
       }
-      // abrir Ficha
       document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
       document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
       var ft=document.querySelector('.nav-tab[data-panel="aluno"]'); if(ft)ft.classList.add('active');
@@ -6499,7 +6500,7 @@ window.addEventListener('beforeunload', () => {
 
   window.addEventListener('message', function(ev){
     var d = ev.data || {};
-    if (d && d.tipo === 'mgc:selecionarCliente'){ selecionarClienteExterno(d.pessoaId); }
+    if (d && d.tipo === 'mgc:selecionarCliente'){ selecionarClienteExterno(d.pessoaId, d.pessoa); }
     if (d && d.tipo === 'mgc:ping'){ try{ ev.source.postMessage({tipo:'mgc:pong', modulo:'treino'}, '*'); }catch(e){} }
   });
 

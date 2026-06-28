@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="MG CONSULTORIA">
 <link rel="manifest" href="manifest.json">
 <title>MG CONSULTORIA</title>
-<!-- brand-meta: mgconsultoria-v0.7.1-sync-diag -->
+<!-- brand-meta: mgconsultoria-v0.7.2-fix-cliente -->
 <style>
   :root{
     --bg:#0a0a0a;--bg-card:#141414;--orange:#ff6b1a;--orange-soft:rgba(255,107,26,.12);
@@ -346,11 +346,13 @@ const MGC = (function(){
     const meta=document.getElementById('clientMeta');
     meta.innerHTML = pessoaAtivaId ? '<span class="cm-tag aluno">★ Cliente ativo</span>' : '<span class="cm-tag none">Nenhum cliente selecionado</span>';
   }
+  function pessoaPorId(id){ return (pessoas||[]).find(function(p){return p.id===id;}) || null; }
   async function trocarCliente(id){
     pessoaAtivaId=id||null; renderMeta();
     if(!pessoaAtivaId)return;
-    enviar('treino',{tipo:'mgc:selecionarCliente',pessoaId:pessoaAtivaId});
-    enviar('dieta', {tipo:'mgc:selecionarCliente',pessoaId:pessoaAtivaId});
+    var p = pessoaPorId(pessoaAtivaId) || {id:pessoaAtivaId};
+    enviar('treino',{tipo:'mgc:selecionarCliente',pessoaId:pessoaAtivaId, pessoa:p});
+    enviar('dieta', {tipo:'mgc:selecionarCliente',pessoaId:pessoaAtivaId, pessoa:p});
   }
   async function novoCliente(){
     const nome=prompt('Nome do novo cliente:'); if(!nome||!nome.trim())return;
@@ -367,7 +369,7 @@ const MGC = (function(){
   function aoModuloPronto(modulo){
     prontos[modulo]=true;
     if(prontos.treino||prontos.dieta){ const l=document.getElementById('loading'); if(l)l.classList.add('gone'); }
-    if(pessoaAtivaId) enviar(modulo,{tipo:'mgc:selecionarCliente',pessoaId:pessoaAtivaId});
+    if(pessoaAtivaId) enviar(modulo,{tipo:'mgc:selecionarCliente',pessoaId:pessoaAtivaId, pessoa:(pessoaPorId(pessoaAtivaId)||{id:pessoaAtivaId})});
   }
   // ===== Serviço de nuvem: recebe pedidos dos iframes e usa o Supabase (sessão da casca) =====
   async function nuvemSalvarTreino(payload, fonte){
