@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Dieta — MG CONSULTORIA</title>
+<title>NUTRI · Calculadora Profissional de Plano Alimentar</title>
 
 <!-- ============== PWA / iOS ============== -->
 <link rel="manifest" href="manifest.json">
@@ -691,6 +691,7 @@
     transition: all 0.15s;
   }
   .opcao-add-btn:hover { background: var(--orange-soft); }
+  .opcao-bar-solo { justify-content: flex-start; }
   .opcao-aviso {
     font-size: 0.72rem;
     color: #f7a73a;
@@ -2325,42 +2326,9 @@
     min-height: 18px;
   }
 
-/* ===== SKIN FULLBODY (módulo dieta em iframe) ===== */
-body{
-  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif !important;
-  -webkit-font-smoothing:antialiased;background:#0a0a0a;
-}
-.container{max-width:680px !important;margin:0 auto !important;padding:0 0 40px !important;}
-.brand-header{display:none !important;}
-
-.nav-tabs{
-  display:flex !important;gap:6px !important;padding:12px 14px !important;margin:0 !important;
-  overflow-x:auto !important;background:#0a0a0a !important;border:none !important;border-radius:0 !important;
-  scrollbar-width:none;position:sticky;top:0;z-index:50;
-}
-.nav-tabs::-webkit-scrollbar{display:none;}
-.nav-tab{
-  flex:0 0 auto !important;min-width:auto !important;
-  background:#141414 !important;border:1px solid #262626 !important;border-radius:10px !important;
-  padding:9px 16px !important;color:#9a9a9a !important;font-size:13px !important;font-weight:700 !important;
-  letter-spacing:0.3px !important;white-space:nowrap !important;font-family:inherit !important;text-transform:none !important;
-}
-.nav-tab.active{background:#ff6b1a !important;color:#0a0a0a !important;border-color:#ff6b1a !important;}
-.nav-tab:active{transform:scale(0.96);}
-.nav-tab[data-panel="pacientes"]{display:none !important;}
-
-.panel{padding:12px 14px 10px !important;}
-.panel.active{display:block !important;}
-
-.section-title{
-  font-family:inherit !important;font-size:15px !important;font-weight:800 !important;
-  letter-spacing:0.3px !important;color:#f2f2f2 !important;margin-bottom:14px !important;text-transform:none !important;
-}
-.section-title::before{height:16px !important;width:3px !important;}
-
+/* internos escondidos — a casca MG CONSULTORIA assume seleção/lista */
 #mgc-comum-bloco{display:none !important;}
 #panel-pacientes{display:none !important;}
-
 </style>
 </head>
 <body>
@@ -2392,7 +2360,7 @@ body{
         </div>
         <div class="brand-meta-item">
           <span>Versão</span>
-          <strong>3.14.0</strong>
+          <strong>3.14.3</strong>
         </div>
       </div>
     </div>
@@ -2657,9 +2625,10 @@ body{
             <select id="comumSeletor" onchange="aoEscolherPessoa()" style="flex:1;">
               <option value="">— Escolher aluno cadastrado / criar novo abaixo —</option>
             </select>
-            <button type="button" onclick="vincularPessoaAtual()" class="btn-mini" style="flex:0 0 auto;background:var(--orange);color:#1a1a1a;border:none;border-radius:8px;padding:9px 12px;font-weight:700;cursor:pointer;white-space:nowrap;">💾 Salvar aluno</button>
+            <button type="button" onclick="vincularPessoaAtual()" class="btn-mini" title="Compartilha só os dados básicos com TRAIN/Organizer (não cria a ficha)" style="flex:0 0 auto;background:var(--orange);color:#1a1a1a;border:none;border-radius:8px;padding:9px 12px;font-weight:700;cursor:pointer;white-space:nowrap;">📇 Compartilhar</button>
+            <button type="button" onclick="excluirPessoaComum()" title="Remover o contato selecionado do cadastro compartilhado" style="flex:0 0 auto;background:transparent;color:#ef4444;border:1px solid #ef4444;border-radius:8px;padding:9px 11px;font-weight:700;cursor:pointer;">🗑</button>
           </div>
-          <div style="font-size:0.7rem;color:var(--text-3);margin-top:6px;">Preencha nome, sexo, nascimento, telefone e altura abaixo e toque em "Salvar aluno" para compartilhar com TRAIN e Organizer. Ou escolha um já cadastrado.</div>
+          <div style="font-size:0.7rem;color:var(--text-3);margin-top:6px;">Escolha um já cadastrado para <strong>preencher os dados básicos</strong>. Para criar a ficha de verdade, use o <strong>💾 Salvar Paciente</strong> no topo — ele salva o paciente E já compartilha o contato com TRAIN e Organizer. O 🗑 remove um contato de teste do compartilhado.</div>
           <div style="margin-top:10px;border-top:1px dashed var(--border);padding-top:10px;">
             <button type="button" onclick="document.getElementById('importAnamneseFile').click()" style="width:100%;background:var(--bg-2);color:var(--orange);border:1px solid var(--orange);border-radius:8px;padding:10px;font-weight:700;cursor:pointer;">📋 Importar anamnese (arquivo .json)</button>
             <input type="file" id="importAnamneseFile" accept=".json" style="display:none" onchange="importarAnamnese(event)">
@@ -3201,7 +3170,7 @@ body{
   </div>
 
   <p class="footer-note">
-    <strong>NUTRI.FUEL · v3.14.0</strong> — Base nutricional: TACO 4ª ed. (UNICAMP) + USDA FoodData Central. Os valores são aproximados e variam conforme preparo, marca e procedência. Fórmulas: Mifflin-St Jeor (1990), Harris-Benedict revisada (Roza & Shizgal 1984), Katch-McArdle, Cunningham.
+    <strong>NUTRI.FUEL · v3.14.3</strong> — Base nutricional: TACO 4ª ed. (UNICAMP) + USDA FoodData Central. Os valores são aproximados e variam conforme preparo, marca e procedência. Fórmulas: Mifflin-St Jeor (1990), Harris-Benedict revisada (Roza & Shizgal 1984), Katch-McArdle, Cunningham.
   </p>
   
   <!-- ============== ÁREA DO PDF (oculta na tela, visível na impressão) ============== -->
@@ -3940,14 +3909,14 @@ function selecionarOpcao(mealKey, idx) {
 }
 
 // Remove uma opção. Se sobrar só 1, volta a ser refeição simples.
-function removerOpcao(mealKey, idx) {
+async function removerOpcao(mealKey, idx) {
   const pa = getPlanoAtivo();
   garantirOpcoes(pa);
   const op = pa._opcoes[mealKey];
   if (!op || !op.listas || op.listas.length <= 1) return;
 
   const nome = op.nomes[idx] || OPCAO_LABELS[idx];
-  if (!confirm(`Excluir a Opção ${nome} de ${REFEICOES[mealKey]}?\n\nOs alimentos dessa opção serão perdidos.`)) return;
+  if (!await uiConfirm(`Excluir a Opção ${nome} de ${REFEICOES[mealKey]}?\n\nOs alimentos dessa opção serão perdidos.`)) return;
 
   op.listas.splice(idx, 1);
   op.nomes.splice(idx, 1);
@@ -3967,7 +3936,7 @@ function removerOpcao(mealKey, idx) {
 }
 
 // Handler do botão "Adicionar alternativa" — pergunta vazia/cópia + avisa kcal
-function novaOpcaoRefeicao(mealKey) {
+async function novaOpcaoRefeicao(mealKey) {
   const pa = getPlanoAtivo();
   const temItens = totalOpcoes(pa, mealKey) > 1
     ? (pa._opcoes[mealKey].listas[pa._opcoes[mealKey].ativa] || []).length > 0
@@ -3976,7 +3945,7 @@ function novaOpcaoRefeicao(mealKey) {
   let modo = 'vazia';
   if (temItens) {
     // OK = copiar da opção atual · Cancelar = começar vazia
-    modo = confirm(
+    modo = await uiConfirm(
       `Nova opção de ${REFEICOES[mealKey]}\n\n` +
       `OK = copiar os alimentos da opção atual (e ajustar depois)\n` +
       `Cancelar = começar uma opção vazia`
@@ -4087,14 +4056,14 @@ function fecharModalSwap() {
 }
 
 // Após o usuário escolher destino, pergunta o escopo (se ciclagem) e executa
-function executarSwap(mealA, mealB) {
+async function executarSwap(mealA, mealB) {
   fecharModalSwap();
   if (mealA === mealB || !REFEICOES[mealA] || !REFEICOES[mealB]) return;
 
   if (ciclagem.ativa) {
     // Pergunta o escopo: só este dia, todos os dias, ou cancelar
     // Confirm com 3 opções via prompt seria ruim → usa dois confirms encadeados
-    const aplicarEmTodos = confirm(
+    const aplicarEmTodos = await uiConfirm(
       `Trocar ${REFEICOES[mealA]} ↔ ${REFEICOES[mealB]}?\n\n` +
       `OK = aplicar em TODOS os dias da ciclagem (Alto, Médio, Baixo)\n` +
       `Cancelar = aplicar SÓ no dia ativo (${ciclagem.diaAtivo.toUpperCase()})`
@@ -4104,7 +4073,7 @@ function executarSwap(mealA, mealB) {
     } else {
       // Segunda confirmação leve só pra ter certeza de que o usuário queria mesmo "só esse dia"
       // (sem isso, usuário que clica Cancelar por engano perde a ação)
-      const soEste = confirm(`Confirma: trocar ${REFEICOES[mealA]} ↔ ${REFEICOES[mealB]} APENAS no dia ${ciclagem.diaAtivo.toUpperCase()}?`);
+      const soEste = await uiConfirm(`Confirma: trocar ${REFEICOES[mealA]} ↔ ${REFEICOES[mealB]} APENAS no dia ${ciclagem.diaAtivo.toUpperCase()}?`);
       if (!soEste) return;
       swapRefeicoesNoPlano(planos[ciclagem.diaAtivo], mealA, mealB);
     }
@@ -4413,7 +4382,7 @@ function calcularMacros() {
 
 function aplicarMetas() {
   if (!resultadoGET) {
-    alert('Calcule a TMB primeiro preenchendo os dados.');
+    toastNutri('Calcule a TMB primeiro preenchendo os dados.');
     return;
   }
   
@@ -4930,7 +4899,7 @@ function copiarAltoParaMedioBaixo() {
   if (!ciclagem.ativa) return;
   const altoVazio = planoEstaVazio(planos.alto);
   if (altoVazio) {
-    alert('O dia Alto está vazio — não há nada para copiar. Monte o cardápio do Alto primeiro.');
+    toastNutri('O dia Alto está vazio — não há nada para copiar. Monte o cardápio do Alto primeiro.');
     return;
   }
 
@@ -4955,7 +4924,7 @@ function copiarAltoParaMedioBaixo() {
     if (msg) msg += '\n\n';
     msg += `⚠️ Pulado: ${pulados.join(' e ')} — já tinha refeições montadas.\nPara regerar, limpe esse(s) dia(s) manualmente antes.`;
   }
-  alert(msg);
+  toastNutri(msg);
 
   // Salva e re-renderiza (caso o usuário esteja vendo Médio/Baixo depois)
   if (typeof _markPacDirty === 'function') _markPacDirty();
@@ -5152,6 +5121,14 @@ function render() {
           <button type="button" class="opcao-add-btn" data-meal="${key}">➕ Alternativa</button>
         </div>
         ${avisoHtml}`;
+    } else {
+      // Refeição com 1 opção: ainda assim mostra o botão pra criar a 1ª alternativa.
+      // (até a v3.14.0 o botão só existia com 2+ opções → era impossível criar a primeira)
+      opcoesHtml = `
+        <div class="opcao-bar opcao-bar-solo">
+          <div class="opcao-tabs"></div>
+          <button type="button" class="opcao-add-btn" data-meal="${key}">➕ Adicionar refeição alternativa</button>
+        </div>`;
     }
 
     const card = document.createElement('div');
@@ -5379,11 +5356,11 @@ function adicionar() {
     if (sugs.length > 0) {
       alimentoSelecionado = itemPorNome(sugs[0].n);
     } else {
-      alert('Selecione um alimento da lista.');
+      toastNutri('Selecione um alimento da lista.');
       return;
     }
   }
-  if (!qty || qty <= 0) { alert('Informe uma quantidade válida.'); return; }
+  if (!qty || qty <= 0) { toastNutri('Informe uma quantidade válida.'); return; }
   
   const customUnit = parseFloat(document.getElementById('foodUnit').value);
   const pesoUnit = (inputMode === 'u' && customUnit > 0) ? customUnit : alimentoSelecionado.u;
@@ -5437,14 +5414,14 @@ function remover(refeicao, idx) {
   if (typeof _markPacDirty === 'function') _markPacDirty();
 }
 
-function limparTudo() {
+async function limparTudo() {
   const msg = ciclagem.ativa
     ? 'Limpar TODOS os 3 dias de carbo (alto/médio/baixo)?'
     : 'Limpar todo o plano alimentar?';
-  if (confirm(msg)) {
+  if (await uiConfirm(msg)) {
     if (ciclagem.ativa) {
       // Limpa só o dia ativo (mais comum)
-      const ehTodos = confirm('Apagar TODOS os 3 dias?\n\nOK = todos os 3 dias\nCancelar = só o dia ' + ciclagem.diaAtivo.toUpperCase());
+      const ehTodos = await uiConfirm('Apagar TODOS os 3 dias?\n\nOK = todos os 3 dias\nCancelar = só o dia ' + ciclagem.diaAtivo.toUpperCase());
       if (ehTodos) {
         planos.alto = novoPlanoVazio();
         planos.medio = novoPlanoVazio();
@@ -5545,14 +5522,14 @@ function adicionarSub() {
     const termo = document.getElementById('subSearch').value;
     const sugs = buscar(termo);
     if (sugs.length > 0) subAlimentoSelecionado = itemPorNome(sugs[0].n);
-    else { alert('Selecione um alimento.'); return; }
+    else { toastNutri('Selecione um alimento.'); return; }
   }
   const qty = parseFloat(document.getElementById('subQty').value);
-  if (!qty || qty <= 0) { alert('Informe uma quantidade válida.'); return; }
+  if (!qty || qty <= 0) { toastNutri('Informe uma quantidade válida.'); return; }
   
   const modo = document.getElementById('subMode').value;
   if (modo === 'u' && !subAlimentoSelecionado.u) {
-    alert('Esse alimento não tem unidade definida. Use gramas.');
+    toastNutri('Esse alimento não tem unidade definida. Use gramas.');
     return;
   }
   
@@ -5589,7 +5566,7 @@ function removerSub(idx) {
 
 function sugerirEquivalente() {
   if (!subAlimentoSelecionado) {
-    alert('Primeiro selecione um alimento na busca.');
+    toastNutri('Primeiro selecione um alimento na busca.');
     return;
   }
   const { mealKey, foodIdx } = subsContext;
@@ -5970,17 +5947,17 @@ function buildPDFContent() {
 async function gerarPDF() {
   const totalItens = Object.values(plano).reduce((s, a) => s + a.length, 0);
   if (totalItens === 0) {
-    alert('Adicione pelo menos um alimento ao plano antes de gerar o PDF.');
+    toastNutri('Adicione pelo menos um alimento ao plano antes de gerar o PDF.');
     return;
   }
   
   const c = coletarCliente();
   if (c.nome === '—' || !c.nome.trim()) {
-    if (!confirm('O nome do paciente não foi preenchido. Deseja continuar mesmo assim?')) return;
+    if (!await uiConfirm('O nome do paciente não foi preenchido. Deseja continuar mesmo assim?')) return;
   }
   
   if (typeof html2pdf === 'undefined') {
-    alert('Biblioteca PDF não carregou. Verifique sua conexão ou use o botão "Imprimir" como alternativa (Ctrl+P → Salvar como PDF).');
+    toastNutri('Biblioteca PDF não carregou. Verifique sua conexão ou use o botão "Imprimir" como alternativa (Ctrl+P → Salvar como PDF).');
     return;
   }
   
@@ -6056,7 +6033,7 @@ async function gerarPDF() {
     
   } catch (err) {
     console.error('Erro PDF:', err);
-    alert('Erro ao gerar PDF: ' + (err.message || 'desconhecido') + '\n\nUse o botão "Imprimir" como alternativa.');
+    toastNutri('Erro ao gerar PDF: ' + (err.message || 'desconhecido') + '\n\nUse o botão "Imprimir" como alternativa.');
   } finally {
     // Limpa
     const wrap = document.getElementById('pdfRenderWrapper');
@@ -6074,7 +6051,7 @@ async function gerarPDF() {
 function imprimir() {
   const totalItens = Object.values(plano).reduce((s, a) => s + a.length, 0);
   if (totalItens === 0) {
-    alert('Adicione pelo menos um alimento ao plano antes de imprimir.');
+    toastNutri('Adicione pelo menos um alimento ao plano antes de imprimir.');
     return;
   }
   
@@ -6108,13 +6085,13 @@ async function exportarHTML() {
   let totalItens = 0;
   Object.keys(REFEICOES).forEach(k => totalItens += plano[k].length);
   if (totalItens === 0) {
-    alert('Adicione pelo menos um alimento ao plano antes de exportar.');
+    toastNutri('Adicione pelo menos um alimento ao plano antes de exportar.');
     return;
   }
   
   const c = coletarCliente();
   if (!c.nome || c.nome === '—') {
-    if (!confirm('Nome do paciente não foi preenchido. Deseja continuar mesmo assim?')) return;
+    if (!await uiConfirm('Nome do paciente não foi preenchido. Deseja continuar mesmo assim?')) return;
   }
   
   const btn = event && event.target ? event.target : null;
@@ -6830,7 +6807,7 @@ async function exportarHTML() {
     
   } catch (err) {
     console.error('Erro ao exportar HTML:', err);
-    alert('Erro ao exportar: ' + (err.message || 'desconhecido'));
+    toastNutri('Erro ao exportar: ' + (err.message || 'desconhecido'));
     if (btn) {
       btn.disabled = false;
       btn.textContent = originalText;
@@ -6971,9 +6948,9 @@ function importarJSON(e) {
         calcularTMB();
       }
       render();
-      alert('Plano importado com sucesso!');
+      toastNutri('Plano importado com sucesso!');
     } catch (err) {
-      alert('Erro ao importar: ' + err.message);
+      toastNutri('Erro ao importar: ' + err.message);
     }
   };
   reader.readAsText(file);
@@ -7056,7 +7033,7 @@ function exportarTexto() {
   if (c.profNome) txt += `\n${c.profNome}\n`;
   
   navigator.clipboard.writeText(txt).then(() => {
-    alert('✓ Plano copiado para a área de transferência!');
+    toastNutri('✓ Plano copiado para a área de transferência!');
   }).catch(() => {
     const ta = document.createElement('textarea');
     ta.value = txt;
@@ -7064,7 +7041,7 @@ function exportarTexto() {
     ta.select();
     document.execCommand('copy');
     document.body.removeChild(ta);
-    alert('✓ Plano copiado!');
+    toastNutri('✓ Plano copiado!');
   });
 }
 
@@ -7072,7 +7049,7 @@ function exportarTexto() {
 // INIT
 // ============================================================
 render();
-console.log(`✅ NUTRI.FUEL v3.14.0 carregado`);
+console.log(`✅ NUTRI.FUEL v3.14.3 carregado`);
 
 // ============================================================
 // MÓDULO PACIENTES v3.8 — IndexedDB, CRUD, Avaliações, Import/Export
@@ -7334,9 +7311,9 @@ function adicionarIngredienteReceita() {
     // fallback: tenta a primeira sugestão
     const sugs = buscar(document.getElementById('recIngSearch').value).filter(a => a.tipo !== 'receita');
     if (sugs.length > 0) _recIngSelecionado = ALIMENTOS.find(x => x.n === sugs[0].n);
-    if (!_recIngSelecionado) { alert('Selecione um alimento da lista.'); return; }
+    if (!_recIngSelecionado) { toastNutri('Selecione um alimento da lista.'); return; }
   }
-  if (!g || g <= 0) { alert('Informe a quantidade em gramas do ingrediente.'); return; }
+  if (!g || g <= 0) { toastNutri('Informe a quantidade em gramas do ingrediente.'); return; }
 
   _recIngredientes.push({
     n: _recIngSelecionado.n,
@@ -7409,17 +7386,17 @@ async function salvarReceitaDoModal() {
   const porcao = parseFloat(document.getElementById('recPorcao').value) || 100;
   const cat = document.getElementById('recCategoria').value.trim() || 'Receita';
 
-  if (!nome) { alert('Dê um nome à receita.'); return; }
-  if (_recIngredientes.length === 0) { alert('Adicione pelo menos um ingrediente.'); return; }
+  if (!nome) { toastNutri('Dê um nome à receita.'); return; }
+  if (_recIngredientes.length === 0) { toastNutri('Adicione pelo menos um ingrediente.'); return; }
 
   // Conflito de nome com alimento da TACO ou outra receita
   const conflitoTACO = ALIMENTOS.some(a => normalizar(a.n) === normalizar(nome));
   if (conflitoTACO) {
-    if (!confirm(`Já existe um alimento na base TACO chamado "${nome}". Salvar a receita com o mesmo nome pode confundir na busca. Deseja continuar?`)) return;
+    if (!await uiConfirm(`Já existe um alimento na base TACO chamado "${nome}". Salvar a receita com o mesmo nome pode confundir na busca. Deseja continuar?`)) return;
   }
   const conflitoReceita = RECEITAS.find(r => normalizar(r.n) === normalizar(nome) && r.id !== _recEditandoId);
   if (conflitoReceita) {
-    alert(`Já existe uma receita chamada "${nome}". Escolha outro nome ou edite a receita existente.`);
+    toastNutri(`Já existe uma receita chamada "${nome}". Escolha outro nome ou edite a receita existente.`);
     return;
   }
 
@@ -7456,7 +7433,7 @@ async function excluirReceitaAtual() {
   if (!_recEditandoId) return;
   const r = RECEITAS.find(x => x.id === _recEditandoId);
   const nome = r ? r.n : 'esta receita';
-  if (!confirm(`Excluir a receita "${nome}"?\n\nObservação: planos de pacientes já salvos com esta receita NÃO são afetados — eles guardam uma cópia própria dos ingredientes. Só some da busca para novos planos.`)) return;
+  if (!await uiConfirm(`Excluir a receita "${nome}"?\n\nObservação: planos de pacientes já salvos com esta receita NÃO são afetados — eles guardam uma cópia própria dos ingredientes. Só some da busca para novos planos.`)) return;
   try {
     await excluirReceita(_recEditandoId);
     fecharModalReceita();
@@ -7465,6 +7442,53 @@ async function excluirReceitaAtual() {
     console.error(e);
     toastNutri('Erro ao excluir: ' + e.message, 'erro');
   }
+}
+
+
+// ===== Modais próprios — funcionam DENTRO do iframe (a casca), onde os
+//       diálogos nativos confirm/prompt/alert do Android não abrem. (casca-fix) =====
+function _uiEsc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function _uiModal(inner){
+  return new Promise(function(resolve){
+    var ov=document.createElement('div');
+    ov.style.cssText='position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;padding:20px;font-family:inherit;';
+    ov.innerHTML='<div style="background:#1a1a1a;border:1px solid #2e2e2e;border-radius:14px;max-width:430px;width:100%;padding:20px;color:#e5e5e5;box-shadow:0 12px 40px rgba(0,0,0,.5);">'+inner+'</div>';
+    function close(v){try{ov.remove();}catch(e){} resolve(v);}
+    ov.addEventListener('click',function(e){if(e.target===ov)close(null);});
+    document.body.appendChild(ov);
+    ov.querySelectorAll('[data-val]').forEach(function(b){b.addEventListener('click',function(){
+      var dv=b.getAttribute('data-val');
+      if(dv==='__input__'){var el=ov.querySelector('input,textarea');close(el?el.value:'');}
+      else close(dv);
+    });});
+    setTimeout(function(){var el=ov.querySelector('input,textarea');if(el)el.focus();},60);
+  });
+}
+async function uiConfirm(msg,okTxt,cancelTxt){
+  okTxt=okTxt||'OK';cancelTxt=cancelTxt||'Cancelar';
+  var r=await _uiModal(
+    '<div style="white-space:pre-wrap;line-height:1.5;margin-bottom:16px;font-size:0.92rem;">'+_uiEsc(msg)+'</div>'+
+    '<div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;">'+
+    '<button data-val="0" style="background:transparent;border:1px solid #2e2e2e;color:#e5e5e5;border-radius:8px;padding:10px 16px;font-weight:600;cursor:pointer;">'+_uiEsc(cancelTxt)+'</button>'+
+    '<button data-val="1" style="background:#ff6b1a;border:none;color:#1a1a1a;border-radius:8px;padding:10px 16px;font-weight:700;cursor:pointer;">'+_uiEsc(okTxt)+'</button></div>');
+  return r==='1';
+}
+async function uiAlert(msg){
+  await _uiModal('<div style="white-space:pre-wrap;line-height:1.5;margin-bottom:16px;font-size:0.92rem;">'+_uiEsc(msg)+'</div><div style="display:flex;justify-content:flex-end;"><button data-val="1" style="background:#ff6b1a;border:none;color:#1a1a1a;border-radius:8px;padding:10px 16px;font-weight:700;cursor:pointer;">OK</button></div>');
+}
+async function uiPrompt(msg,def){
+  var r=await _uiModal(
+    '<div style="white-space:pre-wrap;line-height:1.5;margin-bottom:12px;font-size:0.92rem;">'+_uiEsc(msg)+'</div>'+
+    '<input type="text" value="'+_uiEsc(def||'')+'" style="width:100%;box-sizing:border-box;background:#0a0a0a;border:1px solid #2e2e2e;color:#e5e5e5;border-radius:8px;padding:10px;margin-bottom:14px;font-size:0.95rem;">'+
+    '<div style="display:flex;gap:8px;justify-content:flex-end;">'+
+    '<button data-val="__cancel__" style="background:transparent;border:1px solid #2e2e2e;color:#e5e5e5;border-radius:8px;padding:10px 16px;font-weight:600;cursor:pointer;">Cancelar</button>'+
+    '<button data-val="__input__" style="background:#ff6b1a;border:none;color:#1a1a1a;border-radius:8px;padding:10px 16px;font-weight:700;cursor:pointer;">OK</button></div>');
+  return (r==='__cancel__'||r===null)?null:r;
+}
+async function uiMenu(titulo,opcoes){
+  var botoes=opcoes.map(function(o){return '<button data-val="'+_uiEsc(o.val)+'" style="display:block;width:100%;text-align:left;background:#0a0a0a;border:1px solid #2e2e2e;color:#e5e5e5;border-radius:8px;padding:12px 14px;margin-bottom:8px;font-weight:600;cursor:pointer;font-size:0.92rem;">'+_uiEsc(o.label)+'</button>';}).join('');
+  var r=await _uiModal('<div style="font-weight:700;color:#ff6b1a;margin-bottom:14px;font-size:0.95rem;">'+_uiEsc(titulo)+'</div>'+botoes+'<button data-val="__cancel__" style="display:block;width:100%;background:transparent;border:none;color:#999;padding:8px;margin-top:4px;cursor:pointer;">Cancelar</button>');
+  return r==='__cancel__'?null:r;
 }
 
 function toastNutri(msg, tipo = 'ok') {
@@ -7917,6 +7941,21 @@ async function vincularPessoaAtual() {
   if (sel) sel.value = salva.id;
   toastNutri('★ Aluno salvo no cadastro compartilhado — já aparece no TRAIN e Organizer');
 }
+async function excluirPessoaComum() {
+  const sel = document.getElementById('comumSeletor');
+  if (!sel || !sel.value) { toastNutri('Escolha um contato no seletor primeiro', 'aviso'); return; }
+  const p = await getPessoa(sel.value);
+  const nome = (p && p.nome) ? p.nome : 'este contato';
+  if (!await uiConfirm(`Remover "${nome}" do cadastro compartilhado?\n\n(NÃO apaga a ficha do paciente — só o contato compartilhado entre os apps.)`)) return;
+  try {
+    await comumOp('readwrite', s => s.delete(sel.value));
+    await popularSeletorPessoas();
+    sel.value = '';
+    toastNutri('🗑 Contato removido do compartilhado');
+  } catch (e) {
+    toastNutri('Erro ao remover: ' + (e && e.message ? e.message : e), 'erro');
+  }
+}
 
 // ============================================================
 // IMPORTAR ANAMNESE (v3.14) — lê o .json gerado na anamnese
@@ -7972,8 +8011,8 @@ async function importarAnamnese(event) {
 }
 
 // Importa colando o e-mail (extrai o JSON entre os marcadores)
-function importarAnamneseColada() {
-  const texto = prompt('Cole aqui o e-mail da anamnese (ou só o trecho de dados):');
+async function importarAnamneseColada() {
+  const texto = await uiPrompt('Cole aqui o e-mail da anamnese (ou só o trecho de dados):');
   if (!texto) return;
   try {
     let jsonStr = texto.trim();
@@ -8012,6 +8051,7 @@ async function abrirPaciente(id) {
 }
 
 async function salvarPacienteAtivo() {
+ try {
   const dados = coletarCliente();
   if (!dados.nome || dados.nome === '—') {
     toastNutri('⚠️ Nome do paciente é obrigatório', 'aviso');
@@ -8037,6 +8077,24 @@ async function salvarPacienteAtivo() {
   pac.snapshot = snap;
   
   await salvarPacienteRaw(pac, true);
+
+  // Propaga o contato pro cadastro compartilhado (aparece no TRAIN/Organizer)
+  try {
+    const g = (id) => { const el = document.getElementById(id); return el ? (el.value || '').trim() : ''; };
+    const sel = document.getElementById('comumSeletor');
+    const salvaP = await salvarPessoa({
+      id: pac.pessoaId || (sel && sel.value) || null,
+      nome: dados.nome, sexo: g('cliSexo'), contato: g('cliTel'),
+      altura: g('cliAltura'), nascimento: g('cliNasc') || null, idade: g('cliIdade') || null
+    });
+    if (salvaP && salvaP.id && pac.pessoaId !== salvaP.id) {
+      pac.pessoaId = salvaP.id;
+      await salvarPacienteRaw(pac, false); // grava vínculo sem nova versão
+    }
+    await popularSeletorPessoas();
+    if (sel) sel.value = pac.pessoaId || '';
+  } catch (e) { console.warn('sync contato comum:', e); }
+
   atualizarBarraPacAtivo(pac);
   await renderListaPacientes();
   
@@ -8046,10 +8104,14 @@ async function salvarPacienteAtivo() {
 
   // Backup automático: dispara se já passou o intervalo (v3.11)
   checarBackupAutomatico();
+ } catch (e) {
+  console.error('salvarPacienteAtivo falhou:', e);
+  toastNutri('❌ Erro ao salvar: ' + (e && e.message ? e.message : e), 'erro');
+ }
 }
 
-function fecharPacienteAtivo() {
-  if (!confirm('Fechar este paciente? Mudanças não salvas serão perdidas.')) return;
+async function fecharPacienteAtivo() {
+  if (!(await uiConfirm('Fechar este paciente? Mudanças não salvas serão perdidas.'))) return;
   pacienteAtivoId = null;
   limparEstadoPaciente();
   atualizarBarraPacAtivo(null);
@@ -8093,15 +8155,13 @@ async function menuPaciente(id, evt) {
   if (!p) return;
   const nome = p.dados?.nome || 'Paciente';
   
-  const acao = prompt(
-    `Ações para "${nome}":\n\n` +
-    `1 - Abrir / Editar\n` +
-    `2 - Ver Histórico de versões\n` +
-    `3 - Exportar Ficha (JSON)\n` +
-    `4 - Duplicar\n` +
-    `5 - Excluir\n\n` +
-    `Digite o número:`
-  );
+  const acao = await uiMenu(`Ações para "${nome}"`, [
+    {val:'1', label:'✏️ Abrir / Editar'},
+    {val:'2', label:'🕑 Ver histórico de versões'},
+    {val:'3', label:'📤 Exportar ficha (JSON)'},
+    {val:'4', label:'📋 Duplicar'},
+    {val:'5', label:'🗑️ Excluir'}
+  ]);
   if (!acao) return;
   
   switch (acao.trim()) {
@@ -8118,7 +8178,7 @@ async function verHistoricoPaciente(id) {
   const versoes = await listarVersoesPaciente(id);
   const p = await buscarPaciente(id);
   if (versoes.length === 0) {
-    alert('Este paciente ainda não tem histórico de versões.');
+    toastNutri('Este paciente ainda não tem histórico de versões.');
     return;
   }
   const linhas = versoes.map((v, i) => {
@@ -8128,14 +8188,12 @@ async function verHistoricoPaciente(id) {
     return `${i+1}) ${data} · ${kcal} · ${peso}`;
   }).join('\n');
   
-  const escolha = prompt(
-    `📜 Histórico de "${p.dados?.nome || 'paciente'}" (${versoes.length} versões):\n\n${linhas}\n\nDigite o número da versão para RESTAURAR (ou cancele):`
-  );
+  const escolha = await uiPrompt(`📜 Histórico de "${p.dados?.nome || 'paciente'}" (${versoes.length} versões):\n\n${linhas}\n\nDigite o número da versão para RESTAURAR (ou cancele):`);
   if (!escolha) return;
   const idx = parseInt(escolha) - 1;
   if (idx < 0 || idx >= versoes.length) { toastNutri('Versão inválida', 'aviso'); return; }
   
-  if (!confirm(`Restaurar versão de ${new Date(versoes[idx].criadoEm).toLocaleString('pt-BR')}? A versão atual ficará salva como nova entrada no histórico.`)) return;
+  if (!await uiConfirm(`Restaurar versão de ${new Date(versoes[idx].criadoEm).toLocaleString('pt-BR')}? A versão atual ficará salva como nova entrada no histórico.`)) return;
   
   pacienteAtivoId = id;
   aplicarSnapshot(versoes[idx].snapshot);
@@ -8153,7 +8211,7 @@ async function verHistoricoPaciente(id) {
 async function duplicarPaciente(id) {
   const p = await buscarPaciente(id);
   if (!p) return;
-  const novoNome = prompt('Nome do paciente duplicado:', (p.dados?.nome || 'Paciente') + ' (cópia)');
+  const novoNome = await uiPrompt('Nome do paciente duplicado:', (p.dados?.nome || 'Paciente') + ' (cópia)');
   if (!novoNome) return;
   const copia = JSON.parse(JSON.stringify(p));
   copia.id = gerarIdPac();
@@ -8170,7 +8228,7 @@ async function excluirPaciente(id) {
   const p = await buscarPaciente(id);
   if (!p) return;
   const nome = p.dados?.nome || 'Paciente';
-  if (!confirm(`⚠️ Excluir "${nome}" permanentemente?\n\nIsso vai apagar todas as versões e avaliações deste paciente. Não tem volta — faça backup antes se quiser preservar.`)) return;
+  if (!await uiConfirm(`⚠️ Excluir "${nome}" permanentemente?\n\nIsso vai apagar todas as versões e avaliações deste paciente. Não tem volta — faça backup antes se quiser preservar.`)) return;
   
   // Apaga versões
   const versoes = await listarVersoesPaciente(id);
@@ -8426,7 +8484,7 @@ async function importarPacientes(event) {
     } else if (pacote.planos || pacote.plano || pacote.cliente || pacote.dadosTMB) {
       // Formato ANTIGO: JSON da aba 📄 Exportar (v3.7 ou anteriores)
       const cli = pacote.cliente || {};
-      const nome = (cli.nome && cli.nome !== '—') ? cli.nome : prompt('Este arquivo não tem nome do paciente. Digite um nome para criar a ficha:', 'Paciente importado');
+      const nome = (cli.nome && cli.nome !== '—') ? cli.nome : await uiPrompt('Este arquivo não tem nome do paciente. Digite um nome para criar a ficha:', 'Paciente importado');
       if (!nome) {
         toastNutri('Importação cancelada', 'aviso');
         event.target.value = '';
@@ -8469,7 +8527,7 @@ async function importarPacientes(event) {
     } else {
       msg = `Criar novo paciente "${pacImp[0].dados?.nome}" a partir deste arquivo de plano?`;
     }
-    if (!confirm(msg)) { event.target.value = ''; return; }
+    if (!await uiConfirm(msg)) { event.target.value = ''; return; }
     
     let imp = 0;
     for (const p of pacImp) {
@@ -8688,7 +8746,7 @@ async function editarAvaliacao(id) {
 }
 
 async function excluirAvaliacao(id) {
-  if (!confirm('Excluir esta avaliação?')) return;
+  if (!await uiConfirm('Excluir esta avaliação?')) return;
   await dbDel(STORE_AVALIACOES, id);
   await renderListaAvaliacoes();
   toastNutri('🗑️ Avaliação excluída');
@@ -8939,9 +8997,9 @@ if ('serviceWorker' in navigator) {
         // Detecta updates disponíveis
         reg.addEventListener('updatefound', () => {
           const newWorker = reg.installing;
-          newWorker.addEventListener('statechange', () => {
+          newWorker.addEventListener('statechange', async () => {
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              if (confirm('Nova versão do app disponível. Atualizar agora?')) {
+              if (await uiConfirm('Nova versão do app disponível. Atualizar agora?')) {
                 newWorker.postMessage({ action: 'skipWaiting' });
                 window.location.reload();
               }
@@ -8960,21 +9018,18 @@ if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.
 }
 
 
-
 // =================================================================
-//  MÓDULO DIETA em iframe — ponte com a casca MG CONSULTORIA
+//  MODULO DIETA em iframe — ponte com a casca MG CONSULTORIA
 // =================================================================
 (function(){
   function esconderSeletorInterno(){
     var cs = document.getElementById('comumSeletor');
     if (cs){ var b = cs.closest('.field') || cs.parentElement; if(b) b.id='mgc-comum-bloco'; }
   }
-
   async function selecionarClienteExterno(pessoaId){
     try{
       if (typeof getPessoa !== 'function'){ setTimeout(()=>selecionarClienteExterno(pessoaId), 200); return; }
       const p = await getPessoa(pessoaId);
-      // preenche ficha com dados da pessoa (Frente A)
       const set = (id,v)=>{ const el=document.getElementById(id); if(el!=null && v!=null) el.value=v; };
       if (p){
         set('cliNome', p.nome||''); set('cliSexo', p.sexo||'');
@@ -8984,17 +9039,14 @@ if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.
         else if (p.idade){ set('cliIdade', p.idade); }
         if (typeof calcularTMB==='function'){ try{ calcularTMB(); }catch(e){} }
       }
-      // abrir Ficha
       if (typeof navegarPara==='function'){ try{ navegarPara('cliente'); }catch(e){} }
     }catch(e){ console.error('dieta.selecionarClienteExterno:', e); }
   }
-
   window.addEventListener('message', function(ev){
     var d = ev.data || {};
     if (d && d.tipo === 'mgc:selecionarCliente'){ selecionarClienteExterno(d.pessoaId); }
     if (d && d.tipo === 'mgc:ping'){ try{ ev.source.postMessage({tipo:'mgc:pong', modulo:'dieta'}, '*'); }catch(e){} }
   });
-
   function avisarPronto(){
     try{ if (window.parent && window.parent !== window) window.parent.postMessage({tipo:'mgc:moduloPronto', modulo:'dieta'}, '*'); }catch(e){}
   }
