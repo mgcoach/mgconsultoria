@@ -5361,6 +5361,26 @@ console.log(`💪 TRAIN.FUEL v2.12.0 carregado · ${EXERCICIOS.length} exercíci
 // 👥 MÓDULO DE ALUNOS — IndexedDB + Histórico de Versões (v2.9)
 // =================================================================
 
+// ===== CAPTURADOR DE ERROS (modo debug) — mostra erro de JS na tela =====
+(function(){
+  if (location.search.indexOf('debug') === -1) return;
+  function mostra(msg){
+    try{
+      var b=document.createElement('div');
+      b.style.cssText='position:fixed;left:8px;right:8px;bottom:8px;z-index:99999;background:#3a0d0d;color:#ffb3b3;border:1px solid #ff4d4d;border-radius:8px;padding:10px;font:12px monospace;white-space:pre-wrap;word-break:break-word;max-height:40vh;overflow:auto;';
+      b.textContent='ERRO JS: '+msg;
+      b.onclick=function(){b.remove();};
+      document.body.appendChild(b);
+    }catch(e){}
+  }
+  window.addEventListener('error', function(ev){
+    mostra((ev.message||'?')+' @ '+(ev.filename||'').split('/').pop()+':'+ev.lineno);
+  });
+  window.addEventListener('unhandledrejection', function(ev){
+    var r=ev.reason; mostra('Promise: '+((r&&r.message)||r||'?'));
+  });
+})();
+
 const DB_NAME = 'trainfuel_db';
 const DB_VERSION = 2;
 const STORE_ALUNOS = 'alunos';
