@@ -1,6 +1,7 @@
 // MG CONSULTORIA — Service Worker
-// App unificado (Treino + Dieta). Fase 2 · Etapa 1.
-const CACHE_NAME = 'mgconsultoria-v0-6-2';
+// App unificado (Treino + Dieta). Fase 2 · sync nuvem.
+// v0-7-0 — apps novos (TRAIN v2.12.0 + NUTRI v3.14.3) + ponte de nuvem
+const CACHE_NAME = 'mgconsultoria-v0-7-0';
 const ASSETS = [
   './',
   './index.html',
