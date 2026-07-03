@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="MG CONSULTORIA">
 <link rel="manifest" href="manifest.json">
 <title>MG CONSULTORIA</title>
-<!-- brand-meta: mgconsultoria-v0.8.0-cliente-nuvem -->
+<!-- brand-meta: mgconsultoria-v0.8.1-cliente-diag -->
 <style>
   :root{
     --bg:#0a0a0a;--bg-card:#141414;--orange:#ff6b1a;--orange-soft:rgba(255,107,26,.12);
@@ -397,7 +397,12 @@ const MGC = (function(){
           return local;
         }
       }
-    }catch(e){ console.warn('salvarPessoa nuvem falhou, salvando local:', e); }
+    }catch(e){
+      console.warn('salvarPessoa nuvem falhou, salvando local:', e);
+      if(location.search.indexOf('debug')!==-1){
+        try{ _mgcDiag('nuvem recusou: '+(e&&e.message||e)+' | code:'+(e&&e.code||'?')); }catch(_){}
+      }
+    }
     // fallback offline: salva local com id temporário
     if(!p.id) p.id=gerarPessoaId();
     try{ await comumOp('readwrite',st=>st.put(p)); }catch(e){}
@@ -430,8 +435,25 @@ const MGC = (function(){
   }
   async function novoCliente(){
     const nome=prompt('Nome do novo cliente:'); if(!nome||!nome.trim())return;
-    const p=await salvarPessoa({id:null,nome:nome.trim()});
-    pessoas=await listarPessoas(); pessoaAtivaId=p.id; renderSelect(); await trocarCliente(p.id);
+    try{
+      const p=await salvarPessoa({id:null,nome:nome.trim()});
+      pessoas=await listarPessoas(); pessoaAtivaId=p.id; renderSelect(); await trocarCliente(p.id);
+      if(location.search.indexOf('debug')!==-1){
+        _mgcDiag('cliente criado: id='+(p.id||'?')+' | nuvem='+(p._nuvem?'SIM':'nao (local)')+' | total na lista='+pessoas.length);
+      }
+    }catch(e){
+      _mgcDiag('ERRO ao criar cliente: '+(e&&e.message||e));
+    }
+  }
+  function _mgcDiag(msg){
+    try{
+      var b=document.createElement('div');
+      b.style.cssText='position:fixed;left:8px;right:8px;bottom:8px;z-index:99999;background:#0d1a0d;color:#b3ffb3;border:1px solid #42b883;border-radius:8px;padding:10px;font:12px monospace;white-space:pre-wrap;word-break:break-word;max-height:40vh;overflow:auto;';
+      b.textContent='DIAG: '+msg;
+      b.onclick=function(){b.remove();};
+      document.body.appendChild(b);
+      setTimeout(function(){ if(b.parentNode) b.remove(); }, 15000);
+    }catch(e){}
   }
   function trocarSecao(s){
     secao=s;
