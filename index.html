@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="MG CONSULTORIA">
 <link rel="manifest" href="manifest.json">
 <title>MG CONSULTORIA</title>
-<!-- brand-meta: mgconsultoria-v0.7.2-fix-cliente -->
+<!-- brand-meta: mgconsultoria-v0.8.0-cliente-nuvem -->
 <style>
   :root{
     --bg:#0a0a0a;--bg-card:#141414;--orange:#ff6b1a;--orange-soft:rgba(255,107,26,.12);
@@ -326,9 +326,83 @@ const MGC = (function(){
       tx.onerror=()=>rej(tx.error);
     });
   }
-  function listarPessoas(){ return comumOp('readonly',st=>st.getAll()); }
   function gerarPessoaId(){ return 'pessoa_'+Date.now()+'_'+Math.random().toString(36).slice(2,7); }
-  async function salvarPessoa(p){ if(!p.id)p.id=gerarPessoaId(); await comumOp('readwrite',st=>st.put(p)); return p; }
+
+  // ===== CLIENTES NA NUVEM (tabela 'clientes') com fallback local =====
+  // Lê da nuvem; se falhar (offline), usa o cache local do IndexedDB.
+  async function listarPessoas(){
+    try{
+      const { data:{ user } } = await sb.auth.getUser();
+      if(user){
+        const { data, error } = await sb.from('clientes')
+          .select('id, nome, telefone, instagram, nascimento, sexo, objetivo, ativo, ficha')
+          .eq('coach_id', user.id)
+          .order('nome');
+        if(!error && data){
+          // espelha na cache local (pra funcionar offline depois)
+          try{ for(const c of data){ await comumOp('readwrite', st=>st.put(_nuvemParaLocal(c))); } }catch(e){}
+          return data.map(_nuvemParaLocal);
+        }
+      }
+    }catch(e){ console.warn('listarPessoas nuvem falhou, usando local:', e); }
+    // fallback: cache local
+    try{ return await comumOp('readonly',st=>st.getAll()); }catch(e){ return []; }
+  }
+
+  // converte registro da nuvem pro formato que o app usa internamente
+  function _nuvemParaLocal(c){
+    return {
+      id: c.id,
+      nome: c.nome || '',
+      contato: c.telefone || '',
+      telefone: c.telefone || '',
+      instagram: c.instagram || '',
+      nascimento: c.nascimento || null,
+      sexo: c.sexo || '',
+      objetivo: c.objetivo || '',
+      altura: (c.ficha && c.ficha.altura) || '',
+      _nuvem: true
+    };
+  }
+
+  async function salvarPessoa(p){
+    // grava na nuvem primeiro (fonte de verdade)
+    try{
+      const { data:{ user } } = await sb.auth.getUser();
+      if(user){
+        const registro = {
+          coach_id: user.id,
+          nome: (p.nome||'').trim(),
+          telefone: p.contato || p.telefone || null,
+          instagram: p.instagram || null,
+          nascimento: p.nascimento || null,
+          sexo: p.sexo || null,
+          objetivo: p.objetivo || null,
+          ativo: p.ativo !== false,
+          atualizado_em: new Date().toISOString()
+        };
+        let salvo;
+        if(p.id && !String(p.id).startsWith('pessoa_')){
+          // já é um id da nuvem (uuid) → atualiza
+          const { data, error } = await sb.from('clientes').update(registro).eq('id', p.id).select().maybeSingle();
+          if(error) throw error; salvo = data;
+        } else {
+          // novo → insere
+          const { data, error } = await sb.from('clientes').insert(registro).select().maybeSingle();
+          if(error) throw error; salvo = data;
+        }
+        if(salvo){
+          const local = _nuvemParaLocal(salvo);
+          try{ await comumOp('readwrite', st=>st.put(local)); }catch(e){}
+          return local;
+        }
+      }
+    }catch(e){ console.warn('salvarPessoa nuvem falhou, salvando local:', e); }
+    // fallback offline: salva local com id temporário
+    if(!p.id) p.id=gerarPessoaId();
+    try{ await comumOp('readwrite',st=>st.put(p)); }catch(e){}
+    return p;
+  }
 
   let secao='treino', pessoaAtivaId=null, pessoas=[], prontos={treino:false,dieta:false}, perfil=null;
   function frame(s){ return document.getElementById(s==='treino'?'frameTreino':'frameDieta'); }
@@ -415,11 +489,20 @@ const MGC = (function(){
     }catch(e){ console.error('nuvemBaixarTreino ex:', e); }
   }
 
+  async function recarregarPessoas(selecionarId){
+    try{
+      pessoas = await listarPessoas();
+      if (selecionarId) pessoaAtivaId = selecionarId;
+      renderSelect();
+    }catch(e){ console.error('recarregarPessoas:', e); }
+  }
+
   window.addEventListener('message', function(ev){
     const d=ev.data||{};
     if(d&&d.tipo==='mgc:moduloPronto'&&d.modulo) aoModuloPronto(d.modulo);
     if(d&&d.tipo==='mgc:salvarTreinoNuvem') nuvemSalvarTreino(d, ev.source);
     if(d&&d.tipo==='mgc:baixarTreinoNuvem') nuvemBaixarTreino(d, ev.source);
+    if(d&&d.tipo==='mgc:pessoaSalva') recarregarPessoas(d.pessoaId);
   });
 
   async function iniciar(p){
