@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="MG CONSULTORIA">
 <link rel="manifest" href="manifest.json">
 <title>MG CONSULTORIA</title>
-<!-- brand-meta: mgconsultoria-v0.9.2-diag-painel -->
+<!-- brand-meta: mgconsultoria-v1.0.0-fix-estrutural -->
 <style>
   :root{
     --bg:#0a0a0a;--bg-card:#141414;--orange:#ff6b1a;--orange-soft:rgba(255,107,26,.12);
@@ -513,6 +513,21 @@ const MGC = (function(){
       const { data:{ user } } = await sb.auth.getUser();
       if(!user){ if(DBG) _mgcDiag('2) ERRO: sem usuario logado'); return; }
       if(!payload.clienteId){ if(DBG) _mgcDiag('2) ERRO: clienteId vazio'); return; }
+      if(DBG) _mgcDiag('2) user.id do app = '+user.id);
+
+      if(DBG){
+        // teste A: busca SO por cliente_id (sem filtrar coach) — o RLS ja protege
+        try{
+          const rA = await sb.from('treinos').select('cliente_id, coach_id').eq('cliente_id', payload.clienteId);
+          _mgcDiag('2a) busca so por cliente_id: '+((rA.data&&rA.data.length)||0)+' linha(s)'+(rA.error?(' ERRO:'+rA.error.message):''));
+          if(rA.data && rA.data[0]) _mgcDiag('2b) coach_id gravado = '+rA.data[0].coach_id);
+        }catch(e){ _mgcDiag('2a) excecao: '+e.message); }
+        // teste B: lista TUDO que o app enxerga na tabela treinos
+        try{
+          const rB = await sb.from('treinos').select('cliente_id');
+          _mgcDiag('2c) o app enxerga '+((rB.data&&rB.data.length)||0)+' treino(s) no total'+(rB.error?(' ERRO:'+rB.error.message):''));
+        }catch(e){}
+      }
       const { data, error } = await sb.from('treinos')
         .select('dados, atualizado_em, cliente_nome')
         .eq('coach_id', user.id)
@@ -564,7 +579,9 @@ const MGC = (function(){
     if(ehCoach){
       try{ pessoas=await listarPessoas(); }catch(e){ pessoas=[]; }
       renderSelect();
-      if(pessoas.length>0){ pessoaAtivaId=pessoas.slice().sort((a,b)=>(a.nome||'').localeCompare(b.nome||''))[0].id; renderSelect(); }
+      // NAO auto-seleciona cliente: o coach escolhe no seletor.
+      // (auto-selecionar disparava download+save com a tela vazia)
+      pessoaAtivaId = null; renderSelect();
     }
     setTimeout(()=>{ const l=document.getElementById('loading'); if(l)l.classList.add('gone'); },4000);
     if('serviceWorker' in navigator){

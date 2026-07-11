@@ -6061,7 +6061,15 @@ async function buscarAluno(id) {
   return await dbGet(STORE_ALUNOS, id);
 }
 
-async function salvarAluno(aluno, criarVersao = true) {
+// ============================================================
+// TRAVA ANTI-SOBRESCRITA (MG CONSULTORIA)
+// Enquanto o treino do cliente esta sendo BAIXADO da nuvem, e
+// proibido subir qualquer coisa — senao gravamos vazio por cima.
+// ============================================================
+let NUVEM_CARREGANDO = false;   // true = download em voo, nao pode subir
+let NUVEM_PRONTA = false;       // true = ja recebemos o treino desse cliente
+
+async function salvarAluno(aluno, criarVersao = true, sincronizarNuvem = false) {
   aluno.atualizadoEm = Date.now();
   if (!aluno.criadoEm) aluno.criadoEm = aluno.atualizadoEm;
   await dbPut(STORE_ALUNOS, aluno);
@@ -6074,8 +6082,12 @@ async function salvarAluno(aluno, criarVersao = true) {
       nota: aluno._notaVersao || ''
     });
   }
-  // Sincroniza com a nuvem (local-first) — MG CONSULTORIA
-  try { if (typeof sincronizarTreinoNuvem === 'function') sincronizarTreinoNuvem(aluno); } catch(e){ console.error('sync nuvem:', e); }
+  // Nuvem: SO em salvamento explicito (botao Salvar Aluno).
+  // Auto-save e gravacoes internas NAO sobem — evita sobrescrever com vazio.
+  if (sincronizarNuvem) {
+    try { if (typeof sincronizarTreinoNuvem === 'function') sincronizarTreinoNuvem(aluno); }
+    catch(e){ console.error('sync nuvem:', e); }
+  }
   return aluno;
 }
 
@@ -6318,8 +6330,16 @@ async function salvarAlunoAtivo() {
   
   aluno.dados = dados;
   aluno.treino = treinoSnapshot;
-  
-  await salvarAluno(aluno, true);
+
+  // Sobe para a nuvem SO se: ha cliente da nuvem E o download ja terminou.
+  // Se o treino ainda esta sendo baixado, subir agora gravaria vazio por cima.
+  var podeSubir = !!(CLIENTE_NUVEM && CLIENTE_NUVEM.id) && !NUVEM_CARREGANDO && NUVEM_PRONTA;
+  if (CLIENTE_NUVEM && !podeSubir) {
+    toast('⏳ Aguarde: carregando o treino da nuvem...', 'aviso');
+    return;   // nao salva agora — protege o dado que esta na nuvem
+  }
+
+  await salvarAluno(aluno, true, podeSubir);
 
   // Cadastro compartilhado ANTIGO (mgcoach_comum): so usar quando NAO ha cliente
   // da nuvem. No super app o cliente vive na tabela 'clientes' (nuvem).
@@ -6765,10 +6785,21 @@ window.addEventListener('message', function(ev){
       atualizarBarraAlunoAtivo({ dados: { nome: p.nome || '' } });
 
       // 2) pede o TREINO desse cliente para a casca (que tem a sessao Supabase)
+      NUVEM_CARREGANDO = true;   // TRAVA: proibido subir ate a resposta chegar
+      NUVEM_PRONTA = false;
       if (window.parent && window.parent !== window){
         window.parent.postMessage({ tipo:'mgc:baixarTreinoNuvem', clienteId: pessoaId }, '*');
         _diag('0) pedi treino do cliente '+String(pessoaId).slice(0,8));
+        // rede de seguranca: se a nuvem nao responder em 10s, libera a trava
+        setTimeout(function(){
+          if (NUVEM_CARREGANDO){
+            NUVEM_CARREGANDO = false;
+            _diag('TIMEOUT: nuvem nao respondeu em 10s');
+            toast('⚠️ Sem resposta da nuvem. Verifique a conexão.', 'aviso');
+          }
+        }, 10000);
       } else {
+        NUVEM_CARREGANDO = false;
         _diag('0) ERRO: sem parent (fora da casca)');
       }
 
@@ -6793,6 +6824,9 @@ window.addEventListener('message', function(ev){
         _diag('5b) IGNORADO: resposta de outro cliente (msg='+String(msg.clienteId).slice(0,8)+' ativo='+String(CLIENTE_NUVEM.id).slice(0,8)+')');
         return;
       }
+      // LIBERA A TRAVA: a resposta desse cliente chegou
+      NUVEM_CARREGANDO = false;
+      NUVEM_PRONTA = true;
       if (msg.encontrado && msg.dados){
         const pacote = msg.dados;
         var qtd = 0;
@@ -6806,6 +6840,7 @@ window.addEventListener('message', function(ev){
         _diag('6) pacote vazio: cliente sem treino na nuvem');
       }
     }catch(e){
+      NUVEM_CARREGANDO = false;   // nunca deixa a trava presa
       _diag('ERRO ao aplicar: '+(e&&e.message||e));
       console.error('aplicarTreinoDaNuvem:', e);
     }
