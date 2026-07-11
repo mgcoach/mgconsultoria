@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="MG CONSULTORIA">
 <link rel="manifest" href="manifest.json">
 <title>MG CONSULTORIA</title>
-<!-- brand-meta: mgconsultoria-v0.9.0-treino-cliente -->
+<!-- brand-meta: mgconsultoria-v0.9.1-diag-ciclo -->
 <style>
   :root{
     --bg:#0a0a0a;--bg-card:#141414;--orange:#ff6b1a;--orange-soft:rgba(255,107,26,.12);
@@ -497,23 +497,34 @@ const MGC = (function(){
 
   // Baixa o treino do cliente selecionado (por cliente_id)
   async function nuvemBaixarTreino(payload, fonte){
+    const DBG = location.search.indexOf('debug')!==-1;
     try{
+      if(DBG) _mgcDiag('1) casca recebeu pedido de baixar. clienteId='+(payload.clienteId||'VAZIO'));
       const { data:{ user } } = await sb.auth.getUser();
-      if(!user || !payload.clienteId){ return; }
+      if(!user){ if(DBG) _mgcDiag('2) ERRO: sem usuario logado'); return; }
+      if(!payload.clienteId){ if(DBG) _mgcDiag('2) ERRO: clienteId vazio'); return; }
       const { data, error } = await sb.from('treinos')
         .select('dados, atualizado_em, cliente_nome')
         .eq('coach_id', user.id)
         .eq('cliente_id', payload.clienteId)
         .maybeSingle();
-      if(error){ console.error('nuvemBaixarTreino:', error); return; }
+      if(error){
+        if(DBG) _mgcDiag('3) ERRO na busca: '+error.message+' | code:'+(error.code||'?'));
+        console.error('nuvemBaixarTreino:', error); return;
+      }
+      if(DBG){
+        var temEx = 0;
+        try{ var tr=(data&&data.dados&&data.dados.treino)||{}; Object.keys(tr).forEach(function(d){ temEx += (tr[d]&&tr[d].exercicios?tr[d].exercicios.length:0); }); }catch(e){}
+        _mgcDiag('3) busca ok. encontrou='+(data?'SIM':'NAO')+' | exercicios no pacote='+temEx);
+      }
       try{ fonte && fonte.postMessage({
         tipo:'mgc:treinoBaixadoNuvem',
         clienteId: payload.clienteId,
         encontrado: !!data,
         dados: data ? data.dados : null,
         atualizadoEm: data ? data.atualizado_em : null
-      }, '*'); }catch(e){}
-    }catch(e){ console.error('nuvemBaixarTreino ex:', e); }
+      }, '*'); if(DBG) _mgcDiag('4) resposta enviada ao treino'); }catch(e){ if(DBG) _mgcDiag('4) ERRO ao responder: '+e.message); }
+    }catch(e){ if(DBG) _mgcDiag('EXCECAO: '+(e&&e.message||e)); console.error('nuvemBaixarTreino ex:', e); }
   }
 
   async function recarregarPessoas(selecionarId){

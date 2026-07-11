@@ -6760,6 +6760,9 @@ window.addEventListener('message', function(ev){
       // 2) pede o TREINO desse cliente para a casca (que tem a sessao Supabase)
       if (window.parent && window.parent !== window){
         window.parent.postMessage({ tipo:'mgc:baixarTreinoNuvem', clienteId: pessoaId }, '*');
+        if(location.search.indexOf('debug')!==-1) toast('0) pedi treino do cliente '+String(pessoaId).slice(0,8),'ok');
+      } else {
+        if(location.search.indexOf('debug')!==-1) toast('0) ERRO: sem parent (fora da casca)','aviso');
       }
 
       // abre a aba Ficha
@@ -6775,19 +6778,30 @@ window.addEventListener('message', function(ev){
 
   // recebe o treino baixado da nuvem e aplica na tela
   function aplicarTreinoDaNuvem(msg){
+    var DBG = location.search.indexOf('debug')!==-1;
     try{
-      if (!CLIENTE_NUVEM || msg.clienteId !== CLIENTE_NUVEM.id) return; // resposta de outro cliente
+      if (DBG) toast('5) treino recebeu resposta. encontrado='+(msg.encontrado?'SIM':'NAO'),'ok');
+      if (!CLIENTE_NUVEM){ if(DBG) toast('5b) IGNORADO: sem cliente ativo','aviso'); return; }
+      if (msg.clienteId !== CLIENTE_NUVEM.id){
+        if(DBG) toast('5b) IGNORADO: resposta de outro cliente','aviso');
+        return;
+      }
       if (msg.encontrado && msg.dados){
         const pacote = msg.dados;
+        var qtd = 0;
+        try{ var tr = pacote.treino||{}; Object.keys(tr).forEach(function(d){ qtd += (tr[d]&&tr[d].exercicios?tr[d].exercicios.length:0); }); }catch(e){}
         if (pacote.dados) aplicarDadosAluno(pacote.dados);
         aplicarTreinoCompleto(pacote.treino || {});
         try { migrarStringsComDescanso(); } catch(e){}
-        toast('☁️ Treino carregado da nuvem');
+        toast('☁️ Treino carregado da nuvem'+(DBG?(' ('+qtd+' ex)'):''));
       } else {
         aplicarTreinoCompleto({}); // cliente sem treino ainda
-        if(location.search.indexOf('debug')!==-1) toast('debug: cliente sem treino na nuvem','ok');
+        if(DBG) toast('6) cliente sem treino na nuvem','ok');
       }
-    }catch(e){ console.error('aplicarTreinoDaNuvem:', e); }
+    }catch(e){
+      if(DBG) toast('ERRO ao aplicar: '+(e&&e.message||e),'aviso');
+      console.error('aplicarTreinoDaNuvem:', e);
+    }
   }
   window.addEventListener('message', function(ev){
     var d = ev.data || {};
