@@ -6730,6 +6730,13 @@ window.addEventListener('message', function(ev){
     try{
       if (typeof db === 'undefined' || !db){ setTimeout(()=>selecionarClienteExterno(pessoaId, pessoaDados), 200); return; }
 
+      // Se a casca reenviar o MESMO cliente (ex: aoModuloPronto), ignora:
+      // recarregar apagaria o treino que ja foi baixado da nuvem.
+      if (CLIENTE_NUVEM && CLIENTE_NUVEM.id === pessoaId) {
+        if(location.search.indexOf('debug')!==-1) toast('debug: mesmo cliente, mantendo treino','ok');
+        return;
+      }
+
       // === CLIENTE DA NUVEM (fonte de verdade do super app) ===
       CLIENTE_NUVEM = { id: pessoaId, dados: pessoaDados || null };
       alunoAtivoId = pessoaId;
