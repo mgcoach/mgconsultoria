@@ -5389,6 +5389,8 @@ const STORE_MODELOS = 'modelos';
 
 let db = null;
 let alunoAtivoId = null;
+// Cliente selecionado na nuvem (fonte de verdade do super app): {id: uuid, dados: {...}}
+let CLIENTE_NUVEM = null;
 let alunosCache = [];
 
 // Abrir/criar banco IndexedDB
@@ -6290,7 +6292,12 @@ async function salvarAlunoAtivo() {
   const treinoSnapshot = coletarTreinoCompleto();
   
   let aluno;
-  if (alunoAtivoId) {
+  if (CLIENTE_NUVEM && CLIENTE_NUVEM.id) {
+    // Cliente da NUVEM: o id local espelha o uuid da nuvem (mantem o vinculo).
+    alunoAtivoId = CLIENTE_NUVEM.id;
+    aluno = await buscarAluno(alunoAtivoId);
+    if (!aluno) aluno = { id: alunoAtivoId };   // 1a vez: cria o espelho local
+  } else if (alunoAtivoId) {
     aluno = await buscarAluno(alunoAtivoId);
     if (!aluno) {
       // Aluno foi excluído, criar novo
@@ -6307,21 +6314,24 @@ async function salvarAlunoAtivo() {
   
   await salvarAluno(aluno, true);
 
-  // Propaga o contato pro cadastro compartilhado (aparece no NUTRI/Organizer)
-  try {
-    const sel = document.getElementById('comumSeletor');
-    const salvaP = await salvarPessoa({
-      id: aluno.pessoaId || (sel && sel.value) || null,
-      nome: dados.nome, sexo: dados.sexo || '', contato: dados.tel || '',
-      altura: dados.altura || '', nascimento: dados.nasc || null, idade: dados.idade || null
-    });
-    if (salvaP && salvaP.id && aluno.pessoaId !== salvaP.id) {
-      aluno.pessoaId = salvaP.id;
-      await salvarAluno(aluno, false); // grava o vínculo sem criar nova versão
-    }
-    await popularSeletorPessoas();
-    if (sel) sel.value = aluno.pessoaId || '';
-  } catch (e) { console.warn('sync contato comum:', e); }
+  // Cadastro compartilhado ANTIGO (mgcoach_comum): so usar quando NAO ha cliente
+  // da nuvem. No super app o cliente vive na tabela 'clientes' (nuvem).
+  if (!CLIENTE_NUVEM) {
+    try {
+      const sel = document.getElementById('comumSeletor');
+      const salvaP = await salvarPessoa({
+        id: aluno.pessoaId || (sel && sel.value) || null,
+        nome: dados.nome, sexo: dados.sexo || '', contato: dados.tel || '',
+        altura: dados.altura || '', nascimento: dados.nasc || null, idade: dados.idade || null
+      });
+      if (salvaP && salvaP.id && aluno.pessoaId !== salvaP.id) {
+        aluno.pessoaId = salvaP.id;
+        await salvarAluno(aluno, false); // grava o vínculo sem criar nova versão
+      }
+      await popularSeletorPessoas();
+      if (sel) sel.value = aluno.pessoaId || '';
+    } catch (e) { console.warn('sync contato comum:', e); }
+  }
 
   atualizarBarraAlunoAtivo(aluno);
   await renderListaAlunos();
@@ -6680,21 +6690,22 @@ function sincronizarTreinoNuvem(aluno){
     if(location.search.indexOf('debug')!==-1) toast('debug: sem parent (fora da casca)','aviso');
     return;
   }
-  var clienteLocalId = aluno.pessoaId || aluno.id || null;
-  if (!clienteLocalId) {
-    if(location.search.indexOf('debug')!==-1) toast('debug: sem clienteLocalId','aviso');
+  // O vinculo agora e o cliente da NUVEM (uuid). Sem cliente selecionado, nao sobe.
+  var clienteId = (CLIENTE_NUVEM && CLIENTE_NUVEM.id) ? CLIENTE_NUVEM.id : null;
+  if (!clienteId) {
+    if(location.search.indexOf('debug')!==-1) toast('debug: nenhum cliente da nuvem selecionado (use o seletor ★)','aviso');
     return;
   }
   var nome = (aluno.dados && aluno.dados.nome) ? aluno.dados.nome : '';
   try {
     window.parent.postMessage({
       tipo: 'mgc:salvarTreinoNuvem',
-      clienteLocalId: String(clienteLocalId),
+      clienteId: String(clienteId),
       clienteNome: nome,
       titulo: nome ? ('Treino - ' + nome) : 'Treino',
       dados: { dados: aluno.dados || {}, treino: aluno.treino || {} }
     }, '*');
-    if(location.search.indexOf('debug')!==-1) toast('debug: enviado p/ nuvem ('+clienteLocalId+')','ok');
+    if(location.search.indexOf('debug')!==-1) toast('debug: enviado p/ nuvem (cliente '+clienteId.slice(0,8)+')','ok');
   } catch(e){
     if(location.search.indexOf('debug')!==-1) toast('debug: erro postMessage '+e.message,'aviso');
   }
@@ -6718,33 +6729,63 @@ window.addEventListener('message', function(ev){
   async function selecionarClienteExterno(pessoaId, pessoaDados){
     try{
       if (typeof db === 'undefined' || !db){ setTimeout(()=>selecionarClienteExterno(pessoaId, pessoaDados), 200); return; }
+
+      // === CLIENTE DA NUVEM (fonte de verdade do super app) ===
+      CLIENTE_NUVEM = { id: pessoaId, dados: pessoaDados || null };
       alunoAtivoId = pessoaId;
-      const aluno = await buscarAluno(pessoaId);
-      if (aluno){
-        aplicarDadosAluno(aluno.dados);
-        aplicarTreinoCompleto(aluno.treino || {});
-        try { migrarStringsComDescanso(); } catch(e){}
-        atualizarBarraAlunoAtivo(aluno);
-      } else {
-        let p = pessoaDados;
-        if (!p) { try { p = await getPessoa(pessoaId); } catch(e){} }
-        limparAlunoCompleto();
-        alunoAtivoId = pessoaId;
-        if (p){
-          aplicarDadosAluno({nome:p.nome||'',sexo:p.sexo||'',tel:p.contato||p.tel||'',
-            altura:p.altura||'',nasc:p.nascimento||p.nasc||'',idade:p.idade||''});
-          atualizarBarraAlunoAtivo({dados:{nome:p.nome||''}});
-        }
+
+      // 1) preenche a FICHA com os dados que vieram da nuvem
+      const p = pessoaDados || {};
+      limparAlunoCompleto();
+      alunoAtivoId = pessoaId; // limparAlunoCompleto nao pode perder o vinculo
+      aplicarDadosAluno({
+        nome:   p.nome || '',
+        sexo:   p.sexo || '',
+        tel:    p.telefone || p.contato || p.tel || '',
+        email:  p.email || '',
+        nasc:   p.nascimento || p.nasc || '',
+        idade:  p.idade || '',
+        altura: p.altura || '',
+        peso:   p.peso || ''
+      });
+      atualizarBarraAlunoAtivo({ dados: { nome: p.nome || '' } });
+
+      // 2) pede o TREINO desse cliente para a casca (que tem a sessao Supabase)
+      if (window.parent && window.parent !== window){
+        window.parent.postMessage({ tipo:'mgc:baixarTreinoNuvem', clienteId: pessoaId }, '*');
       }
+
+      // abre a aba Ficha
       document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-      document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
       var ft=document.querySelector('.nav-tab[data-panel="aluno"]'); if(ft)ft.classList.add('active');
       var pa=document.getElementById('panel-aluno'); if(pa)pa.classList.add('active');
-    }catch(e){ console.error('treino.selecionarClienteExterno:', e); }
+    }catch(e){
+      console.error('treino.selecionarClienteExterno:', e);
+      if(location.search.indexOf('debug')!==-1) toast('debug: erro ao selecionar cliente: '+(e&&e.message||e),'aviso');
+    }
+  }
+
+  // recebe o treino baixado da nuvem e aplica na tela
+  function aplicarTreinoDaNuvem(msg){
+    try{
+      if (!CLIENTE_NUVEM || msg.clienteId !== CLIENTE_NUVEM.id) return; // resposta de outro cliente
+      if (msg.encontrado && msg.dados){
+        const pacote = msg.dados;
+        if (pacote.dados) aplicarDadosAluno(pacote.dados);
+        aplicarTreinoCompleto(pacote.treino || {});
+        try { migrarStringsComDescanso(); } catch(e){}
+        toast('☁️ Treino carregado da nuvem');
+      } else {
+        aplicarTreinoCompleto({}); // cliente sem treino ainda
+        if(location.search.indexOf('debug')!==-1) toast('debug: cliente sem treino na nuvem','ok');
+      }
+    }catch(e){ console.error('aplicarTreinoDaNuvem:', e); }
   }
   window.addEventListener('message', function(ev){
     var d = ev.data || {};
     if (d && d.tipo === 'mgc:selecionarCliente'){ selecionarClienteExterno(d.pessoaId, d.pessoa); }
+    if (d && d.tipo === 'mgc:treinoBaixadoNuvem'){ aplicarTreinoDaNuvem(d); }
     if (d && d.tipo === 'mgc:ping'){ try{ ev.source.postMessage({tipo:'mgc:pong', modulo:'treino'}, '*'); }catch(e){} }
   });
   function avisarPronto(){
