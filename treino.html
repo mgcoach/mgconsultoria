@@ -5389,6 +5389,13 @@ const STORE_MODELOS = 'modelos';
 
 let db = null;
 let alunoAtivoId = null;
+
+// manda diagnostico para o painel da casca (nao some, empilha)
+function _diag(msg){
+  try{ if(location.search.indexOf('debug')===-1) return;
+    if(window.parent && window.parent!==window) window.parent.postMessage({tipo:'mgc:diag', msg:String(msg)},'*');
+  }catch(e){}
+}
 // Cliente selecionado na nuvem (fonte de verdade do super app): {id: uuid, dados: {...}}
 let CLIENTE_NUVEM = null;
 let alunosCache = [];
@@ -6733,7 +6740,7 @@ window.addEventListener('message', function(ev){
       // Se a casca reenviar o MESMO cliente (ex: aoModuloPronto), ignora:
       // recarregar apagaria o treino que ja foi baixado da nuvem.
       if (CLIENTE_NUVEM && CLIENTE_NUVEM.id === pessoaId) {
-        if(location.search.indexOf('debug')!==-1) toast('debug: mesmo cliente, mantendo treino','ok');
+        _diag('IGNOREI reenvio (mesmo cliente) - mantendo treino');
         return;
       }
 
@@ -6760,9 +6767,9 @@ window.addEventListener('message', function(ev){
       // 2) pede o TREINO desse cliente para a casca (que tem a sessao Supabase)
       if (window.parent && window.parent !== window){
         window.parent.postMessage({ tipo:'mgc:baixarTreinoNuvem', clienteId: pessoaId }, '*');
-        if(location.search.indexOf('debug')!==-1) toast('0) pedi treino do cliente '+String(pessoaId).slice(0,8),'ok');
+        _diag('0) pedi treino do cliente '+String(pessoaId).slice(0,8));
       } else {
-        if(location.search.indexOf('debug')!==-1) toast('0) ERRO: sem parent (fora da casca)','aviso');
+        _diag('0) ERRO: sem parent (fora da casca)');
       }
 
       // abre a aba Ficha
@@ -6780,10 +6787,10 @@ window.addEventListener('message', function(ev){
   function aplicarTreinoDaNuvem(msg){
     var DBG = location.search.indexOf('debug')!==-1;
     try{
-      if (DBG) toast('5) treino recebeu resposta. encontrado='+(msg.encontrado?'SIM':'NAO'),'ok');
-      if (!CLIENTE_NUVEM){ if(DBG) toast('5b) IGNORADO: sem cliente ativo','aviso'); return; }
+      _diag('5) treino recebeu resposta. encontrado='+(msg.encontrado?'SIM':'NAO'));
+      if (!CLIENTE_NUVEM){ _diag('5b) IGNORADO: sem cliente ativo'); return; }
       if (msg.clienteId !== CLIENTE_NUVEM.id){
-        if(DBG) toast('5b) IGNORADO: resposta de outro cliente','aviso');
+        _diag('5b) IGNORADO: resposta de outro cliente (msg='+String(msg.clienteId).slice(0,8)+' ativo='+String(CLIENTE_NUVEM.id).slice(0,8)+')');
         return;
       }
       if (msg.encontrado && msg.dados){
@@ -6793,13 +6800,13 @@ window.addEventListener('message', function(ev){
         if (pacote.dados) aplicarDadosAluno(pacote.dados);
         aplicarTreinoCompleto(pacote.treino || {});
         try { migrarStringsComDescanso(); } catch(e){}
-        toast('☁️ Treino carregado da nuvem'+(DBG?(' ('+qtd+' ex)'):''));
+        _diag('6) APLICOU treino: '+qtd+' exercicios'); toast('☁️ Treino carregado da nuvem'+(DBG?(' ('+qtd+' ex)'):''));
       } else {
         aplicarTreinoCompleto({}); // cliente sem treino ainda
-        if(DBG) toast('6) cliente sem treino na nuvem','ok');
+        _diag('6) pacote vazio: cliente sem treino na nuvem');
       }
     }catch(e){
-      if(DBG) toast('ERRO ao aplicar: '+(e&&e.message||e),'aviso');
+      _diag('ERRO ao aplicar: '+(e&&e.message||e));
       console.error('aplicarTreinoDaNuvem:', e);
     }
   }
