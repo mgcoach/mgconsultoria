@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0c1a26">
+<link rel="icon" href="favicon.png"><link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<title>Guia do aluno · MG COACH</title>
+<meta name="description" content="Como usar a sua página da consultoria MG COACH: acesso, tela inicial, treino, dieta e feedback.">
+<style>
+:root{--paper:#eef0f2;--card:#fff;--rule:#dce2e7;--ink:#0c1a26;--ink-2:#5a6b78;--ink-3:#8e9ca8;--accent:#ff5a00;--accent-soft:#fff0e8;--ok:#16a34a;--ok-soft:#dcfce7;--dark:#0c1a26}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:'Archivo',system-ui,-apple-system,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased;font-size:16px}
+.wrap{max-width:620px;margin:0 auto;padding:0 18px}
+/* topo */
+.hero{background:var(--dark);color:#fff;padding:max(28px,env(safe-area-inset-top)) 0 34px;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;right:-90px;top:-60px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(255,90,0,.45),transparent 65%)}
+.mk{font-weight:700;font-size:15px;letter-spacing:-.01em;position:relative;z-index:1}.mk b{color:var(--accent)}
+.hero h1{font-size:34px;line-height:1.08;letter-spacing:-.025em;margin:26px 0 12px;position:relative;z-index:1}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero p{color:rgba(255,255,255,.75);font-size:16.5px;max-width:34ch;position:relative;z-index:1}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px;position:relative;z-index:1}
+.pills a{color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:7px 13px;font-size:14px;font-weight:600}
+/* seções */
+section.s{padding:34px 0 8px}
+.n{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;font-weight:700;font-size:15px;margin-bottom:10px}
+h2{font-size:26px;line-height:1.15;letter-spacing:-.02em;margin-bottom:8px}
+.lead{color:var(--ink-2);font-size:16px;margin-bottom:18px}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:16px;padding:18px}
+.card+.card{margin-top:12px}
+/* celular com marcadores */
+.tela{display:grid;grid-template-columns:minmax(0,250px) minmax(0,1fr);gap:20px;align-items:start;margin-top:6px}
+@media (max-width:560px){.tela{grid-template-columns:1fr}.tela .fone{max-width:300px;margin:0 auto}}
+.fone{position:relative;border-radius:26px;border:7px solid var(--dark);background:var(--dark);overflow:hidden;box-shadow:0 18px 40px rgba(12,26,38,.18)}
+.fone img{display:block;width:100%;height:auto;border-radius:19px}
+.mrk{position:absolute;width:28px;height:28px;margin:-14px 0 0 -14px;border-radius:50%;background:var(--accent);color:#fff;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 4px rgba(255,90,0,.25),0 3px 8px rgba(0,0,0,.25)}
+.leg{list-style:none;display:flex;flex-direction:column;gap:12px}
+.leg li{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start}
+.leg li b.k{width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.leg li strong{display:block;font-size:15.5px}
+.leg li span{color:var(--ink-2);font-size:14.5px}
+/* destaque */
+.porque{background:var(--accent-soft);border:1px solid #ffd0b4;border-radius:16px;padding:18px;margin-top:18px}
+.porque h3{font-size:18px;margin-bottom:8px;color:#8a3200}
+.porque p{font-size:15px}
+.porque ul{margin:10px 0 0 18px;font-size:15px}
+.porque li+li{margin-top:5px}
+/* instalar */
+.tabs{display:flex;background:var(--card);border:1px solid var(--rule);border-radius:999px;padding:4px;gap:4px;margin-bottom:14px}
+.tabs button{flex:1;border:none;background:none;border-radius:999px;padding:10px;font:inherit;font-weight:600;color:var(--ink-2);cursor:pointer}
+.tabs button.on{background:var(--dark);color:#fff}
+.passos{list-style:none;display:flex;flex-direction:column;gap:10px}
+.passos li{display:grid;grid-template-columns:56px 1fr;gap:14px;align-items:center;background:var(--card);border:1px solid var(--rule);border-radius:16px;padding:14px}
+.ic{width:56px;height:56px;border-radius:14px;background:var(--paper);display:flex;align-items:center;justify-content:center}
+.ic svg{width:30px;height:30px;stroke:var(--ink);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ic.ac{background:var(--accent-soft)}.ic.ac svg{stroke:var(--accent)}
+.passos strong{display:block;font-size:15.5px}
+.passos span{color:var(--ink-2);font-size:14.5px}
+.nota{font-size:14px;color:var(--ink-2);background:var(--card);border:1px dashed var(--rule);border-radius:14px;padding:12px 14px;margin-top:12px}
+/* fluxo */
+.fluxo{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:6px;text-align:center}
+.fluxo div{background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:14px 8px;font-size:13.5px;font-weight:600}
+.fluxo div i{display:block;font-style:normal;font-size:24px;margin-bottom:4px}
+.fluxo .seta{color:var(--accent);font-size:20px;font-weight:700;background:none;border:none;padding:0}
+.faq details{background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:0 16px}
+.faq details+details{margin-top:8px}
+.faq summary{list-style:none;cursor:pointer;padding:14px 0;font-weight:600;display:flex;justify-content:space-between;gap:10px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:'+';color:var(--accent);font-size:20px;line-height:1}
+.faq details[open] summary::after{content:'–'}
+.faq p{padding:0 0 14px;color:var(--ink-2);font-size:15px}
+.cta{display:flex;align-items:center;justify-content:center;min-height:52px;border-radius:999px;background:var(--accent);color:#fff;text-decoration:none;font-weight:700;font-size:16px;margin:26px 0 8px}
+footer{text-align:center;color:var(--ink-3);font-size:13px;padding:22px 0 max(30px,env(safe-area-inset-bottom))}
+</style>
+</head>
+<body>
+<header class="hero"><div class="wrap">
+  <div class="mk">MG <b>COACH</b></div>
+  <h1>Seu acompanhamento agora é um <em>app</em>.</h1>
+  <p>Treino, dieta, cargas e feedback num lugar só. E tudo o que você anota chega direto para mim.</p>
+  <nav class="pills"><a href="#acesso">Primeiro acesso</a><a href="#instalar">Tela inicial</a><a href="#treino">Treino</a><a href="#dieta">Dieta</a><a href="#feedback">Feedback</a></nav>
+</div></header>
+
+<main class="wrap">
+  <section class="s" id="acesso">
+    <span class="n">1</span><h2>Primeiro acesso</h2>
+    <p class="lead">Abra o link que eu mandei no WhatsApp e digite o código de 4 números que veio junto. É só uma vez em cada celular.</p>
+    <div class="tela">
+      <div class="fone"><img src="guia/pin.jpg" alt="Tela de código de acesso" loading="lazy"></div>
+      <ul class="leg">
+        <li><b class="k">✓</b><div><strong>O link é só seu</strong><span>Não compartilhe. Ele abre o seu treino, a sua dieta e os seus registros.</span></div></li>
+        <li><b class="k">✓</b><div><strong>Esqueceu o código?</strong><span>Me chame no WhatsApp que eu mando de novo.</span></div></li>
+        <li><b class="k">✓</b><div><strong>Abriu dentro do WhatsApp ou do Instagram?</strong><span>Toque nos três pontinhos e escolha abrir no Safari (iPhone) ou no Chrome (Android). Assim dá para colocar na tela inicial.</span></div></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="s" id="instalar">
+    <span class="n">2</span><h2>Coloque na tela inicial</h2>
+    <p class="lead">Assim ele abre como um aplicativo, com ícone próprio, em tela cheia e sem precisar procurar o link.</p>
+    <div class="tabs" role="tablist"><button type="button" data-os="ios">iPhone</button><button type="button" data-os="and">Android</button></div>
+    <ol class="passos" data-p="ios">
+      <li><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18M3 12h18"/></svg></span><div><strong>Abra o link no Safari</strong><span>Precisa ser o Safari, o navegador da bússola azul.</span></div></li>
+      <li><span class="ic ac"><svg viewBox="0 0 24 24"><path d="M12 15V3M8 7l4-4 4 4"/><path d="M7 10H5v11h14V10h-2"/></svg></span><div><strong>Toque em Compartilhar</strong><span>O quadrado com a seta para cima, na barra de baixo. Se não aparecer, toque em <b>⋯</b> e depois em Compartilhar.</span></div></li>
+      <li><span class="ic ac"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8v8M8 12h8"/></svg></span><div><strong>Adicionar à Tela de Início</strong><span>Role a lista para baixo até achar essa opção e toque em <b>Adicionar</b>.</span></div></li>
+      <li><span class="ic"><svg viewBox="0 0 24 24"><rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M10.5 18.5h3"/></svg></span><div><strong>Abra pelo ícone MG COACH</strong><span>Na primeira vez pelo ícone, digite o código de novo. Depois ele lembra.</span></div></li>
+    </ol>
+    <ol class="passos" data-p="and" hidden>
+      <li><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/><path d="M12 8.5h8.2M8.9 13.8 4.8 6.7M15 13.8l-4.1 7.1"/></svg></span><div><strong>Abra o link no Chrome</strong><span>O navegador colorido do Google.</span></div></li>
+      <li><span class="ic ac"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="12" cy="19" r="1.4"/></svg></span><div><strong>Toque nos três pontinhos ⋮</strong><span>No canto de cima, à direita.</span></div></li>
+      <li><span class="ic ac"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8v8M8 12h8"/></svg></span><div><strong>Adicionar à tela inicial</strong><span>Em alguns celulares aparece como <b>Instalar app</b>. Confirme em <b>Adicionar</b>.</span></div></li>
+      <li><span class="ic"><svg viewBox="0 0 24 24"><rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M10.5 18.5h3"/></svg></span><div><strong>Abra pelo ícone MG COACH</strong><span>Ele fica junto com os seus outros aplicativos.</span></div></li>
+    </ol>
+  </section>
+
+  <section class="s" id="treino">
+    <span class="n">3</span><h2>Treino</h2>
+    <p class="lead">O app já abre no treino de hoje. Cada exercício mostra o que fazer, como fazer e onde anotar.</p>
+    <div class="tela">
+      <div class="fone"><img src="guia/treino-topo.jpg" alt="Tela do treino do dia" loading="lazy"><span class="mrk" style="left:93%;top:15.5%">1</span><span class="mrk" style="left:62%;top:24%">2</span><span class="mrk" style="left:88%;top:44%">3</span></div>
+      <ul class="leg">
+        <li><b class="k">1</b><div><strong>Dias da semana</strong><span>Toque no dia para ver o treino dele. O dia de hoje já vem marcado.</span></div></li>
+        <li><b class="k">2</b><div><strong>Treino do dia</strong><span>O nome, o foco, quantos exercícios e séries e quanto tempo dura.</span></div></li>
+        <li><b class="k">3</b><div><strong>O que fazer em cada exercício</strong><span>Aquecimento, séries, repetições, carga ou RIR e descanso, em ordem.</span></div></li>
+      </ul>
+    </div>
+    <div class="tela" style="margin-top:22px">
+      <div class="fone"><img src="guia/exercicio.jpg" alt="Exercício com campos para anotar as séries" loading="lazy"><span class="mrk" style="left:86%;top:62%">4</span><span class="mrk" style="left:86%;top:85%">5</span><span class="mrk" style="left:22%;top:96%">6</span></div>
+      <ul class="leg">
+        <li><b class="k">4</b><div><strong>Anote suas séries</strong><span>A carga em kg e quantas repetições você fez em cada série válida. Fez uma série a mais? Toque em <b>+ série</b>.</span></div></li>
+        <li><b class="k">5</b><div><strong>Anotação</strong><span>Sentiu algum desconforto, trocou a máquina, achou leve demais? Escreva aqui. Eu leio.</span></div></li>
+        <li><b class="k">6</b><div><strong>Ver execução</strong><span>Vídeo com o movimento certo e o passo a passo.</span></div></li>
+      </ul>
+    </div>
+    <div class="tela" style="margin-top:22px">
+      <div class="fone"><img src="guia/salvar.jpg" alt="Botão Salvar treino de hoje" loading="lazy"><span class="mrk" style="left:90%;top:76%">7</span></div>
+      <ul class="leg">
+        <li><b class="k">7</b><div><strong>Salvar treino de hoje</strong><span>No fim do treino, toque aqui. O que você anotou vem para mim. Esqueceu algo? Corrija e salve de novo.</span></div></li>
+        <li><b class="k">✓</b><div><strong>Na próxima vez</strong><span>Aparece a carga da última vez em cada exercício, para você saber de onde partir.</span></div></li>
+        <li><b class="k">✓</b><div><strong>Treina sem internet?</strong><span>Pode anotar normalmente. Fica guardado no celular e chega para mim quando a internet voltar.</span></div></li>
+      </ul>
+    </div>
+    <div class="porque">
+      <h3>Por que anotar as cargas?</h3>
+      <p>Para ganhar músculo e força, o corpo precisa de um estímulo que aumenta aos poucos: um pouco mais de carga ou uma repetição a mais com a mesma carga. Sem anotar, fica no achismo.</p>
+      <ul><li>Você sabe exatamente de onde partir em cada série.</li><li>Eu vejo se você está evoluindo, onde travou e quando é hora de mudar o treino.</li><li>As anotações me mostram desconfortos antes que virem um problema.</li></ul>
+    </div>
+  </section>
+
+  <section class="s" id="dieta">
+    <span class="n">4</span><h2>Dieta</h2>
+    <p class="lead">Seu plano do dia, com as quantidades e as opções de troca.</p>
+    <div class="tela">
+      <div class="fone"><img src="guia/dieta-topo.jpg" alt="Tela da dieta com o resumo do dia" loading="lazy"><span class="mrk" style="left:62%;top:11%">1</span><span class="mrk" style="left:90%;top:25%">2</span><span class="mrk" style="left:90%;top:56.5%">3</span></div>
+      <ul class="leg">
+        <li><b class="k">1</b><div><strong>Meta do dia</strong><span>As calorias do dia e quanto de proteína, carboidrato e gordura.</span></div></li>
+        <li><b class="k">2</b><div><strong>Refeições feitas hoje</strong><span>Quantas refeições você já marcou hoje, de quantas tem no plano.</span></div></li>
+        <li><b class="k">3</b><div><strong>Refeições</strong><span>O que comer, quanto e em que horário. Onde aparece <b>Escolha uma opção</b>, toque para trocar o alimento.</span></div></li>
+      </ul>
+    </div>
+    <div class="tela" style="margin-top:22px">
+      <div class="fone"><img src="guia/refeicao.jpg" alt="Refeição marcada como feita" loading="lazy"><span class="mrk" style="left:86%;top:86%">4</span></div>
+      <ul class="leg">
+        <li><b class="k">4</b><div><strong>Marcar como feita hoje</strong><span>Comeu a refeição? Toque no botão no fim dela. Ele fica verde e vem para mim.</span></div></li>
+        <li><b class="k">✓</b><div><strong>Seja sincero</strong><span>Marque só o que fez de verdade. É assim que eu consigo ajustar a dieta para a sua rotina, em vez de mudar no escuro.</span></div></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="s" id="feedback">
+    <span class="n">5</span><h2>Feedback da semana</h2>
+    <p class="lead">Uma vez por semana, no mesmo dia, me conte como foi. Leva 1 minuto.</p>
+    <div class="tela">
+      <div class="fone"><img src="guia/feedback.jpg" alt="Formulário de feedback semanal" loading="lazy"><span class="mrk" style="left:90%;top:30%">1</span><span class="mrk" style="left:90%;top:45%">2</span></div>
+      <ul class="leg">
+        <li><b class="k">1</b><div><strong>Peso</strong><span>De manhã, em jejum, depois de ir ao banheiro. Sempre do mesmo jeito.</span></div></li>
+        <li><b class="k">2</b><div><strong>Sono, energia e fome</strong><span>Toque de 1 a 5. Mais embaixo: quanto da dieta seguiu, quantos treinos fez, dores e um comentário livre.</span></div></li>
+        <li><b class="k">✓</b><div><strong>Para que serve</strong><span>Peso, sono, fome e energia juntos me mostram se o plano está funcionando ou se é hora de ajustar calorias, treino ou rotina.</span></div></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="s">
+    <span class="n">6</span><h2>Protocolo</h2>
+    <p class="lead">As orientações do seu plano: como ler o treino, aquecimento, intensidade, hidratação e rotina. Volte aqui sempre que tiver dúvida.</p>
+  </section>
+
+  <section class="s">
+    <h2>Tudo chega para mim</h2>
+    <p class="lead">Você anota, eu acompanho e ajusto. Quando eu mudar o seu treino ou a sua dieta, o app atualiza sozinho.</p>
+    <div class="fluxo"><div><i>📝</i>Você anota</div><span class="seta">→</span><div><i>📊</i>Eu acompanho</div><span class="seta">→</span><div><i>🎯</i>Ajusto o plano</div></div>
+  </section>
+
+  <section class="s faq">
+    <h2>Dúvidas rápidas</h2>
+    <details><summary>Troquei de celular. E agora?</summary><p>Abra o mesmo link e digite o código. Seu treino, sua dieta e as cargas anteriores continuam lá.</p></details>
+    <details><summary>Esqueci de salvar o treino.</summary><p>O que você digitou fica guardado no celular durante o dia. Abra o app e toque em Salvar treino de hoje.</p></details>
+    <details><summary>Apareceu “código mudou”.</summary><p>Por segurança eu posso trocar o seu código. Me chame no WhatsApp que eu mando o novo.</p></details>
+    <details><summary>O vídeo do exercício não abre.</summary><p>Os vídeos precisam de internet. Com sinal fraco, espere carregar ou assista antes de ir para o treino.</p></details>
+  </section>
+
+  <a class="cta" href="aluno.html" id="voltar">Abrir minha página</a>
+</main>
+<footer>MG COACH · Matheus Garrido · consultoria de performance</footer>
+<script>
+(function () {
+  var and = /android/i.test(navigator.userAgent);
+  function os(k) { document.querySelectorAll('.tabs button').forEach(function (b) { b.classList.toggle('on', b.dataset.os === k); }); document.querySelectorAll('.passos').forEach(function (p) { p.hidden = p.dataset.p !== k; }); }
+  document.querySelectorAll('.tabs button').forEach(function (b) { b.onclick = function () { os(b.dataset.os); }; });
+  os(and ? 'and' : 'ios');
+  try { var t = localStorage.getItem('mgal.t'); if (t) document.getElementById('voltar').href = 'aluno.html#t=' + JSON.parse(t); } catch (e) {}
+})();
+</script>
+</body>
+</html>
