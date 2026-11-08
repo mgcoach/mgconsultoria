@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#eef0f2">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="MG COACH">
+<meta name="robots" content="noindex">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>MG COACH · Minha página</title>
+<style>
+:root{--paper:#eef0f2;--card:#fff;--rule:#dce2e7;--rule-soft:#edf0f3;--ink:#0c1a26;--ink-2:#5a6b78;--ink-3:#8e9ca8;--accent:#ff5a00;--accent-soft:#fff0e8;--ok:#16a34a;--ok-soft:#dcfce7;--down:#c2410c}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--paper);color:var(--ink);font-family:'Archivo',system-ui,-apple-system,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;font-size:14px;min-height:100vh}
+[hidden]{display:none!important}
+button,input,textarea,select{font:inherit;color:inherit}
+.tela{max-width:420px;margin:0 auto;padding:max(48px,env(safe-area-inset-top)) 22px 40px;text-align:center}
+.tela .mk{font-size:15px;font-weight:700;letter-spacing:-.01em}.tela .mk b{color:var(--accent)}
+.tela h1{font-size:27px;line-height:1.15;letter-spacing:-.02em;margin:34px 0 8px}
+.tela p{color:var(--ink-2);font-size:15px}
+.pin{display:flex;gap:10px;justify-content:center;margin:26px 0 10px}
+.pin input{width:58px;height:66px;border:1.5px solid var(--rule);border-radius:14px;background:var(--card);text-align:center;font-size:28px;font-weight:600;outline:none}
+.pin input:focus{border-color:var(--ink)}
+.erro{color:var(--down);font-size:14px;min-height:22px;margin-top:6px}
+.bt{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 20px;border-radius:999px;border:1px solid var(--ink);background:var(--ink);color:#fff;font-weight:600;font-size:15px;cursor:pointer;width:100%}
+.bt.ln{background:var(--card);color:var(--ink);border-color:var(--rule)}
+.bt:disabled{opacity:.55}
+.carregando{display:inline-block;width:22px;height:22px;border:2.5px solid var(--rule);border-top-color:var(--accent);border-radius:50%;animation:gira .8s linear infinite;margin-top:30px}
+@keyframes gira{to{transform:rotate(360deg)}}
+/* faixa de status */
+.st{position:fixed;left:50%;bottom:max(16px,env(safe-area-inset-bottom));transform:translateX(-50%) translateY(calc(100% + 40px));visibility:hidden;background:var(--ink);color:#fff;padding:11px 17px;border-radius:999px;font-size:14px;font-weight:500;z-index:90;transition:transform .25s;max-width:calc(100vw - 32px);text-align:center;box-shadow:0 8px 24px rgba(12,26,38,.25)}
+.st.on{transform:translateX(-50%) translateY(0);visibility:visible}
+.fila{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:12px;padding:9px 12px;font-size:13px;margin:12px 0 0}
+/* registro de cargas */
+.lg{margin:12px 15px 0 42px;padding:12px 12px 10px;border-radius:12px;background:var(--paper)}
+.lg-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px}
+.lg-h b{font-size:13px}
+.lg-ult{font-size:12px;color:var(--ink-2);text-align:right}
+.lg-r{display:grid;grid-template-columns:22px 1fr 16px 1fr;align-items:center;gap:6px;margin-bottom:6px}
+.lg-n{font-size:12.5px;color:var(--ink-2);font-weight:600;text-align:center}
+.lg-r input{width:100%;min-width:0;height:40px;border:1px solid var(--rule);border-radius:10px;background:var(--card);padding:0 10px;font-size:16px;outline:none}
+.lg-r input:focus{border-color:var(--ink)}
+.lg-r .x{text-align:center;color:var(--ink-3)}
+.lg-add{border:none;background:none;color:var(--accent);font-weight:600;font-size:13px;padding:4px 0;cursor:pointer}
+.lg-nota{width:100%;min-height:42px;border:1px solid var(--rule);border-radius:10px;background:var(--card);padding:9px 10px;font-size:15px;resize:vertical;margin-top:6px;outline:none}
+.lg-fim{margin:14px 0 6px}
+.lg-fim p{text-align:center;color:var(--ink-2);font-size:13px;margin-top:8px}
+.lg-fim p.ok{color:var(--ok);font-weight:600}
+.ex.feito{border-color:#86efac}
+/* dieta */
+.ck{display:flex;align-items:center;justify-content:center;gap:8px;margin:12px 15px 0;width:calc(100% - 30px);min-height:42px;border-radius:999px;border:1px dashed var(--rule);background:var(--card);font-weight:600;font-size:14px;color:var(--ink-2);cursor:pointer}
+.ck.on{background:var(--ok-soft);border:1px solid #86efac;color:var(--ok)}
+.dhoje{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:12px 15px;margin:0 0 12px;font-size:14px}
+.dhoje b{font-size:16px}
+.barra{height:6px;border-radius:9px;background:var(--rule-soft);overflow:hidden;margin-top:6px}.barra i{display:block;height:100%;background:var(--ok);border-radius:9px}
+/* feedback */
+.fbf{display:flex;flex-direction:column;gap:14px}
+.fbf label.c{display:flex;flex-direction:column;gap:6px;font-weight:600;font-size:14px}
+.fbf label.c span{font-weight:400;color:var(--ink-2);font-size:13px}
+.fbf input[type=text],.fbf input[type=number],.fbf textarea{width:100%;border:1px solid var(--rule);border-radius:10px;background:var(--card);padding:10px 11px;font-size:16px;outline:none}
+.fbf textarea{min-height:78px;resize:vertical}
+.esc{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.esc button,.ch button{min-height:40px;border-radius:10px;border:1px solid var(--rule);background:var(--card);font-weight:600;cursor:pointer}
+.esc button.on,.ch button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.esc-l{display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink-3);font-weight:400}
+.ch{display:flex;flex-wrap:wrap;gap:6px}.ch button{padding:0 14px}
+.fb-ult{font-size:13px;color:var(--ink-2);margin-bottom:12px}
+</style>
+</head>
+<body>
+<div id="app"><div class="tela"><span class="carregando"></span></div></div>
+<div class="st" id="st"></div>
+<script>
+'use strict';
+const API = 'https://script.google.com/macros/s/AKfycbySZvMkRRn4x4WagqeLlU2m8urelZt2q_vnlHVDwHLYGnLgj891lNzCCE-AArD_MRBYFA/exec';
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const LS = {
+  get(k, d) { try { const v = localStorage.getItem('mgal.' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem('mgal.' + k, JSON.stringify(v)); } catch (e) {} },
+  del(k) { try { localStorage.removeItem('mgal.' + k); } catch (e) {} }
+};
+const hojeISO = () => { const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10); };
+const kgTxt = v => String(v).replace('.', ',');
+const dataBR = iso => { const [y, m, d] = String(iso).split('-'); return d ? `${d}/${m}` : iso; };
+const novoId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+const DIAS_JS = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];
+let _stT;
+function aviso(t, ms = 2600) { const el = $('st'); el.textContent = t; el.classList.add('on'); clearTimeout(_stT); _stT = setTimeout(() => el.classList.remove('on'), ms); }
+
+/* ---------- link e código ---------- */
+function tokenDaUrl() { const h = new URLSearchParams(location.hash.slice(1)); return h.get('t') || new URLSearchParams(location.search).get('t') || ''; }
+let T = tokenDaUrl();
+if (T && T !== LS.get('t', '')) { ['pin', 'snap'].forEach(LS.del); LS.set('t', T); }
+T = T || LS.get('t', '');
+if (T && !tokenDaUrl()) { try { history.replaceState(null, '', location.pathname + '#t=' + T); } catch (e) {} }
+let PIN = LS.get('pin', ''), SNAP = LS.get('snap', null);
+
+async function buscar(pin) {
+  const r = await fetch(`${API}?acao=aluno&t=${encodeURIComponent(T)}&p=${encodeURIComponent(pin)}`, { cache: 'no-store' });
+  return r.json();
+}
+function telaSemLink() {
+  $('app').innerHTML = `<div class="tela"><span class="mk">MG <b>COACH</b></span><h1>Link incompleto</h1><p>Abra de novo o link que seu coach mandou pelo WhatsApp.</p></div>`;
+}
+function telaInativa() {
+  ['pin', 'snap'].forEach(LS.del);
+  $('app').innerHTML = `<div class="tela"><span class="mk">MG <b>COACH</b></span><h1>Página indisponível</h1><p>Esta página não está ativa no momento. Fale com seu coach pelo WhatsApp.</p></div>`;
+}
+function telaPin(msg) {
+  $('app').innerHTML = `<div class="tela"><span class="mk">MG <b>COACH</b></span><h1>Sua página</h1><p>Digite o código de 4 números que seu coach mandou junto com o link.</p>
+    <form id="pf"><div class="pin">${[0, 1, 2, 3].map(i => `<input inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="one-time-code" aria-label="Número ${i + 1}" data-i="${i}">`).join('')}</div>
+    <p class="erro" id="pe">${esc(msg || '')}</p><button class="bt" id="pb" type="submit" style="margin-top:12px">Entrar</button></form></div>`;
+  const ins = [...document.querySelectorAll('.pin input')];
+  ins.forEach((el, i) => {
+    el.addEventListener('input', () => { el.value = el.value.replace(/\D/g, '').slice(-1); if (el.value && i < 3) ins[i + 1].focus(); if (ins.every(x => x.value)) $('pf').requestSubmit(); });
+    el.addEventListener('keydown', e => { if (e.key === 'Backspace' && !el.value && i > 0) ins[i - 1].focus(); });
+    el.addEventListener('paste', e => { const d = (e.clipboardData.getData('text') || '').replace(/\D/g, '').slice(0, 4); if (d.length === 4) { e.preventDefault(); d.split('').forEach((c, j) => ins[j].value = c); $('pf').requestSubmit(); } });
+  });
+  ins[0].focus();
+  $('pf').onsubmit = async e => {
+    e.preventDefault(); const pin = ins.map(x => x.value).join(''); if (pin.length < 4) return;
+    $('pb').disabled = true; $('pb').textContent = 'Entrando…'; $('pe').textContent = '';
+    try {
+      const r = await buscar(pin);
+      if (r.ok) { PIN = pin; LS.set('pin', pin); SNAP = r.dados; LS.set('snap', SNAP); montar(); enviarFila(); return; }
+      if (r.erro === 'link') return telaInativa();
+      $('pe').textContent = r.erro === 'bloqueado' ? 'Muitas tentativas. Espere 15 minutos e tente de novo.' : 'Código errado. Confira a mensagem do seu coach.';
+    } catch (err) { $('pe').textContent = 'Não deu para conectar. Confira a internet e tente de novo.'; }
+    ins.forEach(x => x.value = ''); ins[0].focus(); $('pb').disabled = false; $('pb').textContent = 'Entrar';
+  };
+}
+
+/* ---------- fila de envios (funciona sem internet e manda depois) ---------- */
+let _enviando = false;
+function fila() { return LS.get('fila', []); }
+function enfileirar(reg) { const f = fila().filter(x => x.id !== reg.id || x.tipo !== reg.tipo); f.push(reg); LS.set('fila', f); mostrarFila(); return enviarFila(); }
+async function enviarFila() {
+  if (_enviando || !PIN) return; _enviando = true;
+  let enviados = 0;
+  try {
+    for (const reg of fila()) {
+      let r = '';
+      try { const res = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ acao: 'registro', t: T, p: PIN, reg }) }); r = (await res.text()).trim(); }
+      catch (e) { break; }
+      if (r === 'ok' || r === 'invalido') { LS.set('fila', fila().filter(x => !(x.id === reg.id && x.tipo === reg.tipo && x._v === reg._v))); enviados++; }
+      else if (r === 'codigo' || r === 'link') { LS.del('pin'); PIN = ''; return r === 'link' ? telaInativa() : telaPin('O código mudou. Peça o código novo ao seu coach.'); }
+      else break;
+    }
+  } finally { _enviando = false; mostrarFila(); }
+  return enviados;
+}
+function mostrarFila() {
+  const el = $('filaAv'); if (!el) return; const n = fila().length;
+  el.hidden = !n; el.textContent = n === 1 ? '1 registro esperando internet para chegar ao seu coach.' : `${n} registros esperando internet para chegar ao seu coach.`;
+}
+window.addEventListener('online', () => enviarFila());
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { enviarFila(); atualizarSnap(); } });
+
+/* ---------- monta a página a partir do protocolo publicado ---------- */
+function montar() {
+  if (!SNAP || !SNAP.html) return telaPin();
+  const doc = new DOMParser().parseFromString(SNAP.html, 'text/html');
+  let st = $('pcss'); if (!st) { st = document.createElement('style'); st.id = 'pcss'; document.head.appendChild(st); }
+  st.textContent = [...doc.querySelectorAll('style')].map(x => x.textContent).join('\n') + `\n#tb-f:checked~main .pg-f{display:block}#tb-f:checked~.bar label[for=tb-f]{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}`;
+  $('app').innerHTML = doc.body.innerHTML;
+  const app = $('app');
+  /* aba Feedback */
+  const radios = app.querySelectorAll('input.rd[name=tab]'); const ult = radios[radios.length - 1];
+  ult.insertAdjacentHTML('afterend', '<input type="radio" class="rd" name="tab" id="tb-f">');
+  app.querySelector('.navs').insertAdjacentHTML('beforeend', '<label class="linkbtn" for="tb-f">Feedback</label>');
+  const main = app.querySelector('main');
+  main.insertAdjacentHTML('afterbegin', '<p class="fila" id="filaAv" hidden></p>');
+  const pf = document.createElement('section'); pf.className = 'pg pg-f'; main.insertBefore(pf, main.querySelector('.foot'));
+  /* dia de hoje */
+  const r = app.querySelector('#d-' + DIAS_JS[new Date().getDay()]); if (r) r.checked = true;
+  montarTreino(app); montarDieta(app); montarFeedback(pf);
+  const abaSalva = LS.get('aba', ''); if (abaSalva && $(abaSalva)) $(abaSalva).checked = true;
+  app.querySelectorAll('input.rd[name=tab]').forEach(x => x.addEventListener('change', () => { LS.set('aba', x.id); window.scrollTo(0, 0); }));
+  mostrarFila();
+}
+
+/* ---------- treino: cargas, repetições e notas ---------- */
+function histDe(x) {
+  const loc = LS.get('hist', {}); const H = (SNAP.hist || {});
+  const c = [loc[x.uid], H.porUid && H.porUid[x.uid], loc['ex:' + x.exId], H.porEx && H.porEx[x.exId]].filter(Boolean);
+  c.sort((a, b) => String(b.data).localeCompare(String(a.data)));
+  return c[0] || null;
+}
+const rascKey = (k) => `rasc.${hojeISO()}.${k}`;
+function montarTreino(app) {
+  const TR = SNAP.treino || {};
+  Object.keys(TR).forEach(k => {
+    const sess = app.querySelector('.sess.s-' + k); if (!sess) return;
+    const arts = sess.querySelectorAll('article.ex'); const L = TR[k].ex || [];
+    const rasc = LS.get(rascKey(k), {});
+    L.forEach((x, i) => {
+      const art = arts[i]; if (!art) return;
+      const h = histDe(x); const r0 = rasc[x.uid] || {};
+      const n = Math.max(x.series || 1, (r0.sets || []).length);
+      const ultTxt = h ? `Última vez (${dataBR(h.data)}): ${h.sets.filter(z => z.kg || z.reps).map(z => `${z.kg ? kgTxt(z.kg) : '—'} kg × ${z.reps || '—'}`).join(' · ')}` : '';
+      const lin = j => { const s = (r0.sets || [])[j] || {}, hs = h && h.sets[Math.min(j, h.sets.length - 1)] || {};
+        return `<div class="lg-r"><span class="lg-n">${j + 1}</span><input class="kg" inputmode="decimal" placeholder="${esc(hs.kg ? kgTxt(hs.kg) + ' kg' : 'kg')}" value="${esc(s.kg || '')}" aria-label="Carga da série ${j + 1}"><span class="x">×</span><input class="rp" inputmode="numeric" placeholder="${esc(hs.reps ? hs.reps + ' reps' : 'reps')}" value="${esc(s.reps || '')}" aria-label="Repetições da série ${j + 1}"></div>`; };
+      const div = document.createElement('div'); div.className = 'lg'; div.dataset.k = k; div.dataset.uid = x.uid;
+      div.innerHTML = `<div class="lg-h"><b>Anote suas séries</b>${ultTxt ? `<span class="lg-ult">${esc(ultTxt)}</span>` : ''}</div><div class="lg-rows">${[...Array(n)].map((_, j) => lin(j)).join('')}</div>
+        <button class="lg-add" type="button">+ série</button><textarea class="lg-nota" rows="1" placeholder="Anotação: como foi, desconforto, ajuste…">${esc(r0.nota || '')}</textarea>`;
+      const tb = art.querySelector('.ex-tb'); (tb || art.querySelector('.ex-top')).insertAdjacentElement('afterend', div);
+      div.querySelector('.lg-add').onclick = () => { const rows = div.querySelector('.lg-rows'); rows.insertAdjacentHTML('beforeend', lin(rows.children.length)); };
+      div.addEventListener('input', () => salvarRascunho(k));
+      if ((r0.sets || []).some(z => z.kg || z.reps)) art.classList.add('feito');
+    });
+    if (!L.length) return;
+    const feito = (SNAP.treinosFeitos || []).concat(LS.get('feitos', [])).find(t => t.data === hojeISO() && t.dia === k);
+    const fim = document.createElement('div'); fim.className = 'lg-fim';
+    fim.innerHTML = `<button class="bt" type="button">${feito ? 'Atualizar treino de hoje' : 'Salvar treino de hoje'}</button><p>${feito ? 'Você já salvou este treino hoje. Pode corrigir e salvar de novo.' : 'Anote o que fizer e salve no fim. Fica guardado mesmo sem internet.'}</p>`;
+    sess.appendChild(fim);
+    fim.querySelector('button').onclick = () => salvarTreino(k, fim);
+  });
+}
+function lerSessao(k) {
+  const out = {};
+  document.querySelectorAll(`.lg[data-k="${k}"]`).forEach(div => {
+    const sets = [...div.querySelectorAll('.lg-r')].map(r => ({ kg: r.querySelector('.kg').value.trim().replace(',', '.'), reps: r.querySelector('.rp').value.trim() }));
+    while (sets.length && !sets[sets.length - 1].kg && !sets[sets.length - 1].reps) sets.pop();
+    out[div.dataset.uid] = { sets, nota: div.querySelector('.lg-nota').value.trim() };
+  });
+  return out;
+}
+function salvarRascunho(k) { LS.set(rascKey(k), lerSessao(k)); }
+function salvarTreino(k, fim) {
+  const dados = lerSessao(k); const L = (SNAP.treino[k] || {}).ex || [];
+  const exs = L.map(x => ({ uid: x.uid, exId: x.exId, n: x.n, sets: (dados[x.uid] || {}).sets || [], nota: (dados[x.uid] || {}).nota || '' })).filter(x => x.sets.length || x.nota);
+  if (!exs.length) { aviso('Anote pelo menos uma série antes de salvar.'); return; }
+  const data = hojeISO(); const feitos = LS.get('feitos', []);
+  const ant = feitos.find(t => t.data === data && t.dia === k) || (SNAP.treinosFeitos || []).find(t => t.data === data && t.dia === k);
+  const reg = { tipo: 'treino', id: ant ? ant.id : novoId(), _v: Date.now(), data, dia: k, nomeDia: SNAP.treino[k].nome, exs };
+  const hist = LS.get('hist', {});
+  exs.forEach(x => { if (x.sets.some(z => z.kg || z.reps)) { hist[x.uid] = { data, sets: x.sets }; hist['ex:' + x.exId] = { data, sets: x.sets }; } });
+  LS.set('hist', hist);
+  LS.set('feitos', [{ id: reg.id, data, dia: k }, ...feitos.filter(t => !(t.data === data && t.dia === k))].slice(0, 40));
+  document.querySelectorAll(`.lg[data-k="${k}"]`).forEach(div => { const d = dados[div.dataset.uid]; if (d && d.sets.some(z => z.kg || z.reps)) div.closest('article.ex').classList.add('feito'); });
+  fim.querySelector('button').textContent = 'Atualizar treino de hoje';
+  const p = fim.querySelector('p'); p.className = 'ok'; p.textContent = 'Treino salvo. Bom trabalho!';
+  enfileirar(reg).then(n => { if (fila().some(x => x.id === reg.id)) { p.className = ''; p.textContent = 'Treino salvo no celular. Vai para o seu coach quando tiver internet.'; } });
+}
+
+/* ---------- dieta: marcar as refeições do dia ---------- */
+let _dietaT;
+function montarDieta(app) {
+  const D = SNAP.dieta || {}; const hoje = hojeISO();
+  const est = LS.get('dieta.' + hoje, { feitas: {} });
+  (D.tipos || []).forEach(t => {
+    const pl = app.querySelector('.plano-' + t); if (!pl) return;
+    const arts = pl.querySelectorAll('article.ref'); const nomes = (D.refs || {})[t] || [];
+    const topo = document.createElement('div'); topo.className = 'dhoje'; topo.dataset.t = t;
+    const al = pl.querySelector('.alvo'); (al || pl.firstChild) && pl.insertBefore(topo, al ? al.nextSibling : pl.firstChild);
+    arts.forEach((art, j) => {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'ck'; b.dataset.t = t; b.dataset.j = j;
+      art.appendChild(b);
+      b.onclick = () => { const e = LS.get('dieta.' + hoje, { feitas: {} }); const f = new Set(e.feitas[t] || []); f.has(j) ? f.delete(j) : f.add(j); e.feitas[t] = [...f]; LS.set('dieta.' + hoje, e); pintarDieta(); clearTimeout(_dietaT); _dietaT = setTimeout(() => enviarDieta(t), 2500); };
+    });
+  });
+  pintarDieta();
+  /* plano do dia (ciclo de carboidrato) */
+  if (D.ciclo) { const tp = D.ciclo[DIAS_JS[new Date().getDay()]]; const r = app.querySelector('#pl-' + tp); if (r) r.checked = true; }
+}
+function pintarDieta() {
+  const D = SNAP.dieta || {}; const e = LS.get('dieta.' + hojeISO(), { feitas: {} });
+  document.querySelectorAll('.ck').forEach(b => { const on = (e.feitas[b.dataset.t] || []).includes(+b.dataset.j); b.classList.toggle('on', on); b.textContent = on ? '✓ Refeição feita hoje' : 'Marcar como feita hoje'; });
+  document.querySelectorAll('.dhoje').forEach(el => { const t = el.dataset.t, tot = ((D.refs || {})[t] || []).length, n = (e.feitas[t] || []).length;
+    el.innerHTML = `<div style="flex:1"><div>Hoje você fez <b>${n} de ${tot}</b> refeições</div><div class="barra"><i style="width:${tot ? Math.round(n / tot * 100) : 0}%"></i></div></div>`; });
+}
+function enviarDieta(t) {
+  const D = SNAP.dieta || {}; const hoje = hojeISO(); const e = LS.get('dieta.' + hoje, { feitas: {} });
+  const nomes = (D.refs || {})[t] || []; const f = (e.feitas[t] || []).slice().sort((a, b) => a - b);
+  enfileirar({ tipo: 'dieta', id: 'dieta-' + hoje, _v: Date.now(), data: hoje, plano: t, feitas: f.map(j => nomes[j] || ('Refeição ' + (j + 1))), total: nomes.length });
+}
+
+/* ---------- feedback semanal ---------- */
+function montarFeedback(sec) {
+  const ult = LS.get('ultFb', '') > (SNAP.ultFeedback || '') ? LS.get('ultFb', '') : (SNAP.ultFeedback || '');
+  const escala = (k, a, b) => `<div class="esc" data-k="${k}">${[1, 2, 3, 4, 5].map(n => `<button type="button" data-v="${n}">${n}</button>`).join('')}</div><div class="esc-l"><span>${a}</span><span>${b}</span></div>`;
+  sec.innerHTML = `<section class="head"><h1>Feedback da semana</h1><p class="foco">Conte como foi a sua semana. Leva 1 minuto e me ajuda a ajustar o seu protocolo.</p></section>
+    ${ult ? `<p class="fb-ult">Último feedback enviado em ${esc(dataBR(ult))}.</p>` : ''}
+    <form class="fbf block" id="fbf">
+      <label class="c">Peso hoje (kg)<span>Em jejum, de preferência. Deixe em branco se não se pesou.</span><input type="text" inputmode="decimal" id="fPeso" placeholder="Ex.: 72,4"></label>
+      <div class="c"><label class="c">Sono</label>${escala('sono', 'Muito ruim', 'Ótimo')}</div>
+      <div class="c"><label class="c">Energia nos treinos</label>${escala('energia', 'Sem energia', 'Muita energia')}</div>
+      <div class="c"><label class="c">Fome durante o dia</label>${escala('fome', 'Pouca fome', 'Muita fome')}</div>
+      <div class="c"><label class="c">Quanto da dieta você seguiu?</label><div class="ch" data-k="dieta">${['Quase nada', 'Metade', 'Quase tudo', 'Tudo'].map(v => `<button type="button" data-v="${v}">${v}</button>`).join('')}</div></div>
+      <label class="c">Quantos treinos você fez nesta semana?<input type="number" inputmode="numeric" id="fTreinos" min="0" max="14" placeholder="Ex.: 4"></label>
+      <label class="c">Alguma dor ou desconforto?<span>Onde, em qual exercício e quando começou.</span><textarea id="fDores" placeholder="Se não teve, deixe em branco."></textarea></label>
+      <label class="c">Comentário para o coach<textarea id="fCom" placeholder="Dificuldades, vitórias, dúvidas, mudanças na rotina…"></textarea></label>
+      <button class="bt" type="submit">Enviar feedback</button><p class="erro" id="fe" style="text-align:center"></p>
+    </form>`;
+  const val = {};
+  sec.querySelectorAll('.esc,.ch').forEach(g => g.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; val[g.dataset.k] = b.dataset.v; g.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); }));
+  $('fbf').onsubmit = e => {
+    e.preventDefault();
+    const reg = { tipo: 'feedback', id: novoId(), _v: Date.now(), data: hojeISO(), peso: $('fPeso').value.trim().replace(',', '.'), sono: val.sono || '', energia: val.energia || '', fome: val.fome || '', dieta: val.dieta || '', treinos: $('fTreinos').value.trim(), dores: $('fDores').value.trim(), comentario: $('fCom').value.trim() };
+    if (!reg.peso && !reg.sono && !reg.energia && !reg.fome && !reg.dieta && !reg.treinos && !reg.dores && !reg.comentario) { $('fe').textContent = 'Preencha pelo menos uma resposta.'; return; }
+    LS.set('ultFb', reg.data);
+    enfileirar(reg).then(() => { if (fila().some(x => x.id === reg.id)) aviso('Feedback salvo. Vai para o seu coach quando tiver internet.', 4000); });
+    sec.querySelector('#fbf').outerHTML = `<div class="block" style="text-align:center;padding:26px 18px"><h3 style="font-size:19px;margin-bottom:6px">Feedback enviado ✓</h3><p style="color:var(--ink-2)">Obrigado! Eu leio e, se precisar, ajusto o seu protocolo.</p></div>`;
+    window.scrollTo(0, 0);
+  };
+}
+
+/* ---------- atualizar o protocolo quando o coach mudar ---------- */
+let _ultBusca = 0;
+async function atualizarSnap() {
+  if (!PIN || Date.now() - _ultBusca < 60000) return; _ultBusca = Date.now();
+  try {
+    const r = await buscar(PIN);
+    if (r.ok) { const mudou = !SNAP || r.dados.pubEm !== SNAP.pubEm; SNAP = r.dados; LS.set('snap', SNAP); if (mudou && !document.activeElement.matches('input,textarea')) { const y = scrollY; const aba = LS.get('aba', ''); montar(); if (aba && $(aba)) $(aba).checked = true; scrollTo(0, y); } }
+    else if (r.erro === 'link') telaInativa();
+    else if (r.erro === 'codigo') { LS.del('pin'); PIN = ''; telaPin('O código mudou. Peça o código novo ao seu coach.'); }
+  } catch (e) {}
+}
+
+/* ---------- início ---------- */
+if (!T) telaSemLink();
+else if (PIN && SNAP) { montar(); atualizarSnap(); enviarFila(); }
+else if (PIN) { buscar(PIN).then(r => { if (r.ok) { SNAP = r.dados; LS.set('snap', SNAP); montar(); enviarFila(); } else if (r.erro === 'link') telaInativa(); else telaPin(); }).catch(() => telaPin('Sem internet. Conecte e tente de novo.')); }
+else telaPin();
+</script>
+</body>
+</html>
