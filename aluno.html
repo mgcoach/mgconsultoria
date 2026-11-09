@@ -75,6 +75,18 @@ button,input,textarea,select{font:inherit;color:inherit}
 .bv h3{font-size:17px;margin-bottom:4px}.bv p{color:rgba(255,255,255,.75);font-size:14px}
 .bv .bvb{display:flex;gap:8px;margin-top:12px}.bv a,.bv button{flex:1;display:flex;align-items:center;justify-content:center;min-height:40px;border-radius:999px;font-weight:600;font-size:14px;text-decoration:none;cursor:pointer;border:1px solid rgba(255,255,255,.3);background:none;color:#fff}
 .bv a{background:#ff5a00;border-color:#ff5a00}
+/* fotos de progresso */
+.fts{margin-top:14px}.fts h3{font-size:17px;margin-bottom:4px}.fts>p{color:var(--ink-2);font-size:14px}
+.ft-g{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:14px 0}
+.ft-s{display:flex;flex-direction:column;gap:5px;align-items:stretch;text-align:center;font-size:12.5px;font-weight:600;color:var(--ink-2);cursor:pointer}
+.ft-s input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.ft-i{position:relative;display:flex;align-items:center;justify-content:center;aspect-ratio:3/4;border-radius:12px;border:1.5px dashed var(--rule);background:var(--paper);overflow:hidden;font-size:26px;font-weight:400;color:var(--ink-3)}
+.ft-i img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ft-s.tem .ft-i{border-style:solid;border-color:var(--ink)}
+.ft-s.ok .ft-i{border-color:#86efac}.ft-s.ok .ft-i::after{content:'✓';position:absolute;right:5px;top:5px;width:22px;height:22px;border-radius:50%;background:var(--ok);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.ft-s.indo .ft-i::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.6)}
+.ft-s:focus-within .ft-i{outline:2px solid var(--ink);outline-offset:2px}
+.ft-dica{font-size:13px;color:var(--ink-2);margin:0 0 12px;padding-left:18px}.ft-dica li{margin-bottom:2px}
 .ajuda{display:block;text-align:center;margin:18px 0 0;font-weight:600;color:var(--accent);text-decoration:none;font-size:14px}
 
 </style>
@@ -193,7 +205,7 @@ function montar() {
   const pf = document.createElement('section'); pf.className = 'pg pg-f'; main.insertBefore(pf, main.querySelector('.foot'));
   /* dia de hoje */
   const r = app.querySelector('#d-' + DIAS_JS[new Date().getDay()]); if (r) r.checked = true;
-  montarTreino(app); montarDieta(app); montarFeedback(pf);
+  montarTreino(app); montarDieta(app); montarFeedback(pf); if (SNAP.fotosOn) montarFotos(pf);
   const abaSalva = LS.get('aba', ''); if (abaSalva && $(abaSalva)) $(abaSalva).checked = true;
   app.querySelectorAll('input.rd[name=tab]').forEach(x => x.addEventListener('change', () => { LS.set('aba', x.id); window.scrollTo(0, 0); }));
   mostrarFila();
@@ -325,13 +337,89 @@ function montarFeedback(sec) {
   };
 }
 
+/* ---------- fotos de progresso ---------- */
+const POS = [['frente', 'Frente'], ['lado', 'Lado'], ['costas', 'Costas'], ['outra', 'Outra']];
+let FOTOS = {}, _fotoBusy = false;
+function reduzirFoto(file) {
+  return new Promise((ok, erro) => {
+    const u = URL.createObjectURL(file), img = new Image();
+    img.onerror = () => { URL.revokeObjectURL(u); erro(new Error('imagem')); };
+    img.onload = () => {
+      try {
+        let lado = 1280, q = 0.82, d = '';
+        for (let i = 0; i < 4; i++) {
+          const k = Math.min(1, lado / Math.max(img.naturalWidth, img.naturalHeight));
+          const c = document.createElement('canvas'); c.width = Math.max(1, Math.round(img.naturalWidth * k)); c.height = Math.max(1, Math.round(img.naturalHeight * k));
+          const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height); x.drawImage(img, 0, 0, c.width, c.height);
+          d = c.toDataURL('image/jpeg', q);
+          if (d.length < 900000) break;
+          lado = Math.round(lado * 0.8); q -= 0.08;
+        }
+        URL.revokeObjectURL(u);
+        if (!d.startsWith('data:image/jpeg;base64,/9j/')) return erro(new Error('formato'));
+        ok({ url: d, b64: d.slice(23) });
+      } catch (e) { URL.revokeObjectURL(u); erro(e); }
+    };
+    img.src = u;
+  });
+}
+function ultFotos() {
+  const L = (SNAP.fotos || []).map(f => f.data).concat(LS.get('fotosEnv', []).flatMap(x => Array(x.n).fill(x.data)));
+  if (!L.length) return null; const d = L.sort().reverse()[0];
+  const n = Math.max((SNAP.fotos || []).filter(f => f.data === d).length, LS.get('fotosEnv', []).filter(x => x.data === d).reduce((s, x) => s + x.n, 0));
+  return { data: d, n };
+}
+function montarFotos(sec) {
+  const ant = $('fts'); if (ant) ant.remove();
+  const u = ultFotos();
+  sec.insertAdjacentHTML('beforeend', `<section class="block fts" id="fts"><h3>Fotos de progresso</h3><p>É pelas fotos que a gente enxerga a mudança que a balança não mostra. Só o seu coach vê.</p>
+    <div class="ft-g">${POS.map(([k, t]) => `<label class="ft-s${FOTOS[k] ? ' tem' : ''}${FOTOS[k] && FOTOS[k].ok ? ' ok' : ''}" data-pos="${k}"><input type="file" accept="image/*" aria-label="Foto: ${t}"><span class="ft-i">${FOTOS[k] ? `<img src="${FOTOS[k].url}" alt="">` : '+'}</span>${t}</label>`).join('')}</div>
+    <ul class="ft-dica"><li>Mesmo lugar, mesma luz e mesma roupa de sempre.</li><li>Corpo inteiro, celular na altura do umbigo.</li><li>De manhã, em jejum, se der.</li></ul>
+    <button class="bt" type="button" id="ftOk" disabled>Enviar fotos</button><p class="erro" id="ftE" style="text-align:center"></p>
+    ${u ? `<p class="fb-ult" style="text-align:center;margin:4px 0 0">Últimas fotos enviadas em ${esc(dataBR(u.data))} (${u.n} ${u.n === 1 ? 'foto' : 'fotos'}).</p>` : ''}</section>`);
+  const box = $('fts'), bt = $('ftOk');
+  const pend = () => POS.map(p => p[0]).filter(k => FOTOS[k] && !FOTOS[k].ok);
+  const pintar = () => { const n = pend().length; bt.disabled = !n || _fotoBusy; if (!_fotoBusy) bt.textContent = n ? `Enviar ${n} ${n === 1 ? 'foto' : 'fotos'}` : 'Enviar fotos'; };
+  box.querySelectorAll('.ft-s input').forEach(inp => inp.addEventListener('change', async () => {
+    const f = inp.files && inp.files[0], lab = inp.closest('.ft-s'), k = lab.dataset.pos; if (!f) return;
+    $('ftE').textContent = '';
+    try { const r = await reduzirFoto(f); FOTOS[k] = { id: novoId(), url: r.url, b64: r.b64 }; lab.className = 'ft-s tem'; lab.querySelector('.ft-i').innerHTML = `<img src="${r.url}" alt="">`; }
+    catch (e) { $('ftE').textContent = 'Não consegui abrir essa foto. Tente outra, ou tire a foto de novo.'; }
+    inp.value = ''; pintar();
+  }));
+  bt.onclick = async () => {
+    const L = pend(); if (!L.length || _fotoBusy) return;
+    if (!navigator.onLine) { $('ftE').textContent = 'Sem internet. Conecte e toque em Enviar de novo.'; return; }
+    _fotoBusy = true; bt.disabled = true; $('ftE').textContent = ''; let ok = 0, erro = '';
+    for (let i = 0; i < L.length; i++) {
+      const k = L[i], ft = FOTOS[k], lab = box.querySelector(`.ft-s[data-pos="${k}"]`);
+      bt.textContent = `Enviando ${i + 1} de ${L.length}…`; lab.classList.add('indo');
+      let r = '';
+      try { const res = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ acao: 'foto', t: T, p: PIN, foto: { id: ft.id, data: hojeISO(), pos: k, img: ft.b64 } }) }); r = (await res.text()).trim(); }
+      catch (e) { r = 'rede'; }
+      lab.classList.remove('indo');
+      if (r === 'ok') { ft.ok = true; ft.b64 = ''; lab.classList.add('ok'); ok++; continue; }
+      if (r === 'codigo' || r === 'link') { _fotoBusy = false; LS.del('pin'); PIN = ''; return r === 'link' ? telaInativa() : telaPin('O código mudou. Peça o código novo ao seu coach.'); }
+      erro = r === 'limite' ? 'Você já mandou muitas fotos hoje. Tente de novo amanhã.' : r === 'rede' ? 'A internet caiu no meio do envio. Toque em Enviar para mandar as que faltam.' : 'Não deu para enviar agora. Toque em Enviar para tentar de novo.';
+      break;
+    }
+    _fotoBusy = false;
+    if (ok) { const env = LS.get('fotosEnv', []); env.push({ data: hojeISO(), n: ok }); LS.set('fotosEnv', env.slice(-30)); }
+    if (erro) { $('ftE').textContent = erro; return pintar(); }
+    FOTOS = {};
+    box.innerHTML = `<div style="text-align:center;padding:12px 0"><h3 style="font-size:19px;margin-bottom:6px">${ok === 1 ? 'Foto enviada' : ok + ' fotos enviadas'} ✓</h3><p style="color:var(--ink-2)">Chegaram para o seu coach. Na próxima vez, repita o mesmo lugar e a mesma luz para a comparação ficar justa.</p><button class="bt ln" type="button" id="ftMais" style="margin-top:14px">Mandar outras fotos</button></div>`;
+    $('ftMais').onclick = () => montarFotos(sec);
+  };
+  pintar();
+}
+
 /* ---------- atualizar o protocolo quando o coach mudar ---------- */
 let _ultBusca = 0;
 async function atualizarSnap() {
   if (!PIN || Date.now() - _ultBusca < 60000) return; _ultBusca = Date.now();
   try {
     const r = await buscar(PIN);
-    if (r.ok) { const mudou = !SNAP || r.dados.pubEm !== SNAP.pubEm; SNAP = r.dados; LS.set('snap', SNAP); if (mudou && !document.activeElement.matches('input,textarea')) { const y = scrollY; const aba = LS.get('aba', ''); montar(); if (aba && $(aba)) $(aba).checked = true; scrollTo(0, y); } }
+    if (r.ok) { const mudou = !SNAP || r.dados.pubEm !== SNAP.pubEm; SNAP = r.dados; LS.set('snap', SNAP); if (mudou && !_fotoBusy && !Object.keys(FOTOS).length && !document.activeElement.matches('input,textarea')) { const y = scrollY; const aba = LS.get('aba', ''); montar(); if (aba && $(aba)) $(aba).checked = true; scrollTo(0, y); } }
     else if (r.erro === 'link') telaInativa();
     else if (r.erro === 'codigo') { LS.del('pin'); PIN = ''; telaPin('O código mudou. Peça o código novo ao seu coach.'); }
   } catch (e) {}
