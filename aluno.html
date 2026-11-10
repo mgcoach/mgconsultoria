@@ -42,8 +42,8 @@ button,input,textarea,select{font:inherit;color:inherit}
 .lg-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px}
 .lg-h b{font-size:13px}
 .lg-ult{font-size:12px;color:var(--ink-2);text-align:right}
-.lg-r{display:grid;grid-template-columns:22px 1fr 16px 1fr;align-items:center;gap:6px;margin-bottom:6px}
-.lg-n{font-size:12.5px;color:var(--ink-2);font-weight:600;text-align:center}
+.lg-r{display:grid;grid-template-columns:minmax(22px,auto) 1fr 16px 1fr;align-items:center;gap:6px;margin-bottom:6px}
+.lg-n{font-size:12.5px;color:var(--ink-2);font-weight:600;text-align:center;white-space:nowrap}.lg-r.tec .lg-n{font-size:11.5px;color:var(--ink);background:var(--card);border:1px solid var(--rule);border-radius:6px;padding:3px 6px;min-width:52px}
 .lg-r input{width:100%;min-width:0;height:40px;border:1px solid var(--rule);border-radius:10px;background:var(--card);padding:0 10px;font-size:16px;outline:none}
 .lg-r input:focus{border-color:var(--ink)}
 .lg-r .x{text-align:center;color:var(--ink-3)}
@@ -228,12 +228,14 @@ function montarTreino(app) {
     L.forEach((x, i) => {
       const art = arts[i]; if (!art) return;
       const h = histDe(x); const r0 = rasc[x.uid] || {};
-      const n = Math.max(x.series || 1, (r0.sets || []).length);
+      const rot = Array.isArray(x.rot) && x.rot.length ? x.rot : null;
+      const n = Math.max(rot ? rot.length : (x.series || 1), (r0.sets || []).length);
       const ultTxt = h ? `Última vez (${dataBR(h.data)}): ${h.sets.filter(z => z.kg || z.reps).map(z => `${z.kg ? kgTxt(z.kg) : '—'} kg × ${z.reps || '—'}`).join(' · ')}` : '';
       const lin = j => { const s = (r0.sets || [])[j] || {}, hs = h && h.sets[Math.min(j, h.sets.length - 1)] || {};
-        return `<div class="lg-r"><span class="lg-n">${j + 1}</span><input class="kg" inputmode="decimal" placeholder="${esc(hs.kg ? kgTxt(hs.kg) + ' kg' : 'kg')}" value="${esc(s.kg || '')}" aria-label="Carga da série ${j + 1}"><span class="x">×</span><input class="rp" inputmode="numeric" placeholder="${esc(hs.reps ? hs.reps + ' reps' : 'reps')}" value="${esc(s.reps || '')}" aria-label="Repetições da série ${j + 1}"></div>`; };
+        const rt = (rot && rot[j]) || String(j + 1), nome = /^\d+$/.test(rt) ? 'série ' + rt : rt.replace('C', 'cluster ').replace('·B', ', bloco ');
+        return `<div class="lg-r${/^\d+$/.test(rt) ? '' : ' tec'}" data-rot="${esc(rt)}"><span class="lg-n">${esc(rt)}</span><input class="kg" inputmode="decimal" placeholder="${esc(hs.kg ? kgTxt(hs.kg) + ' kg' : 'kg')}" value="${esc(s.kg || '')}" aria-label="Carga: ${esc(nome)}"><span class="x">×</span><input class="rp" inputmode="numeric" placeholder="${esc(hs.reps ? hs.reps + ' reps' : x.rp ? x.rp + ' reps' : 'reps')}" value="${esc(s.reps || '')}" aria-label="Repetições: ${esc(nome)}"></div>`; };
       const div = document.createElement('div'); div.className = 'lg'; div.dataset.k = k; div.dataset.uid = x.uid;
-      div.innerHTML = `<div class="lg-h"><b>Anote suas séries</b>${ultTxt ? `<span class="lg-ult">${esc(ultTxt)}</span>` : ''}</div><div class="lg-rows">${[...Array(n)].map((_, j) => lin(j)).join('')}</div>
+      div.innerHTML = `<div class="lg-h"><b>${rot && /^(Bloco|C\d)/.test(rot[0]) ? 'Anote cada bloco' : 'Anote suas séries'}</b>${ultTxt ? `<span class="lg-ult">${esc(ultTxt)}</span>` : ''}</div><div class="lg-rows">${[...Array(n)].map((_, j) => lin(j)).join('')}</div>
         <button class="lg-add" type="button">+ série</button><textarea class="lg-nota" rows="1" placeholder="Anotação: como foi, desconforto, ajuste…">${esc(r0.nota || '')}</textarea>`;
       const tb = art.querySelector('.ex-tb'); (tb || art.querySelector('.ex-top')).insertAdjacentElement('afterend', div);
       div.querySelector('.lg-add').onclick = () => { const rows = div.querySelector('.lg-rows'); rows.insertAdjacentHTML('beforeend', lin(rows.children.length)); };
@@ -251,7 +253,7 @@ function montarTreino(app) {
 function lerSessao(k) {
   const out = {};
   document.querySelectorAll(`.lg[data-k="${k}"]`).forEach(div => {
-    const sets = [...div.querySelectorAll('.lg-r')].map(r => ({ kg: r.querySelector('.kg').value.trim().replace(',', '.'), reps: r.querySelector('.rp').value.trim() }));
+    const sets = [...div.querySelectorAll('.lg-r')].map(r => { const o = { kg: r.querySelector('.kg').value.trim().replace(',', '.'), reps: r.querySelector('.rp').value.trim() }; if (r.dataset.rot && !/^\d+$/.test(r.dataset.rot)) o.rot = r.dataset.rot; return o; });
     while (sets.length && !sets[sets.length - 1].kg && !sets[sets.length - 1].reps) sets.pop();
     out[div.dataset.uid] = { sets, nota: div.querySelector('.lg-nota').value.trim() };
   });
