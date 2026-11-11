@@ -361,16 +361,35 @@ function montarDieta(app) {
     arts.forEach((art, j) => {
       const b = document.createElement('button'); b.type = 'button'; b.className = 'ck'; b.dataset.t = t; b.dataset.j = j;
       art.appendChild(b);
-      b.onclick = () => { const d = dataReg(), e = LS.get('dieta.' + d, { feitas: {} }); const f = new Set(e.feitas[t] || []); f.has(j) ? f.delete(j) : f.add(j); e.feitas[t] = [...f]; LS.set('dieta.' + d, e); pintarDieta();
-        const k = t + '|' + d, go = () => enviarDieta(t, d); if (_dietaT[k]) clearTimeout(_dietaT[k][0]); _dietaT[k] = [setTimeout(() => { delete _dietaT[k]; go(); mostrarLembrete(); }, 2500), go]; };
+      const agenda = d => { const k = t + '|' + d, go = () => enviarDieta(t, d); if (_dietaT[k]) clearTimeout(_dietaT[k][0]); _dietaT[k] = [setTimeout(() => { delete _dietaT[k]; go(); mostrarLembrete(); }, 2500), go]; };
+      b.onclick = () => { const d = dataReg(), e = LS.get('dieta.' + d, { feitas: {} }); const f = new Set(e.feitas[t] || []);
+        if (f.has(j)) f.delete(j); else { f.add(j); e.esc = e.esc || {}; e.esc[t] = e.esc[t] || {}; e.esc[t][j] = escolhaRef(art); }
+        e.feitas[t] = [...f]; LS.set('dieta.' + d, e); pintarDieta(); agenda(d); };
+      /* trocou a opção ou um alimento de uma refeição já marcada: atualiza o registro */
+      art.addEventListener('change', ev => { if (!ev.target.matches('input.rd')) return; const d = dataReg(), e = LS.get('dieta.' + d, { feitas: {} });
+        if (!(e.feitas[t] || []).includes(j)) return; e.esc = e.esc || {}; e.esc[t] = e.esc[t] || {}; e.esc[t][j] = escolhaRef(art); LS.set('dieta.' + d, e); agenda(d); });
     });
   });
   pintarDieta();
   /* plano do dia (ciclo de carboidrato) */
   if (D.ciclo) { const tp = D.ciclo[DIAS_JS[dowISO(dataReg())]]; const r = app.querySelector('#pl-' + tp); if (r) r.checked = true; }
 }
+/* qual opção de refeição e quais trocas estão escolhidas neste card */
+function escolhaRef(art) {
+  const o = art.querySelector('input.rd[name^="o-"]:checked'), oi = o ? +o.id.split('-').pop() : 0;
+  const box = o ? art.querySelector('.opbox-' + oi) : art, s = [];
+  if (box) box.querySelectorAll('input.rd[name^="s-"]:checked').forEach(x => { const ti = +x.name.split('-').pop(); s[ti] = +x.id.split('-').pop(); });
+  return { o: oi, s: [...s].map(v => v || 0) };
+}
+function aplicarEscolhas(e) {
+  Object.entries(e.esc || {}).forEach(([t, M]) => { const arts = document.querySelectorAll('.plano-' + t + ' article.ref');
+    Object.entries(M).forEach(([j, c]) => { const art = arts[+j]; if (!art || !c || !(e.feitas[t] || []).includes(+j)) return;
+      const o = art.querySelector(`input.rd[name^="o-"][id$="-${c.o}"]`); if (o) o.checked = true;
+      const box = o ? art.querySelector('.opbox-' + c.o) : art; if (!box) return;
+      (c.s || []).forEach((si, ti) => { const r = [...box.querySelectorAll('input.rd[name^="s-"]')].find(x => x.name.endsWith('-' + ti) && x.id.endsWith('-' + si)); if (r) r.checked = true; }); }); });
+}
 function pintarDieta() {
-  const D = SNAP.dieta || {}, d = dataReg(), e = LS.get('dieta.' + d, { feitas: {} });
+  const D = SNAP.dieta || {}, d = dataReg(), e = LS.get('dieta.' + d, { feitas: {} }); aplicarEscolhas(e);
   const qd = d === hojeISO() ? 'hoje' : d === isoMenos(1) ? 'ontem' : 'em ' + dataBR(d), Qd = d === hojeISO() ? 'Hoje' : d === isoMenos(1) ? 'Ontem' : 'Em ' + nomeDiaReg(d);
   document.querySelectorAll('.ck').forEach(b => { const on = (e.feitas[b.dataset.t] || []).includes(+b.dataset.j); b.classList.toggle('on', on); b.textContent = on ? '✓ Refeição feita ' + qd : 'Marcar como feita ' + qd; });
   document.querySelectorAll('.dhoje').forEach(el => { const t = el.dataset.t, tot = ((D.refs || {})[t] || []).length, n = (e.feitas[t] || []).length;
@@ -379,7 +398,11 @@ function pintarDieta() {
 function enviarDieta(t, hoje) {
   const D = SNAP.dieta || {}; hoje = hoje || dataReg(); const e = LS.get('dieta.' + hoje, { feitas: {} });
   const nomes = (D.refs || {})[t] || []; const f = (e.feitas[t] || []).slice().sort((a, b) => a - b);
-  enfileirar({ tipo: 'dieta', id: 'dieta-' + hoje, _v: Date.now(), data: hoje, plano: t, feitas: f.map(j => nomes[j] || ('Refeição ' + (j + 1))), total: nomes.length });
+  const det = f.map(j => { const n = nomes[j] || ('Refeição ' + (j + 1)), R = ((D.det || {})[t] || [])[j], c = ((e.esc || {})[t] || {})[j] || { o: 0, s: [] };
+    if (!R) return { n }; const op = R.ops[c.o] || R.ops[0], m = op.base.slice(), esc = [];
+    op.tr.forEach((alts, ti) => { const x = alts[(c.s || [])[ti] || 0] || alts[0]; x.m.forEach((v, i) => { m[i] += v; }); esc.push(x.n); });
+    const o = { n, m, esc }; if (R.ops.length > 1) o.op = op.nome; return o; });
+  enfileirar({ tipo: 'dieta', id: 'dieta-' + hoje, _v: Date.now(), data: hoje, plano: t, feitas: f.map(j => nomes[j] || ('Refeição ' + (j + 1))), total: nomes.length, det, refs: nomes, alvo: (D.alvo || {})[t] || null });
 }
 
 /* ---------- feedback semanal ---------- */
