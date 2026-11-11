@@ -53,6 +53,23 @@ button,input,textarea,select{font:inherit;color:inherit}
 .lg-fim p{text-align:center;color:var(--ink-2);font-size:13px;margin-top:8px}
 .lg-fim p.ok{color:var(--ok);font-weight:600}
 .ex.feito{border-color:#86efac}
+/* dia do registro e lembretes */
+.dreg{display:none;align-items:center;gap:10px;flex-wrap:wrap;background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:10px 12px;margin:12px 0 0;font-size:14px}
+#tb-t:checked~main .dreg,#tb-d:checked~main .dreg{display:flex}
+.dreg label{font-weight:600}
+.dreg select{flex:1;min-width:150px;height:40px;border:1px solid var(--rule);border-radius:10px;background:var(--paper);padding:0 10px;font-size:16px;font-weight:600}
+.dreg.outro{background:#fff7ed;border:2px solid var(--accent)}
+.dreg.outro .dr-msg{flex-basis:100%;font-size:13px;color:#9a3412}
+.dreg .dr-hoje{border:none;background:none;color:var(--accent);font-weight:700;font-size:13px;cursor:pointer;padding:4px 0}
+.lemb{background:var(--accent);color:#fff;border-radius:16px;padding:14px 16px;margin:12px 0 0}
+.lemb h3{font-size:16px;margin-bottom:2px}.lemb p{font-size:14px;color:rgba(255,255,255,.92)}
+.lemb .lb{display:flex;gap:8px;margin-top:10px}.lemb button{flex:1;min-height:40px;border-radius:999px;font-weight:700;font-size:14px;cursor:pointer;border:1px solid #fff;background:#fff;color:var(--accent)}
+.lemb button.ln{background:transparent;color:#fff;border-color:rgba(255,255,255,.7)}
+.lcal{background:var(--card);border:1px solid var(--rule);border-radius:16px;padding:14px 16px;margin:0 0 16px}
+.lcal h3{font-size:16px;margin-bottom:2px}.lcal p{color:var(--ink-2);font-size:13.5px}
+.lcal .lh{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.lcal .lh a{flex:1 0 auto;min-width:64px;display:flex;align-items:center;justify-content:center;min-height:40px;border-radius:10px;border:1px solid var(--rule);background:var(--paper);font-weight:600;color:var(--ink);text-decoration:none}
+.lcal small{display:block;margin-top:8px;color:var(--ink-3);font-size:12px}
 /* dieta */
 .ck{display:flex;align-items:center;justify-content:center;gap:8px;margin:12px 15px 0;width:calc(100% - 30px);min-height:42px;border-radius:999px;border:1px dashed var(--rule);background:var(--card);font-weight:600;font-size:14px;color:var(--ink-2);cursor:pointer}
 .ck.on{background:var(--ok-soft);border:1px solid #86efac;color:var(--ok)}
@@ -109,6 +126,14 @@ const kgTxt = v => String(v).replace('.', ',');
 const dataBR = iso => { const [y, m, d] = String(iso).split('-'); return d ? `${d}/${m}` : iso; };
 const novoId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 const DIAS_JS = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];
+/* dia do registro: hoje por padrão; o aluno pode voltar até 7 dias para registrar o que esqueceu */
+let DIA_REG = '';
+const isoMenos = n => { const d = new Date(); d.setDate(d.getDate() - n); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10); };
+const dataReg = () => DIA_REG || hojeISO();
+const dowISO = iso => new Date(iso + 'T12:00:00').getDay();
+const DSEM = ['domingo', 'segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado'];
+const nomeDiaReg = iso => iso === hojeISO() ? 'hoje' : iso === isoMenos(1) ? 'ontem' : `${DSEM[dowISO(iso)]}, ${dataBR(iso)}`;
+const deDia = iso => iso === hojeISO() || iso === isoMenos(1) ? 'de ' + nomeDiaReg(iso) : 'de ' + dataBR(iso);
 let _stT;
 function aviso(t, ms = 2600) { const el = $('st'); el.textContent = t; el.classList.add('on'); clearTimeout(_stT); _stT = setTimeout(() => el.classList.remove('on'), ms); }
 
@@ -194,7 +219,7 @@ function montar() {
   ult.insertAdjacentHTML('afterend', '<input type="radio" class="rd" name="tab" id="tb-f">');
   app.querySelector('.navs').insertAdjacentHTML('beforeend', '<label class="linkbtn" for="tb-f">Feedback</label>');
   const main = app.querySelector('main');
-  main.insertAdjacentHTML('afterbegin', '<p class="fila" id="filaAv" hidden></p>');
+  main.insertAdjacentHTML('afterbegin', '<p class="fila" id="filaAv" hidden></p><div id="lembAv"></div>' + barraDia());
   const instalado = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
   if (!LS.get('bv', false)) {
     main.insertAdjacentHTML('afterbegin', `<div class="bv" id="bv"><h3>Bem-vindo${SNAP.nome ? ', ' + esc(SNAP.nome) : ''}!</h3><p>${instalado ? 'Veja em 2 minutos onde anotar as cargas, marcar as refeições e mandar o feedback.' : 'Antes de começar, coloque o app na tela inicial do celular e veja como anotar as cargas, marcar as refeições e mandar o feedback.'}</p><div class="bvb"><a href="guia.html">Ver o guia</a><button type="button" id="bvx">Agora não</button></div></div>`);
@@ -203,12 +228,57 @@ function montar() {
   }
   main.querySelector('.foot').insertAdjacentHTML('beforebegin', '<a class="ajuda" href="guia.html">Como usar o app e colocar na tela inicial</a>');
   const pf = document.createElement('section'); pf.className = 'pg pg-f'; main.insertBefore(pf, main.querySelector('.foot'));
-  /* dia de hoje */
-  const r = app.querySelector('#d-' + DIAS_JS[new Date().getDay()]); if (r) r.checked = true;
+  /* dia do registro (hoje, ou o dia que o aluno escolheu) */
+  const r = app.querySelector('#d-' + DIAS_JS[dowISO(dataReg())]); if (r) r.checked = true;
   montarTreino(app); montarDieta(app); montarFeedback(pf); if (SNAP.fotosOn) montarFotos(pf);
+  pf.insertAdjacentHTML('afterbegin', blocoCalendario());
+  ligarBarraDia(); if (!LS.get('desde', '')) LS.set('desde', LS.get('feitos', []).length || Object.keys(LS.get('hist', {})).length ? isoMenos(30) : hojeISO()); mostrarLembrete();
   const abaSalva = LS.get('aba', ''); if (abaSalva && $(abaSalva)) $(abaSalva).checked = true;
   app.querySelectorAll('input.rd[name=tab]').forEach(x => x.addEventListener('change', () => { LS.set('aba', x.id); window.scrollTo(0, 0); }));
   mostrarFila();
+}
+
+/* ---------- registrar outro dia ---------- */
+function barraDia() {
+  const d = dataReg(), opts = [...Array(8)].map((_, i) => { const iso = isoMenos(i); return `<option value="${iso}"${iso === d ? ' selected' : ''}>${i === 0 ? 'Hoje' : i === 1 ? 'Ontem' : DSEM[dowISO(iso)][0].toUpperCase() + DSEM[dowISO(iso)].slice(1) + ', ' + dataBR(iso)}</option>`; }).join('');
+  const outro = d !== hojeISO();
+  return `<div class="dreg${outro ? ' outro' : ''}" id="dreg"><label for="dregSel">Registrando</label><select id="dregSel" aria-label="Dia do registro">${opts}</select>${outro ? `<span class="dr-msg">Tudo o que você marcar nesta tela vai para <b>${esc(nomeDiaReg(d))}</b>. <button class="dr-hoje" type="button" id="drHoje">Voltar para hoje</button></span>` : ''}</div>`;
+}
+function ligarBarraDia() {
+  const sel = $('dregSel'); if (sel) sel.onchange = () => mudarDia(sel.value);
+  const h = $('drHoje'); if (h) h.onclick = () => mudarDia(hojeISO());
+}
+function mudarDia(iso) {
+  enviarDietaPendente();
+  DIA_REG = iso === hojeISO() ? '' : iso;
+  const aba = document.querySelector('input.rd[name=tab]:checked'); montar(); if (aba && $(aba.id)) $(aba.id).checked = true;
+  window.scrollTo(0, 0);
+  aviso(DIA_REG ? `Registrando ${nomeDiaReg(iso)}` : 'De volta para hoje');
+}
+/* lembrete do que ficou faltando ontem (some quando o aluno registra ou toca em "Não fiz") */
+function faltouOntem() {
+  const ont = isoMenos(1), falta = [];
+  if (LS.get('lembOk.' + ont, false) || String(LS.get('desde', hojeISO())) > ont) return falta;
+  const k = DIAS_JS[dowISO(ont)], TR = SNAP.treino || {};
+  if (TR[k] && (TR[k].ex || []).length && !(SNAP.treinosFeitos || []).concat(LS.get('feitos', [])).some(t => t.data === ont)) falta.push(['t', `o treino ${TR[k].nome ? '(' + TR[k].nome + ')' : ''}`.trim()]);
+  const D = SNAP.dieta || {};
+  if ((D.tipos || []).length) { const e = LS.get('dieta.' + ont, null); if (!e || !Object.values(e.feitas || {}).some(x => x && x.length)) falta.push(['d', 'as refeições']); }
+  return falta;
+}
+function mostrarLembrete() {
+  const box = $('lembAv'); if (!box) return;
+  const falta = DIA_REG ? [] : faltouOntem();
+  if (!falta.length) { box.innerHTML = ''; return; }
+  box.innerHTML = `<div class="lemb" role="status"><h3>Ficou faltando ontem</h3><p>Você ainda não registrou ${esc(falta.map(f => f[1]).join(' e '))} de ontem. Leva 1 minuto e me ajuda a ajustar o seu plano.</p><div class="lb"><button type="button" id="lbSim">Registrar ontem</button><button type="button" class="ln" id="lbNao">${falta.length === 1 && falta[0][0] === 't' ? 'Não treinei' : 'Agora não'}</button></div></div>`;
+  $('lbSim').onclick = () => { const tb = $('tb-' + falta[0][0]); if (tb) { tb.checked = true; LS.set('aba', tb.id); } mudarDia(isoMenos(1)); };
+  $('lbNao').onclick = () => { LS.set('lembOk.' + isoMenos(1), true); box.innerHTML = ''; };
+}
+/* lembrete diário no calendário do celular (arquivo .ics com alarme todo dia) */
+function blocoCalendario() {
+  const hs = [['7', '7h'], ['12', '12h'], ['19', '19h'], ['20', '20h'], ['21', '21h'], ['22', '22h']];
+  return `<div class="lcal"><h3>Lembrete diário para registrar</h3><p>Escolha um horário. O celular abre o calendário e cria um lembrete todo dia: "Registrar treino e refeições no app MG COACH".</p>
+    <div class="lh">${hs.map(h => `<a href="lembrete/${h[0]}h.ics" target="_blank" rel="noopener">${h[1]}</a>`).join('')}</div>
+    <small>No iPhone, toque em "Adicionar tudo". No Android, abra o arquivo baixado com o app de calendário. Para tirar, é só apagar o evento.</small></div>`;
 }
 
 /* ---------- treino: cargas, repetições e notas ---------- */
@@ -218,7 +288,7 @@ function histDe(x) {
   c.sort((a, b) => String(b.data).localeCompare(String(a.data)));
   return c[0] || null;
 }
-const rascKey = (k) => `rasc.${hojeISO()}.${k}`;
+const rascKey = (k) => `rasc.${dataReg()}.${k}`;
 function montarTreino(app) {
   const TR = SNAP.treino || {};
   Object.keys(TR).forEach(k => {
@@ -243,9 +313,9 @@ function montarTreino(app) {
       if ((r0.sets || []).some(z => z.kg || z.reps)) art.classList.add('feito');
     });
     if (!L.length) return;
-    const feito = (SNAP.treinosFeitos || []).concat(LS.get('feitos', [])).find(t => t.data === hojeISO() && t.dia === k);
+    const dr = dataReg(), feito = (SNAP.treinosFeitos || []).concat(LS.get('feitos', [])).find(t => t.data === dr && t.dia === k);
     const fim = document.createElement('div'); fim.className = 'lg-fim';
-    fim.innerHTML = `<button class="bt" type="button">${feito ? 'Atualizar treino de hoje' : 'Salvar treino de hoje'}</button><p>${feito ? 'Você já salvou este treino hoje. Pode corrigir e salvar de novo.' : 'Anote o que fizer e salve no fim. Fica guardado mesmo sem internet.'}</p>`;
+    fim.innerHTML = `<button class="bt" type="button">${feito ? 'Atualizar' : 'Salvar'} treino ${deDia(dr)}</button><p>${feito ? `Você já salvou este treino ${dr === hojeISO() ? 'hoje' : 'para ' + nomeDiaReg(dr)}. Pode corrigir e salvar de novo.` : dr === hojeISO() ? 'Anote o que fizer e salve no fim. Fica guardado mesmo sem internet.' : `Vai ficar registrado como treino ${deDia(dr)}.`}</p>`;
     sess.appendChild(fim);
     fim.querySelector('button').onclick = () => salvarTreino(k, fim);
   });
@@ -264,24 +334,25 @@ function salvarTreino(k, fim) {
   const dados = lerSessao(k); const L = (SNAP.treino[k] || {}).ex || [];
   const exs = L.map(x => ({ uid: x.uid, exId: x.exId, n: x.n, sets: (dados[x.uid] || {}).sets || [], nota: (dados[x.uid] || {}).nota || '' })).filter(x => x.sets.length || x.nota);
   if (!exs.length) { aviso('Anote pelo menos uma série antes de salvar.'); return; }
-  const data = hojeISO(); const feitos = LS.get('feitos', []);
+  const data = dataReg(); const feitos = LS.get('feitos', []);
   const ant = feitos.find(t => t.data === data && t.dia === k) || (SNAP.treinosFeitos || []).find(t => t.data === data && t.dia === k);
   const reg = { tipo: 'treino', id: ant ? ant.id : novoId(), _v: Date.now(), data, dia: k, nomeDia: SNAP.treino[k].nome, exs };
   const hist = LS.get('hist', {});
-  exs.forEach(x => { if (x.sets.some(z => z.kg || z.reps)) { hist[x.uid] = { data, sets: x.sets }; hist['ex:' + x.exId] = { data, sets: x.sets }; } });
+  const novo = h => !h || String(h.data) <= data;
+  exs.forEach(x => { if (x.sets.some(z => z.kg || z.reps)) { if (novo(hist[x.uid])) hist[x.uid] = { data, sets: x.sets }; if (novo(hist['ex:' + x.exId])) hist['ex:' + x.exId] = { data, sets: x.sets }; } });
   LS.set('hist', hist);
   LS.set('feitos', [{ id: reg.id, data, dia: k }, ...feitos.filter(t => !(t.data === data && t.dia === k))].slice(0, 40));
   document.querySelectorAll(`.lg[data-k="${k}"]`).forEach(div => { const d = dados[div.dataset.uid]; if (d && d.sets.some(z => z.kg || z.reps)) div.closest('article.ex').classList.add('feito'); });
-  fim.querySelector('button').textContent = 'Atualizar treino de hoje';
-  const p = fim.querySelector('p'); p.className = 'ok'; p.textContent = 'Treino salvo. Bom trabalho!';
+  fim.querySelector('button').textContent = 'Atualizar treino ' + deDia(data);
+  const p = fim.querySelector('p'); p.className = 'ok'; p.textContent = data === hojeISO() ? 'Treino salvo. Bom trabalho!' : `Treino ${deDia(data)} salvo. Valeu por registrar!`; mostrarLembrete();
   enfileirar(reg).then(n => { if (fila().some(x => x.id === reg.id)) { p.className = ''; p.textContent = 'Treino salvo no celular. Vai para o seu coach quando tiver internet.'; } });
 }
 
 /* ---------- dieta: marcar as refeições do dia ---------- */
-let _dietaT;
+const _dietaT = {};
+function enviarDietaPendente() { Object.keys(_dietaT).forEach(k => { clearTimeout(_dietaT[k][0]); _dietaT[k][1](); delete _dietaT[k]; }); }
 function montarDieta(app) {
-  const D = SNAP.dieta || {}; const hoje = hojeISO();
-  const est = LS.get('dieta.' + hoje, { feitas: {} });
+  const D = SNAP.dieta || {};
   (D.tipos || []).forEach(t => {
     const pl = app.querySelector('.plano-' + t); if (!pl) return;
     const arts = pl.querySelectorAll('article.ref'); const nomes = (D.refs || {})[t] || [];
@@ -290,21 +361,23 @@ function montarDieta(app) {
     arts.forEach((art, j) => {
       const b = document.createElement('button'); b.type = 'button'; b.className = 'ck'; b.dataset.t = t; b.dataset.j = j;
       art.appendChild(b);
-      b.onclick = () => { const e = LS.get('dieta.' + hoje, { feitas: {} }); const f = new Set(e.feitas[t] || []); f.has(j) ? f.delete(j) : f.add(j); e.feitas[t] = [...f]; LS.set('dieta.' + hoje, e); pintarDieta(); clearTimeout(_dietaT); _dietaT = setTimeout(() => enviarDieta(t), 2500); };
+      b.onclick = () => { const d = dataReg(), e = LS.get('dieta.' + d, { feitas: {} }); const f = new Set(e.feitas[t] || []); f.has(j) ? f.delete(j) : f.add(j); e.feitas[t] = [...f]; LS.set('dieta.' + d, e); pintarDieta();
+        const k = t + '|' + d, go = () => enviarDieta(t, d); if (_dietaT[k]) clearTimeout(_dietaT[k][0]); _dietaT[k] = [setTimeout(() => { delete _dietaT[k]; go(); mostrarLembrete(); }, 2500), go]; };
     });
   });
   pintarDieta();
   /* plano do dia (ciclo de carboidrato) */
-  if (D.ciclo) { const tp = D.ciclo[DIAS_JS[new Date().getDay()]]; const r = app.querySelector('#pl-' + tp); if (r) r.checked = true; }
+  if (D.ciclo) { const tp = D.ciclo[DIAS_JS[dowISO(dataReg())]]; const r = app.querySelector('#pl-' + tp); if (r) r.checked = true; }
 }
 function pintarDieta() {
-  const D = SNAP.dieta || {}; const e = LS.get('dieta.' + hojeISO(), { feitas: {} });
-  document.querySelectorAll('.ck').forEach(b => { const on = (e.feitas[b.dataset.t] || []).includes(+b.dataset.j); b.classList.toggle('on', on); b.textContent = on ? '✓ Refeição feita hoje' : 'Marcar como feita hoje'; });
+  const D = SNAP.dieta || {}, d = dataReg(), e = LS.get('dieta.' + d, { feitas: {} });
+  const qd = d === hojeISO() ? 'hoje' : d === isoMenos(1) ? 'ontem' : 'em ' + dataBR(d), Qd = d === hojeISO() ? 'Hoje' : d === isoMenos(1) ? 'Ontem' : 'Em ' + nomeDiaReg(d);
+  document.querySelectorAll('.ck').forEach(b => { const on = (e.feitas[b.dataset.t] || []).includes(+b.dataset.j); b.classList.toggle('on', on); b.textContent = on ? '✓ Refeição feita ' + qd : 'Marcar como feita ' + qd; });
   document.querySelectorAll('.dhoje').forEach(el => { const t = el.dataset.t, tot = ((D.refs || {})[t] || []).length, n = (e.feitas[t] || []).length;
-    el.innerHTML = `<div style="flex:1"><div>Hoje você fez <b>${n} de ${tot}</b> refeições</div><div class="barra"><i style="width:${tot ? Math.round(n / tot * 100) : 0}%"></i></div></div>`; });
+    el.innerHTML = `<div style="flex:1"><div>${Qd} você fez <b>${n} de ${tot}</b> refeições</div><div class="barra"><i style="width:${tot ? Math.round(n / tot * 100) : 0}%"></i></div></div>`; });
 }
-function enviarDieta(t) {
-  const D = SNAP.dieta || {}; const hoje = hojeISO(); const e = LS.get('dieta.' + hoje, { feitas: {} });
+function enviarDieta(t, hoje) {
+  const D = SNAP.dieta || {}; hoje = hoje || dataReg(); const e = LS.get('dieta.' + hoje, { feitas: {} });
   const nomes = (D.refs || {})[t] || []; const f = (e.feitas[t] || []).slice().sort((a, b) => a - b);
   enfileirar({ tipo: 'dieta', id: 'dieta-' + hoje, _v: Date.now(), data: hoje, plano: t, feitas: f.map(j => nomes[j] || ('Refeição ' + (j + 1))), total: nomes.length });
 }

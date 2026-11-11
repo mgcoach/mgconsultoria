@@ -1,0 +1,21 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//MG COACH//Lembrete de registro//PT
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:mgcoach-lembrete-registro-12h@mgcoach.github.io
+DTSTAMP:20261111T120000Z
+DTSTART:20261111T120000
+DURATION:PT10M
+RRULE:FREQ=DAILY
+SUMMARY:Registrar treino e refeições (MG COACH)
+DESCRIPTION:Abra o app MG COACH e registre o treino de hoje (carga e repetições) e marque as refeições. Esqueceu algum dia? No topo da aba Treino ou Dieta\, escolha o dia em Registrando.
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Registrar treino e refeições no app MG COACH
+TRIGGER:PT0M
+END:VALARM
+END:VEVENT
+END:VCALENDAR
