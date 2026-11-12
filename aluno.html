@@ -70,6 +70,19 @@ button,input,textarea,select{font:inherit;color:inherit}
 .lcal .lh{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
 .lcal .lh a{flex:1 0 auto;min-width:64px;display:flex;align-items:center;justify-content:center;min-height:40px;border-radius:10px;border:1px solid var(--rule);background:var(--paper);font-weight:600;color:var(--ink);text-decoration:none}
 .lcal small{display:block;margin-top:8px;color:var(--ink-3);font-size:12px}
+/* avisos do MG na tela inicial */
+.mgc{border-radius:16px;padding:14px 16px;margin:12px 0 0;box-shadow:0 6px 18px -10px rgba(12,26,38,.35)}
+.mgc h3{font-size:16px;margin-bottom:3px;display:flex;align-items:center;gap:8px}.mgc h3 i{font-style:normal;font-size:18px}
+.mgc p{font-size:14px}.mgc .lb{display:flex;gap:8px;margin-top:10px}.mgc button{flex:1;min-height:42px;border-radius:999px;font-weight:700;font-size:14px;cursor:pointer}
+.mgc.fb{background:#0c1a26;color:#fff}.mgc.fb p{color:rgba(255,255,255,.85)}.mgc.fb button{background:var(--accent);border:none;color:#fff}
+.mgc.rs{background:#eef6ff;border:2px solid #1668a8}.mgc.rs h3{color:#1668a8}.mgc.rs small{display:block;color:var(--ink-2);font-size:12.5px;margin-bottom:6px}
+.mgc .q{background:#fff;border-radius:10px;padding:8px 10px;font-size:13.5px;color:var(--ink-2);white-space:pre-wrap;margin-bottom:8px}
+.mgc .r{font-size:15px;white-space:pre-wrap;color:var(--ink)}.mgc.rs button{background:#1668a8;border:none;color:#fff}
+.rsl{margin-top:16px}.rsl h2{font-size:18px;margin-bottom:8px}.rsl .it{background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:12px 14px;margin-bottom:8px}
+.rsl small{display:block;color:var(--ink-3);font-size:12px;margin-bottom:4px}.rsl .q{font-size:13.5px;color:var(--ink-2);white-space:pre-wrap}.rsl .r{margin-top:6px;font-size:14.5px;white-space:pre-wrap;border-left:3px solid #1668a8;padding-left:9px}
+.dnota{display:block;background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:12px 14px;margin:12px 0}
+.dnota span{display:block;font-weight:600;font-size:14px;margin-bottom:6px}.dnota small{display:block;font-size:12px;color:var(--ink-3);margin-top:4px}
+.dnota textarea{width:100%;min-height:60px;border:1px solid var(--rule);border-radius:10px;background:var(--paper);padding:9px 10px;font-size:15px;resize:vertical;outline:none}
 /* dieta */
 .ck{display:flex;align-items:center;justify-content:center;gap:8px;margin:12px 15px 0;width:calc(100% - 30px);min-height:42px;border-radius:999px;border:1px dashed var(--rule);background:var(--card);font-weight:600;font-size:14px;color:var(--ink-2);cursor:pointer}
 .ck.on{background:var(--ok-soft);border:1px solid #86efac;color:var(--ok)}
@@ -219,7 +232,7 @@ function montar() {
   ult.insertAdjacentHTML('afterend', '<input type="radio" class="rd" name="tab" id="tb-f">');
   app.querySelector('.navs').insertAdjacentHTML('beforeend', '<label class="linkbtn" for="tb-f">Feedback</label>');
   const main = app.querySelector('main');
-  main.insertAdjacentHTML('afterbegin', '<p class="fila" id="filaAv" hidden></p><div id="lembAv"></div>' + barraDia());
+  main.insertAdjacentHTML('afterbegin', '<p class="fila" id="filaAv" hidden></p><div id="mgAv"></div><div id="lembAv"></div>' + barraDia());
   const instalado = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
   if (!LS.get('bv', false)) {
     main.insertAdjacentHTML('afterbegin', `<div class="bv" id="bv"><h3>Bem-vindo${SNAP.nome ? ', ' + esc(SNAP.nome) : ''}!</h3><p>${instalado ? 'Veja em 2 minutos onde anotar as cargas, marcar as refeições e mandar o feedback.' : 'Antes de começar, coloque o app na tela inicial do celular e veja como anotar as cargas, marcar as refeições e mandar o feedback.'}</p><div class="bvb"><a href="guia.html">Ver o guia</a><button type="button" id="bvx">Agora não</button></div></div>`);
@@ -231,11 +244,33 @@ function montar() {
   /* dia do registro (hoje, ou o dia que o aluno escolheu) */
   const r = app.querySelector('#d-' + DIAS_JS[dowISO(dataReg())]); if (r) r.checked = true;
   montarTreino(app); montarDieta(app); montarFeedback(pf); if (SNAP.fotosOn) montarFotos(pf);
-  pf.insertAdjacentHTML('afterbegin', blocoCalendario());
-  ligarBarraDia(); if (!LS.get('desde', '')) LS.set('desde', LS.get('feitos', []).length || Object.keys(LS.get('hist', {})).length ? isoMenos(30) : hojeISO()); mostrarLembrete();
+  pf.insertAdjacentHTML('afterbegin', blocoCalendario()); pf.insertAdjacentHTML('beforeend', blocoRespostas());
+  cardsMG(); ligarBarraDia(); if (!LS.get('desde', '')) LS.set('desde', LS.get('feitos', []).length || Object.keys(LS.get('hist', {})).length ? isoMenos(30) : hojeISO()); mostrarLembrete();
   const abaSalva = LS.get('aba', ''); if (abaSalva && $(abaSalva)) $(abaSalva).checked = true;
   app.querySelectorAll('input.rd[name=tab]').forEach(x => x.addEventListener('change', () => { LS.set('aba', x.id); window.scrollTo(0, 0); }));
   mostrarFila();
+}
+
+/* ---------- avisos do MG: feedback da semana e respostas às observações ---------- */
+const ultFbData = () => { const a = String(LS.get('ultFb', '')), b = String(SNAP.ultFeedback || ''); return a > b ? a : b; };
+function cardFb() {
+  /* vale como feedback desta semana o que foi mandado a partir de quarta (2 dias antes da sexta) */
+  const ult = ultFbData(), P = SNAP.pedidoFb, dow = new Date().getDay(), sexta = isoMenos((dow - 5 + 7) % 7 + 2);
+  if (P && P.data && ult < P.data) return { t: 'MG pediu o seu feedback da semana', p: P.msg || 'Me conta como foi a sua semana para eu ajustar o seu plano.' };
+  if ([5, 6, 0, 1].includes(dow) && ult < sexta) return { t: dow === 5 ? 'Hoje é sexta: dia do feedback semanal' : 'Tarefa da semana: feedback semanal', p: 'Peso, sono, energia, fome e como foi a dieta. Leva 1 minuto e me ajuda a ajustar o seu plano.' };
+  return null;
+}
+function cardsMG() {
+  const box = $('mgAv'); if (!box) return;
+  const lidas = LS.get('respLidas', []), novas = (SNAP.respostas || []).filter(r => !lidas.includes(r.id)).slice(0, 3), fb = cardFb();
+  box.innerHTML = (fb ? `<div class="mgc fb" role="status"><h3><i>📋</i>${esc(fb.t)}</h3><p>${esc(fb.p)}</p><div class="lb"><button type="button" id="mgFb">Responder agora</button></div></div>` : '') +
+    novas.map(r => `<div class="mgc rs" role="status"><h3><i>💬</i>MG respondeu sua observação</h3><small>${esc(r.onde || '')}</small>${r.obs ? `<div class="q">Você: ${esc(r.obs)}</div>` : ''}<div class="r">${esc(r.txt)}</div><div class="lb"><button type="button" data-lida="${esc(r.id)}">Entendi ✓</button></div></div>`).join('');
+  const b = $('mgFb'); if (b) b.onclick = () => { const tb = $('tb-f'); if (tb) { tb.checked = true; LS.set('aba', 'tb-f'); } window.scrollTo(0, 0); };
+  box.querySelectorAll('[data-lida]').forEach(x => x.onclick = () => { LS.set('respLidas', [...LS.get('respLidas', []), x.dataset.lida].slice(-100)); cardsMG(); });
+}
+function blocoRespostas() {
+  const L = SNAP.respostas || []; if (!L.length) return '';
+  return `<section class="rsl"><h2>Respostas do MG</h2>${L.map(r => `<div class="it"><small>${esc(r.onde || '')} · ${esc(dataBR(String(r.em || '').slice(0, 10)))}</small>${r.obs ? `<div class="q">Você: ${esc(r.obs)}</div>` : ''}<div class="r">${esc(r.txt)}</div></div>`).join('')}</section>`;
 }
 
 /* ---------- registrar outro dia ---------- */
@@ -358,6 +393,10 @@ function montarDieta(app) {
     const arts = pl.querySelectorAll('article.ref'); const nomes = (D.refs || {})[t] || [];
     const topo = document.createElement('div'); topo.className = 'dhoje'; topo.dataset.t = t;
     const al = pl.querySelector('.alvo'); (al || pl.firstChild) && pl.insertBefore(topo, al ? al.nextSibling : pl.firstChild);
+    const nt = document.createElement('label'); nt.className = 'dnota'; nt.innerHTML = '<span>Observação sobre a alimentação <b class="dn-d"></b></span><textarea rows="2" maxlength="1000" placeholder="Ex.: não deu para jantar, troquei o arroz por batata, senti muita fome à noite…"></textarea><small>O MG lê e pode te responder aqui no app.</small>';
+    pl.appendChild(nt);
+    let ntT; nt.querySelector('textarea').addEventListener('input', ev => { const d = dataReg(), e = LS.get('dieta.' + d, { feitas: {} }); e.nota = ev.target.value; LS.set('dieta.' + d, e);
+      clearTimeout(ntT); ntT = setTimeout(() => { const k = t + '|' + d, go = () => enviarDieta(t, d); if (_dietaT[k]) clearTimeout(_dietaT[k][0]); _dietaT[k] = [setTimeout(() => { delete _dietaT[k]; go(); }, 1500), go]; }, 600); });
     arts.forEach((art, j) => {
       const b = document.createElement('button'); b.type = 'button'; b.className = 'ck'; b.dataset.t = t; b.dataset.j = j;
       art.appendChild(b);
@@ -392,6 +431,7 @@ function pintarDieta() {
   const D = SNAP.dieta || {}, d = dataReg(), e = LS.get('dieta.' + d, { feitas: {} }); aplicarEscolhas(e);
   const qd = d === hojeISO() ? 'hoje' : d === isoMenos(1) ? 'ontem' : 'em ' + dataBR(d), Qd = d === hojeISO() ? 'Hoje' : d === isoMenos(1) ? 'Ontem' : 'Em ' + nomeDiaReg(d);
   document.querySelectorAll('.ck').forEach(b => { const on = (e.feitas[b.dataset.t] || []).includes(+b.dataset.j); b.classList.toggle('on', on); b.textContent = on ? '✓ Refeição feita ' + qd : 'Marcar como feita ' + qd; });
+  document.querySelectorAll('.dnota').forEach(el => { el.querySelector('.dn-d').textContent = qd; const ta = el.querySelector('textarea'); if (document.activeElement !== ta) ta.value = e.nota || ''; });
   document.querySelectorAll('.dhoje').forEach(el => { const t = el.dataset.t, tot = ((D.refs || {})[t] || []).length, n = (e.feitas[t] || []).length;
     el.innerHTML = `<div style="flex:1"><div>${Qd} você fez <b>${n} de ${tot}</b> refeições</div><div class="barra"><i style="width:${tot ? Math.round(n / tot * 100) : 0}%"></i></div></div>`; });
 }
@@ -402,7 +442,7 @@ function enviarDieta(t, hoje) {
     if (!R) return { n }; const op = R.ops[c.o] || R.ops[0], m = op.base.slice(), esc = [];
     op.tr.forEach((alts, ti) => { const x = alts[(c.s || [])[ti] || 0] || alts[0]; x.m.forEach((v, i) => { m[i] += v; }); esc.push(x.n); });
     const o = { n, m, esc }; if (R.ops.length > 1) o.op = op.nome; return o; });
-  enfileirar({ tipo: 'dieta', id: 'dieta-' + hoje, _v: Date.now(), data: hoje, plano: t, feitas: f.map(j => nomes[j] || ('Refeição ' + (j + 1))), total: nomes.length, det, refs: nomes, alvo: (D.alvo || {})[t] || null });
+  enfileirar({ tipo: 'dieta', id: 'dieta-' + hoje, _v: Date.now(), data: hoje, plano: t, feitas: f.map(j => nomes[j] || ('Refeição ' + (j + 1))), total: nomes.length, det, refs: nomes, alvo: (D.alvo || {})[t] || null, nota: String(e.nota || '').trim().slice(0, 1000) });
 }
 
 /* ---------- feedback semanal ---------- */
@@ -428,7 +468,7 @@ function montarFeedback(sec) {
     e.preventDefault();
     const reg = { tipo: 'feedback', id: novoId(), _v: Date.now(), data: hojeISO(), peso: $('fPeso').value.trim().replace(',', '.'), sono: val.sono || '', energia: val.energia || '', fome: val.fome || '', dieta: val.dieta || '', treinos: $('fTreinos').value.trim(), dores: $('fDores').value.trim(), comentario: $('fCom').value.trim() };
     if (!reg.peso && !reg.sono && !reg.energia && !reg.fome && !reg.dieta && !reg.treinos && !reg.dores && !reg.comentario) { $('fe').textContent = 'Preencha pelo menos uma resposta.'; return; }
-    LS.set('ultFb', reg.data);
+    LS.set('ultFb', reg.data); cardsMG();
     enfileirar(reg).then(() => { if (fila().some(x => x.id === reg.id)) aviso('Feedback salvo. Vai para o seu coach quando tiver internet.', 4000); });
     sec.querySelector('#fbf').outerHTML = `<div class="block" style="text-align:center;padding:26px 18px"><h3 style="font-size:19px;margin-bottom:6px">Feedback enviado ✓</h3><p style="color:var(--ink-2)">Obrigado! Eu leio e, se precisar, ajusto o seu protocolo.</p></div>`;
     window.scrollTo(0, 0);
