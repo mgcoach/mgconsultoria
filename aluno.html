@@ -83,6 +83,18 @@ button,input,textarea,select{font:inherit;color:inherit}
 .dnota{display:block;background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:12px 14px;margin:12px 0}
 .dnota span{display:block;font-weight:600;font-size:14px;margin-bottom:6px}.dnota small{display:block;font-size:12px;color:var(--ink-3);margin-top:4px}
 .dnota textarea{width:100%;min-height:60px;border:1px solid var(--rule);border-radius:10px;background:var(--paper);padding:9px 10px;font-size:15px;resize:vertical;outline:none}
+/* pagamento */
+.mgc.mpg{background:#fff;border:2px solid var(--accent)}.mgc.mpg h3{color:#c2410c}.mgc.mpg p{color:var(--ink-2)}.mgc.mpg button{background:var(--accent);border:none;color:#fff}
+.mgc.pgok{background:#ecfdf3;border:2px solid #86efac}.mgc.pgok h3{color:#15803d}.mgc.pgok p{color:var(--ink-2)}
+.pgs{background:var(--card);border:1px solid var(--rule);border-radius:18px;padding:16px;margin:0 0 16px}
+.pgs h2{font-size:18px}.pgs .pg-v{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-top:6px;flex-wrap:wrap}.pgs .pg-v b{font-size:26px;letter-spacing:-.02em}
+.pg-st{display:inline-block;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;background:#ecfdf3;color:#15803d}.pg-st.av{background:#fff7ed;color:#c2410c}.pg-st.vc{background:#fee2e2;color:#b91c1c}
+.pg-tb{display:flex;gap:6px;margin:14px 0 10px;background:var(--paper);padding:4px;border-radius:12px}.pg-tb button{flex:1;min-height:40px;border:none;border-radius:9px;background:transparent;font-weight:700;font-size:14px;color:var(--ink-2);cursor:pointer}.pg-tb button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.pg-qr{display:flex;justify-content:center;padding:12px;background:#fff;border:1px solid var(--rule);border-radius:14px;min-height:60px}.pg-qr svg{width:200px;height:200px;display:block}
+.pg-bt{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:48px;margin-top:10px;border-radius:999px;font-weight:700;font-size:15px;cursor:pointer;text-decoration:none;border:none}
+.pg-bt.pri{background:var(--accent);color:#fff}.pg-bt.sec{background:var(--paper);color:var(--ink);border:1px solid var(--rule)}.pg-bt.ok{background:#0c1a26;color:#fff}
+.pgs .note{font-size:13px;color:var(--ink-2);margin-top:8px;line-height:1.45}.pgs .pg-k{font-size:13px;color:var(--ink-3);margin-top:8px;word-break:break-all}
+.pg-c b{font-size:24px}.pg-inf{margin-top:12px;padding:10px 12px;border-radius:12px;background:#ecfdf3;color:#15803d;font-weight:600;font-size:14px}
 /* dieta */
 .ck{display:flex;align-items:center;justify-content:center;gap:8px;margin:12px 15px 0;width:calc(100% - 30px);min-height:42px;border-radius:999px;border:1px dashed var(--rule);background:var(--card);font-weight:600;font-size:14px;color:var(--ink-2);cursor:pointer}
 .ck.on{background:var(--ok-soft);border:1px solid #86efac;color:var(--ok)}
@@ -244,11 +256,69 @@ function montar() {
   /* dia do registro (hoje, ou o dia que o aluno escolheu) */
   const r = app.querySelector('#d-' + DIAS_JS[dowISO(dataReg())]); if (r) r.checked = true;
   montarTreino(app); montarDieta(app); montarFeedback(pf); if (SNAP.fotosOn) montarFotos(pf);
-  pf.insertAdjacentHTML('afterbegin', blocoCalendario()); pf.insertAdjacentHTML('beforeend', blocoRespostas());
+  pf.insertAdjacentHTML('afterbegin', blocoCalendario()); if (SNAP.pag) { pf.insertAdjacentHTML('afterbegin', blocoPag()); ligarPag(); } pf.insertAdjacentHTML('beforeend', blocoRespostas());
   cardsMG(); ligarBarraDia(); if (!LS.get('desde', '')) LS.set('desde', LS.get('feitos', []).length || Object.keys(LS.get('hist', {})).length ? isoMenos(30) : hojeISO()); mostrarLembrete();
   const abaSalva = LS.get('aba', ''); if (abaSalva && $(abaSalva)) $(abaSalva).checked = true;
   app.querySelectorAll('input.rd[name=tab]').forEach(x => x.addEventListener('change', () => { LS.set('aba', x.id); window.scrollTo(0, 0); }));
   mostrarFila();
+}
+
+/* ---------- pagamento do plano: Pix (QR Code e copia e cola) e cartão (link do Mercado Pago) ---------- */
+const brl = v => 'R$ ' + Number(v || 0).toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+const diasAte = iso => Math.round((new Date(iso + 'T12:00:00') - new Date(hojeISO() + 'T12:00:00')) / 864e5);
+const pgInformado = () => { const P = SNAP.pag; return P && LS.get('pgInf.' + (P.venc || 'x'), null); };
+function emv(id, v) { v = String(v); return id + String(v.length).padStart(2, '0') + v; }
+function crc16(t) { let c = 0xFFFF; for (let i = 0; i < t.length; i++) { c ^= t.charCodeAt(i) << 8; for (let j = 0; j < 8; j++) c = c & 0x8000 ? ((c << 1) ^ 0x1021) & 0xFFFF : (c << 1) & 0xFFFF; } return c.toString(16).toUpperCase().padStart(4, '0'); }
+const semAcento = t => String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^A-Za-z0-9 .-]/g, '').toUpperCase().trim();
+function pixCopiaCola(px, valor, txid) {
+  const p = emv('00', '01') + emv('26', emv('00', 'br.gov.bcb.pix') + emv('01', px.chave)) + emv('52', '0000') + emv('53', '986') + (valor > 0 ? emv('54', valor.toFixed(2)) : '') +
+    emv('58', 'BR') + emv('59', semAcento(px.nome).slice(0, 25) || 'MG COACH') + emv('60', semAcento(px.cidade).slice(0, 15) || 'SALVADOR') + emv('62', emv('05', String(txid || '').replace(/[^A-Za-z0-9]/g, '').slice(0, 25) || '***')) + '6304';
+  return p + crc16(p);
+}
+function cardPag() {
+  const P = SNAP.pag; if (!P || !P.venc) return '';
+  const d = diasAte(P.venc), inf = pgInformado();
+  if (d > 7) return ''; /* semana da renovação */
+  if (inf) return `<div class="mgc pgok" role="status"><h3><i>✅</i>Pagamento informado</h3><p>Você avisou que pagou por ${inf.forma === 'cartao' ? 'cartão' : 'Pix'}. Assim que eu confirmar, o seu plano renova.</p></div>`;
+  const t = d < 0 ? `Seu plano venceu em ${dataBR(P.venc)}` : d === 0 ? 'Seu plano vence hoje' : d === 1 ? 'Seu plano vence amanhã' : `Semana de renovação: seu plano vence em ${d} dias`;
+  return `<div class="mgc mpg" role="status"><h3><i>💳</i>${esc(t)}</h3><p>${d < 0 ? 'Faça o pagamento para retomar o acompanhamento' : `Faça o pagamento até ${dataBR(P.venc)} para seguir sem pausa no acompanhamento`}. É rápido: Pix ou cartão aqui mesmo no app.</p><div class="lb"><button type="button" id="mgPg">Pagar plano</button></div></div>`;
+}
+function irPagamento() { const tb = $('tb-f'); if (tb) { tb.checked = true; LS.set('aba', 'tb-f'); } const s = $('pagSec'); if (s) setTimeout(() => s.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50); }
+function blocoPag() {
+  const P = SNAP.pag, d = P.venc ? diasAte(P.venc) : 99, inf = pgInformado();
+  const st = !P.venc ? '' : d < 0 ? `<span class="pg-st vc">Venceu em ${dataBR(P.venc)}</span>` : d <= 7 ? `<span class="pg-st av">Vence ${d === 0 ? 'hoje' : 'em ' + dataBR(P.venc)}</span>` : `<span class="pg-st">Em dia até ${dataBR(P.venc)}</span>`;
+  const C = P.cartao;
+  return `<section class="pgs" id="pagSec"><h2>Pagar plano</h2><div class="pg-v"><span>Plano ${esc(String(P.per || 'mensal').toLowerCase())}</span>${st}</div><div class="pg-v"><b>${brl(P.valor)}</b><span style="font-size:13px;color:var(--ink-3)">no Pix</span></div>
+    ${C ? `<div class="pg-tb" role="tablist"><button type="button" class="on" data-pg="pix" role="tab" aria-selected="true">Pix</button><button type="button" data-pg="cartao" role="tab" aria-selected="false">Cartão</button></div>` : '<div style="height:12px"></div>'}
+    <div data-pp="pix"><div class="pg-qr" id="pgQr"><span style="font-size:13px;color:var(--ink-3)">Gerando QR Code…</span></div>
+      <button class="pg-bt pri" type="button" id="pgCopia">Copiar Pix copia e cola</button>
+      <p class="note">Abra o app do seu banco → <b>Pix</b> → <b>Pix copia e cola</b> e cole o código. O valor já vem preenchido. Pagando de outro aparelho, use o QR Code.</p>
+      <p class="pg-k">Chave Pix: ${esc(P.pix.chave)} · ${esc(P.pix.nome)}</p></div>
+    ${C ? `<div data-pp="cartao" hidden><div class="pg-c"><b>${brl(C.valor)}</b> <span style="font-size:13px;color:var(--ink-3)">no cartão</span></div>
+      <p class="note">O valor no cartão inclui a taxa da operadora (${String(C.taxa).replace('.', ',')}%), para a consultoria custar o mesmo que no Pix. Se parcelar, os juros do cartão aparecem no Mercado Pago antes de você confirmar.</p>
+      <a class="pg-bt pri" href="${esc(C.link)}" target="_blank" rel="noopener">Pagar com cartão</a></div>` : ''}
+    ${inf ? `<div class="pg-inf">✓ Você informou o pagamento por ${inf.forma === 'cartao' ? 'cartão' : 'Pix'} em ${dataBR(inf.data)}. Eu confirmo em breve.</div>`
+      : P.aviso ? `<button class="pg-bt ok" type="button" id="pgJa">Já paguei</button><p class="note" style="text-align:center">Toque depois de pagar. Eu confiro e confirmo a renovação.</p>`
+      : `<p class="note" style="text-align:center;margin-top:12px">Depois de pagar, me mande o comprovante no WhatsApp.</p>`}</section>`;
+}
+let _qrLib;
+/* gerador de QR Code (qrcode-generator, MIT, Kazuhiko Arase) fica junto do app: qr.js */
+function carregarQR() { if (window.qrcode) return Promise.resolve(); if (_qrLib) return _qrLib;
+  _qrLib = new Promise((ok, erro) => { const sc = document.createElement('script'); sc.src = 'qr.js'; sc.onload = ok; sc.onerror = () => { _qrLib = null; erro(); }; document.head.appendChild(sc); }); return _qrLib; }
+function ligarPag() {
+  const P = SNAP.pag, sec = $('pagSec'); if (!sec) return;
+  const code = pixCopiaCola(P.pix, P.valor, 'MG' + String(P.venc || '').replace(/-/g, ''));
+  carregarQR().then(() => { const q = $('pgQr'); if (!q) return; const qr = qrcode(0, 'M'); qr.addData(code); qr.make(); q.innerHTML = qr.createSvgTag({ cellSize: 5, margin: 2, scalable: true }); const sv = q.querySelector('svg'); if (sv) { sv.setAttribute('width', '200'); sv.setAttribute('height', '200'); sv.setAttribute('role', 'img'); sv.setAttribute('aria-label', 'QR Code do Pix'); } })
+    .catch(() => { const q = $('pgQr'); if (q) q.innerHTML = '<span style="font-size:13px;color:var(--ink-3)">Sem internet para o QR Code. Use o copia e cola.</span>'; });
+  $('pgCopia').onclick = async () => { try { await navigator.clipboard.writeText(code); } catch (e) { const t = document.createElement('textarea'); t.value = code; document.body.appendChild(t); t.select(); try { document.execCommand('copy'); } catch (er) {} t.remove(); } $('pgCopia').textContent = 'Copiado! Agora cole no app do banco'; setTimeout(() => { const b = $('pgCopia'); if (b) b.textContent = 'Copiar Pix copia e cola'; }, 4000); };
+  sec.querySelectorAll('[data-pg]').forEach(b => b.onclick = () => { sec.querySelectorAll('[data-pg]').forEach(x => { const on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-selected', on); }); sec.querySelectorAll('[data-pp]').forEach(p => { p.hidden = p.dataset.pp !== b.dataset.pg; }); });
+  const ja = $('pgJa'); if (ja) ja.onclick = () => {
+    const aba = sec.querySelector('[data-pg].on'), forma = aba ? aba.dataset.pg : 'pix', valor = forma === 'cartao' && P.cartao ? P.cartao.valor : P.valor;
+    if (!confirm(`Confirmar que você pagou ${brl(valor)} por ${forma === 'cartao' ? 'cartão' : 'Pix'}?`)) return;
+    const inf = { forma, valor, data: hojeISO() }; LS.set('pgInf.' + (P.venc || 'x'), inf);
+    enfileirar({ tipo: 'pagamento', id: 'pg-' + (P.venc || hojeISO()) + '-' + Date.now().toString(36), _v: Date.now(), data: hojeISO(), forma, valor, venc: P.venc || '' });
+    sec.outerHTML = blocoPag(); ligarPag(); cardsMG(); aviso('Pagamento informado. Obrigado!');
+  };
 }
 
 /* ---------- avisos do MG: feedback da semana e respostas às observações ---------- */
@@ -263,8 +333,9 @@ function cardFb() {
 function cardsMG() {
   const box = $('mgAv'); if (!box) return;
   const lidas = LS.get('respLidas', []), novas = (SNAP.respostas || []).filter(r => !lidas.includes(r.id)).slice(0, 3), fb = cardFb();
-  box.innerHTML = (fb ? `<div class="mgc fb" role="status"><h3><i>📋</i>${esc(fb.t)}</h3><p>${esc(fb.p)}</p><div class="lb"><button type="button" id="mgFb">Responder agora</button></div></div>` : '') +
+  box.innerHTML = cardPag() + (fb ? `<div class="mgc fb" role="status"><h3><i>📋</i>${esc(fb.t)}</h3><p>${esc(fb.p)}</p><div class="lb"><button type="button" id="mgFb">Responder agora</button></div></div>` : '') +
     novas.map(r => `<div class="mgc rs" role="status"><h3><i>💬</i>MG respondeu sua observação</h3><small>${esc(r.onde || '')}</small>${r.obs ? `<div class="q">Você: ${esc(r.obs)}</div>` : ''}<div class="r">${esc(r.txt)}</div><div class="lb"><button type="button" data-lida="${esc(r.id)}">Entendi ✓</button></div></div>`).join('');
+  const bp = $('mgPg'); if (bp) bp.onclick = irPagamento;
   const b = $('mgFb'); if (b) b.onclick = () => { const tb = $('tb-f'); if (tb) { tb.checked = true; LS.set('aba', 'tb-f'); } window.scrollTo(0, 0); };
   box.querySelectorAll('[data-lida]').forEach(x => x.onclick = () => { LS.set('respLidas', [...LS.get('respLidas', []), x.dataset.lida].slice(-100)); cardsMG(); });
 }
