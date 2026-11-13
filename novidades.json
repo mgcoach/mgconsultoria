@@ -1,0 +1,12 @@
+{
+  "itens": [
+    {
+      "data": "2026-11-13",
+      "titulo": "Exercícios em 3D: gire, pause e veja cada fase",
+      "resumo": "Agora você pode girar o exercício, pausar e parar em cada fase do movimento.",
+      "texto": "Os vídeos de execução ganharam um <b>modelo anatômico em 3D</b> com os músculos em destaque, os ângulos das articulações e o passo a passo de cada fase. No treino, abra <b>Ver execução</b> e toque em <b>Girar e pausar em 3D</b>: arraste para girar, use dois dedos para dar zoom e toque numa fase (Descida, Fundo, Subida…) para parar exatamente naquele ponto e observar a postura com calma.",
+      "img": "videos/agachamento-livre-barra.jpg",
+      "acao": { "rotulo": "Ir para o treino", "ir": "tb-t" }
+    }
+  ]
+}

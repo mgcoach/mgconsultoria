@@ -131,6 +131,20 @@ button,input,textarea,select{font:inherit;color:inherit}
 .ft-dica{font-size:13px;color:var(--ink-2);margin:0 0 12px;padding-left:18px}.ft-dica li{margin-bottom:2px}
 .ajuda{display:block;text-align:center;margin:18px 0 0;font-weight:600;color:var(--accent);text-decoration:none;font-size:14px}
 
+.b3d-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.b3d-al{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:999px;background:var(--accent);color:#fff;font-weight:700;font-size:14px;padding:9px 14px 9px 9px;cursor:pointer}
+.b3d-al i{font-style:normal;background:#fff;color:var(--accent);font-weight:800;font-size:11px;border-radius:999px;padding:2px 7px}
+.ov3d{position:fixed;inset:0;z-index:9999;background:var(--paper)}.ov3d iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.ov3d-x{position:absolute;top:calc(8px + env(safe-area-inset-top));left:8px;z-index:2;border:0;border-radius:20px;background:var(--ink);color:#fff;font-weight:700;font-size:14px;padding:8px 16px}
+.nvdot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-left:5px;vertical-align:super}
+.nv-t{font-size:22px;letter-spacing:-.02em;margin:6px 0 2px}.nv-s{color:var(--ink-2);font-size:14px;margin-bottom:14px}
+.nv{background:var(--card);border:1px solid var(--rule);border-radius:16px;overflow:hidden;margin-bottom:12px}
+.nv.novo{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.nv img{display:block;width:100%;max-height:300px;object-fit:cover;object-position:50% 30%;background:var(--paper)}
+.nv-b{padding:14px 16px 16px}.nv-d{font-size:12px;color:var(--ink-3);font-weight:600}.nv-d b{color:var(--accent)}
+.nv h3{font-size:17px;line-height:1.25;margin:4px 0 6px}.nv p{color:var(--ink-2);font-size:14.5px}.nv p b{color:var(--ink)}
+.nvav{background:#fff;border:2px solid var(--accent)}.nvav h3{color:#c2410c}.nvav p{color:var(--ink-2)}.nvav button{background:var(--accent);border:none;color:#fff}.nvav button.ln{background:#fff;color:var(--ink);border:1px solid var(--rule)}
+.nv-a{margin-top:12px;border:1px solid var(--ink);background:var(--ink);color:#fff;border-radius:999px;padding:9px 16px;font-weight:600;font-size:14px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -236,13 +250,15 @@ function montar() {
   if (!SNAP || !SNAP.html) return telaPin();
   const doc = new DOMParser().parseFromString(SNAP.html, 'text/html');
   let st = $('pcss'); if (!st) { st = document.createElement('style'); st.id = 'pcss'; document.head.appendChild(st); }
-  st.textContent = [...doc.querySelectorAll('style')].map(x => x.textContent).join('\n') + `\n#tb-f:checked~main .pg-f{display:block}#tb-f:checked~.bar label[for=tb-f]{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}`;
+  st.textContent = [...doc.querySelectorAll('style')].map(x => x.textContent).join('\n') + `\n#tb-f:checked~main .pg-f{display:block}#tb-f:checked~.bar label[for=tb-f]{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}#tb-n:checked~main .pg-n{display:block}#tb-n:checked~.bar label[for=tb-n]{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}`;
   $('app').innerHTML = doc.body.innerHTML;
   const app = $('app');
   /* aba Feedback */
   const radios = app.querySelectorAll('input.rd[name=tab]'); const ult = radios[radios.length - 1];
   ult.insertAdjacentHTML('afterend', '<input type="radio" class="rd" name="tab" id="tb-f">');
   app.querySelector('.navs').insertAdjacentHTML('beforeend', '<label class="linkbtn" for="tb-f">Feedback</label>');
+  app.querySelector('#tb-f').insertAdjacentHTML('afterend', '<input type="radio" class="rd" name="tab" id="tb-n">');
+  app.querySelector('.navs').insertAdjacentHTML('beforeend', '<label class="linkbtn" for="tb-n">Novidades<i class="nvdot" id="nvDot" hidden></i></label>');
   const main = app.querySelector('main');
   main.insertAdjacentHTML('afterbegin', '<p class="fila" id="filaAv" hidden></p><div id="mgAv"></div><div id="lembAv"></div>' + barraDia());
   const instalado = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
@@ -253,6 +269,7 @@ function montar() {
   }
   main.querySelector('.foot').insertAdjacentHTML('beforebegin', '<a class="ajuda" href="guia.html">Como usar o app e colocar na tela inicial</a>');
   const pf = document.createElement('section'); pf.className = 'pg pg-f'; main.insertBefore(pf, main.querySelector('.foot'));
+  const pn = document.createElement('section'); pn.className = 'pg pg-n'; main.insertBefore(pn, main.querySelector('.foot'));
   /* dia do registro (hoje, ou o dia que o aluno escolheu) */
   const r = app.querySelector('#d-' + DIAS_JS[dowISO(dataReg())]); if (r) r.checked = true;
   montarTreino(app); montarDieta(app); montarFeedback(pf); if (SNAP.fotosOn) montarFotos(pf);
@@ -260,7 +277,45 @@ function montar() {
   cardsMG(); ligarBarraDia(); if (!LS.get('desde', '')) LS.set('desde', LS.get('feitos', []).length || Object.keys(LS.get('hist', {})).length ? isoMenos(30) : hojeISO()); mostrarLembrete();
   const abaSalva = LS.get('aba', ''); if (abaSalva && $(abaSalva)) $(abaSalva).checked = true;
   app.querySelectorAll('input.rd[name=tab]').forEach(x => x.addEventListener('change', () => { LS.set('aba', x.id); window.scrollTo(0, 0); }));
-  mostrarFila();
+  mostrarFila(); ligar3D(app); montarNovidades(pn);
+}
+
+/* ---------- exercícios em 3D: girar, zoom, pausar e parar em cada fase ---------- */
+function abrir3D(slug) {
+  const o = document.createElement('div'); o.className = 'ov3d';
+  o.innerHTML = `<iframe src="3d/?ex=${encodeURIComponent(slug)}" title="Exercício em 3D" allow="fullscreen"></iframe><button class="ov3d-x" type="button">✕ Fechar 3D</button>`;
+  document.body.appendChild(o); try { history.pushState({ v3d: 1 }, ''); } catch (e) {}
+  o.querySelector('.ov3d-x').onclick = () => { o.remove(); if (history.state && history.state.v3d) history.back(); };
+}
+window.addEventListener('popstate', () => { const o = document.querySelector('.ov3d'); if (o) o.remove(); });
+function ligar3D(app) {
+  app.querySelectorAll('.vlist').forEach(vl => {
+    const bts = [...vl.querySelectorAll('a.vlink')].map(a => { const m = (a.getAttribute('href') || '').match(/videos\/([\w-]+)\.mp4/); const t = a.querySelector('.vt'); return m ? `<button type="button" class="b3d-al" data-v="${esc(m[1])}"><i>3D</i>${vl.children.length > 1 && t ? esc(t.textContent) : 'Girar e pausar em 3D'}</button>` : ''; }).join('');
+    if (bts) vl.insertAdjacentHTML('afterend', `<div class="b3d-row">${bts}</div>`);
+  });
+  app.addEventListener('click', e => { const b = e.target.closest('.b3d-al'); if (b) abrir3D(b.dataset.v); });
+}
+
+/* ---------- novidades do app (lista em novidades.json) ---------- */
+async function montarNovidades(sec) {
+  let L = [];
+  try { const r = await fetch('novidades.json?v=' + Date.now(), { cache: 'no-store' }); L = (await r.json()).itens || []; } catch (e) { L = LS.get('nov', []); }
+  if (L.length) LS.set('nov', L);
+  L.sort((x, y) => String(y.data).localeCompare(String(x.data)));
+  const visto = LS.get('novVisto', '');
+  const novas = L.filter(n => String(n.data) > visto);
+  sec.innerHTML = `<h2 class="nv-t">Novidades do app</h2><p class="nv-s">Tudo de novo que chega para você no app da MG COACH.</p>` +
+    (L.length ? L.map(n => `<article class="nv${String(n.data) > visto ? ' novo' : ''}">${n.img ? `<img src="${esc(n.img)}" alt="" loading="lazy">` : ''}<div class="nv-b"><span class="nv-d">${esc(dataBR(n.data))}${String(n.data) > visto ? ' · <b>novo</b>' : ''}</span><h3>${esc(n.titulo)}</h3><p>${n.texto}</p>${n.acao ? `<button type="button" class="nv-a" data-go="${esc(n.acao.ir || '')}">${esc(n.acao.rotulo)}</button>` : ''}</div></article>`).join('') : '<p class="nv-s">Nenhuma novidade por enquanto.</p>');
+  sec.querySelectorAll('.nv-a').forEach(b => b.onclick = () => { const id = b.dataset.go; const r = id && document.getElementById(id); if (r) { r.checked = true; r.dispatchEvent(new Event('change')); window.scrollTo(0, 0); } });
+  const marcar = () => { if (L.length) LS.set('novVisto', String(L[0].data)); $('nvDot').hidden = true; const c = $('nvAv'); if (c) c.remove(); sec.querySelectorAll('.nv.novo').forEach(x => x.classList.remove('novo')); };
+  if (novas.length) {
+    $('nvDot').hidden = false;
+    const n = novas[0];
+    $('mgAv').insertAdjacentHTML('beforebegin', `<div class="mgc nvav" id="nvAv" role="status"><h3><i>✨</i>Novidade no app: ${esc(n.titulo)}</h3><p>${esc(n.resumo || '')}</p><div class="lb"><button type="button" id="nvVer">Ver novidade</button><button type="button" class="ln" id="nvOk">Depois</button></div></div>`);
+    $('nvVer').onclick = () => { const r = $('tb-n'); r.checked = true; r.dispatchEvent(new Event('change')); window.scrollTo(0, 0); };
+    $('nvOk').onclick = () => { const c = $('nvAv'); if (c) c.remove(); };
+  }
+  const tb = $('tb-n'); tb.addEventListener('change', () => { if (tb.checked) setTimeout(marcar, 1500); }); if (tb.checked) setTimeout(marcar, 1500);
 }
 
 /* ---------- pagamento do plano: Pix (QR Code e copia e cola) e cartão (link do Mercado Pago) ---------- */
