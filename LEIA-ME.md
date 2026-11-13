@@ -17,3 +17,4 @@ Se usou em outro aparelho, exporte o backup completo em cada app antigo e use Im
 
 ## Atualizar
 Ao trocar o `index.html`, troque também o número em `CACHE_NAME` no `sw.js` para os celulares pegarem a versão nova.
+- `3d/` — visualizador 3D interativo dos exercícios (girar, zoom, pausar, ir para cada fase). Abre pelo botão "Girar em 3D" no vídeo. `3d/?ex=nome-do-video`
