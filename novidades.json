@@ -1,12 +1,26 @@
 {
-  "itens": [
-    {
-      "data": "2026-11-13",
-      "titulo": "Exercícios em 3D: gire, pause e veja cada fase",
-      "resumo": "Agora você pode girar o exercício, pausar e parar em cada fase do movimento.",
-      "texto": "Os vídeos de execução ganharam um <b>modelo anatômico em 3D</b> com os músculos em destaque, os ângulos das articulações e o passo a passo de cada fase. No treino, abra <b>Ver execução</b> e toque em <b>Girar e pausar em 3D</b>: arraste para girar, use dois dedos para dar zoom e toque numa fase (Descida, Fundo, Subida…) para parar exatamente naquele ponto e observar a postura com calma.",
-      "img": "videos/agachamento-livre-barra.jpg",
-      "acao": { "rotulo": "Ir para o treino", "ir": "tb-t" }
-    }
-  ]
+ "itens": [
+  {
+   "data": "2026-11-14",
+   "titulo": "Todos os exercícios agora em 3D",
+   "resumo": "Os mais de 200 exercícios do app ganharam vídeo e modelo 3D com fases, ângulos e músculos.",
+   "texto": "Terminamos: <b>todos os exercícios do app</b> agora têm vídeo de execução com o modelo anatômico em 3D. Máquinas, polias, peso livre, abdominais, cardio e alongamentos: cada um com o <b>passo a passo por fase</b>, os <b>ângulos das articulações</b> e os <b>músculos que mais trabalham</b> em destaque. No treino, abra <b>Ver execução</b> e toque em <b>Girar e pausar em 3D</b> para ver de qualquer ângulo.",
+   "img": "videos/leg-press.jpg",
+   "acao": {
+    "rotulo": "Ir para o treino",
+    "ir": "tb-t"
+   }
+  },
+  {
+   "data": "2026-11-13",
+   "titulo": "Exercícios em 3D: gire, pause e veja cada fase",
+   "resumo": "Agora você pode girar o exercício, pausar e parar em cada fase do movimento.",
+   "texto": "Os vídeos de execução ganharam um <b>modelo anatômico em 3D</b> com os músculos em destaque, os ângulos das articulações e o passo a passo de cada fase. No treino, abra <b>Ver execução</b> e toque em <b>Girar e pausar em 3D</b>: arraste para girar, use dois dedos para dar zoom e toque numa fase (Descida, Fundo, Subida…) para parar exatamente naquele ponto e observar a postura com calma.",
+   "img": "videos/agachamento-livre-barra.jpg",
+   "acao": {
+    "rotulo": "Ir para o treino",
+    "ir": "tb-t"
+   }
+  }
+ ]
 }
