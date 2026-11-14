@@ -2,6 +2,17 @@
  "itens": [
   {
    "data": "2026-11-14",
+   "titulo": "Nova aba Evolução, cardio e exercício reserva",
+   "resumo": "Veja sua força subindo, acompanhe o cardio pela frequência cardíaca e tenha um plano B quando faltar o aparelho.",
+   "texto": "Três novidades no seu app:<br><br><b>Evolução</b>: uma aba nova mostra a sua <b>força estimada</b> em cada exercício, seus <b>recordes</b>, a sua <b>constância</b> por semana e a evolução do cardio (minutos, esforço e frequência cardíaca). Quanto mais você anota cargas e repetições, mais completa ela fica.<br><br><b>Cardio com zonas</b>: quando o seu treino tiver cardio, você vê o tempo, a zona e a faixa de batimentos. Na aba Evolução, coloque a sua <b>FC de repouso</b> e as faixas ficam personalizadas para você.<br><br><b>Opção “ou”</b>: alguns exercícios agora têm uma alternativa. Treinando em outra academia ou sem o aparelho livre? Toque na alternativa e registre normalmente.<br><br>E no treino, uma <b>dica de progressão</b> diz quando é hora de subir a carga.",
+   "acao": {
+    "rotulo": "Ver minha evolução",
+    "ir": "tb-e"
+   },
+   "seq": "b"
+  },
+  {
+   "data": "2026-11-14",
    "titulo": "Todos os exercícios agora em 3D",
    "resumo": "Os mais de 200 exercícios do app ganharam vídeo e modelo 3D com fases, ângulos e músculos.",
    "texto": "Terminamos: <b>todos os exercícios do app</b> agora têm vídeo de execução com o modelo anatômico em 3D. Máquinas, polias, peso livre, abdominais, cardio e alongamentos: cada um com o <b>passo a passo por fase</b>, os <b>ângulos das articulações</b> e os <b>músculos que mais trabalham</b> em destaque. No treino, abra <b>Ver execução</b> e toque em <b>Girar e pausar em 3D</b> para ver de qualquer ângulo.",
