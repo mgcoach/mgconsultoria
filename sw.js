@@ -2,7 +2,7 @@
 // Página: busca a versão nova na rede primeiro e usa a cópia guardada sem internet.
 // Fontes, ícones e GIFs: usa a cópia guardada e atualiza em segundo plano.
 // Imagens de exercícios de fora e buscas no Open Food Facts não passam pelo cache.
-const CACHE_NAME = 'mgcoach-consultoria-v1-41-0';
+const CACHE_NAME = 'mgcoach-consultoria-v1-42-0';
 const ASSETS = ['./', './index.html', './manifest.json', './apple-touch-icon.png', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(ASSETS)).catch(() => {})); self.skipWaiting(); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE_NAME && (k.startsWith('mgcoach-consultoria') || k.startsWith('mgconsultoria'))).map(k => caches.delete(k))))); self.clients.claim(); });
