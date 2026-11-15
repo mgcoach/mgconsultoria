@@ -460,6 +460,13 @@ html[data-layout="pc"] .sheet{max-width:740px}
 .zl{display:flex;flex-direction:column;gap:6px}.zb{display:flex;gap:10px;align-items:flex-start;text-align:left;border:1px solid var(--rule);background:var(--card,#fff);border-radius:12px;padding:9px 11px;cursor:pointer}.zb>b{flex:none;width:34px;height:34px;border-radius:50%;background:var(--paper);display:flex;align-items:center;justify-content:center;font-size:13px}.zb span{font-size:12.5px;color:var(--ink-2);line-height:1.35}.zb span b{display:block;color:var(--ink);font-size:14px}.zb i{display:block;font-style:normal;color:var(--ink-3)}.zb.on{border-color:#e0245e;box-shadow:0 0 0 1px #e0245e}.zb.on>b{background:#e0245e;color:#fff}
 .evo h3{margin:0}.evo-t{overflow-x:auto;margin-top:8px}.evo-t table{width:100%;border-collapse:collapse;font-size:13.5px}.evo-t th,.evo-t td{padding:8px 6px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:middle}.evo-t thead th{font-size:11.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.04em}.evo-t tbody th small{display:block;font-weight:400;color:var(--ink-3);font-size:12px}.evo-t i{font-style:normal;font-weight:700;font-size:12px}.evo .up{color:#15803d}.evo .dn{color:#c2410c}.spkc{color:var(--accent,#ff5a00);width:96px}
 .evo-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:8px}.evo-g div{background:var(--paper);border-radius:12px;padding:10px 12px}.evo-g span{display:block;font-size:12px;color:var(--ink-3)}.evo-g b{font-size:20px;letter-spacing:-.02em}.evo-g small{display:block;font-size:11.5px;color:var(--ink-3);line-height:1.35}
+.zsug{background:var(--card);border:1px dashed var(--rule);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px}.zsug span{font-size:13px;color:var(--ink-2);line-height:1.45}.zsug .btn{align-self:flex-start}
+.zm{display:flex;flex-direction:column;gap:6px}.zmo{text-align:left;border:1px solid var(--rule);background:var(--paper);border-radius:12px;padding:9px 12px;cursor:pointer;display:flex;flex-direction:column;gap:2px;font:inherit;color:inherit}.zmo b{font-size:14px}.zmo span{font-size:12.5px;color:var(--ink-2);line-height:1.4}.zmo.on{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink);background:var(--card)}.zmo.zck b::before{content:'';display:inline-block;width:14px;height:14px;border:1.5px solid var(--ink-3);border-radius:4px;margin-right:7px;vertical-align:-2px}.zmo.zck.on b::before{background:var(--ink);border-color:var(--ink);box-shadow:inset 0 0 0 2.5px var(--card)}
+.zinfo{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:8px;font-size:12.5px;color:var(--ink-2);line-height:1.4}.zinfo .btn{flex:none}
+.zbt{width:100%;text-align:left;border:1px solid var(--rule);background:var(--card);border-radius:12px;padding:10px 12px;margin:0 0 8px;cursor:pointer;font:inherit;color:var(--ink-2)}.zbt b{display:block;color:var(--ink);font-size:13.5px}.zbt i{font-style:normal;font-size:20px;color:var(--ink-3)}
+.tr2{position:relative}.tr2 em{position:absolute;top:-3px;bottom:-3px;width:2px;margin-left:-1px;background:var(--ink);border-radius:1px}.mb b small{font-weight:400;color:var(--ink-3)}
+.evo-fase{font-size:13px;color:var(--ink-2);margin-bottom:8px}.evo-res{font-size:13px;line-height:1.5;margin-bottom:10px}.evo .pl{color:#b7791f}.evo-v{margin-top:8px}.evo-t td small{display:block;color:var(--ink-3);font-size:11px;margin-top:2px}
+.lnk{border:0;background:none;color:var(--accent);font:inherit;font-weight:600;cursor:pointer;padding:0;text-decoration:underline}
 .evo-bars{display:flex;gap:6px;align-items:flex-end;height:90px;margin-top:12px}.evo-bars div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}.evo-bars i{display:block;width:100%;background:#e0245e;border-radius:6px 6px 2px 2px;min-height:2px}.evo-bars span{font-size:10.5px;color:var(--ink-3);margin-top:4px}
 </style>
 <script>(function(){var e='auto';try{e=localStorage.getItem('mgcons.vis')||'auto'}catch(x){}var w=innerWidth,h=innerHeight,m=e!=='auto'?e:(w>=1100&&h>=560?'pc':w>=700&&h>=500?'tablet':'celular');var d=document.documentElement;d.setAttribute('data-layout',m);if(m!=='celular')d.classList.add('lg')})();</script>
@@ -746,6 +753,9 @@ function garantirAluno(a) {
   if (!a.protocolo.blocos.some(x => x.id === 'biset')) { const nb = PROTO_BASE.find(x => x.id === 'biset'); const i = a.protocolo.blocos.findIndex(x => x.id === 'restpause'); if (nb) a.protocolo.blocos.splice(i < 0 ? a.protocolo.blocos.length : i, 0, clone(nb)); }
   PROTO_BASE.forEach(b => { if (b.cond === 'semrir' && !a.protocolo.blocos.some(x => x.id === b.id)) { const i = a.protocolo.blocos.findIndex(x => x.id === 'rir'); a.protocolo.blocos.splice(i < 0 ? 0 : i + 1, 0, clone(b)); } });
   if (!Array.isArray(a.avaliacoes)) a.avaliacoes = [];
+  a.cardioCfg = Object.assign({ metodo: 'tanaka', fcMax: '', fcRep: '', l1: '', l2: '', testes: ['repouso', 'fala'] }, a.cardioCfg || {});
+  if (a.treino.meso === undefined) a.treino.meso = null;
+  if (!Array.isArray(a.mesoHist)) a.mesoHist = [];
   return a;
 }
 function idadeDe(d) {
@@ -962,8 +972,133 @@ const ZONAS = [
 const modNome = k => (CARD_MOD.find(m => m[0] === k) || [k, 'Cardio'])[1];
 const eqNome = k => (CARD_EQ.find(m => m[0] === k) || [k, ''])[1];
 const ehInterv = c => c.mod === 'hiit' || c.mod === 'tiros';
-const fcMaxDe = a => { const i = idadeDe(a.dados); return isFinite(i) && i > 8 && i < 100 ? Math.round(208 - 0.7 * i) : null; };   /* Tanaka (2001) */
-const fcFaixa = (fm, z) => { const Z = ZONAS[z - 1]; return fm ? `${Math.round(fm * Z.p[0] / 100)}–${Math.round(fm * Z.p[1] / 100)} bpm` : `${Z.p[0]}–${Z.p[1]}% da FC máx.`; };
+/* ---------- zonas de FC: o coach escolhe o método de cada aluno ----------
+   tanaka: 208 − 0,7 × idade (Tanaka 2001) · obeso: 200 − 0,48 × idade (Miller 1993)
+   fala: limiares do teste da fala progressivo (L1 = estágio em que falar fica difícil, L2 = não dá mais para falar)
+   medida: FC máxima (e limiares, se houver) do teste ergométrico / ergoespirometria · pse: só esforço e fala */
+const FC_MET = [
+  ['fala', 'Teste da fala (limiares)', 'O aluno faz um teste progressivo no app e marca quando falar fica difícil e quando não dá mais. As zonas saem dos limiares dele, sem depender de idade, peso ou composição corporal. É submáximo: serve para obesidade e sedentários.'],
+  ['tanaka', 'Fórmula pela idade', '208 − 0,7 × idade (Tanaka, 2001). Boa média para adultos, mas erra uns 10 bpm para mais ou para menos de pessoa para pessoa.'],
+  ['obeso', 'Fórmula para obesidade', '200 − 0,48 × idade (Miller, 1993), criada com pessoas com obesidade. Os estudos divergem: em adultos com sobrepeso e obesidade a de Tanaka acertou mais (Franckowiak, 2011). Use só quando não der para testar.'],
+  ['medida', 'Teste de laboratório', 'FC máxima do teste ergométrico ou da ergoespirometria. Se o laudo trouxer a FC nos limiares (L1 e L2), coloque também: as zonas passam a usar os limiares.'],
+  ['pse', 'Só esforço e fala', 'Sem batimentos. Para quem usa remédio que altera a FC (como betabloqueador), tem arritmia ou não tem como medir.']];
+const Z_PCT = [[50, 60], [60, 70], [70, 80], [80, 90], [90, 100]];
+function zonasCalc(o) {
+  const id = o.idade > 8 && o.idade < 100 ? o.idade : null, tan = id ? Math.round(208 - 0.7 * id) : null;
+  const max = o.met === 'medida' && o.fcMax >= 120 ? o.fcMax : o.met === 'obeso' && id ? Math.round(200 - 0.48 * id) : tan;
+  const lim = (o.met === 'fala' || o.met === 'medida') && o.l1 >= 70 && o.l2 > o.l1 + 4;
+  let tipo, F = null;
+  if (o.met === 'pse') tipo = 'pse';
+  else if (lim) { tipo = 'lim'; const a = Math.round(o.l1), b = Math.round(o.l2), m = Math.round((a + b) / 2), top = max && max > b + 3 ? max : b + 12;
+    F = [[Math.round(a * 0.8), Math.round(a * 0.9)], [Math.round(a * 0.9), a], [a, m], [m, b], [b, top]]; }
+  else if (max) { const rep = o.rep > 30 && o.rep < max - 30 ? Math.round(o.rep) : 0; tipo = o.met === 'fala' ? 'prov' : rep ? 'karv' : 'max';
+    F = Z_PCT.map(([p, q]) => rep ? [Math.round(rep + (max - rep) * p / 100), Math.round(rep + (max - rep) * q / 100)] : [Math.round(max * p / 100), Math.round(max * q / 100)]); }
+  else tipo = 'sem';
+  return { tipo, max, F, met: o.met, faixa: z => F ? `${F[z - 1][0]}–${F[z - 1][1]} bpm` : tipo === 'pse' ? 'pelo esforço' : `${Z_PCT[z - 1][0]}–${Z_PCT[z - 1][1]}% da FC máx.` };
+}
+const cfgFC = a => a.cardioCfg || { metodo: 'tanaka' };
+const zonasDe = a => { const c = cfgFC(a); return zonasCalc({ met: c.metodo || 'tanaka', idade: idadeDe(a.dados), fcMax: num(c.fcMax) || 0, rep: num(c.fcRep) || 0, l1: num(c.l1) || 0, l2: num(c.l2) || 0 }); };
+const fcMaxDe = a => zonasDe(a).max;
+function zonasTxt(a) {
+  const c = cfgFC(a), Z = zonasDe(a);
+  return Z.tipo === 'lim' ? `Pelos limiares ${c.metodo === 'fala' ? 'do teste da fala' : 'do laudo'}: L1 ${Math.round(num(c.l1))} e L2 ${Math.round(num(c.l2))} bpm.`
+    : Z.tipo === 'prov' ? `Aguardando o teste da fala. Até lá, faixas provisórias pela idade${Z.max ? ` (FC máx. ~${Z.max} bpm)` : ''}.`
+    : Z.tipo === 'karv' ? `Reserva cardíaca (Karvonen): FC máx. ${Z.max} e repouso ${Math.round(num(c.fcRep))} bpm.`
+    : Z.tipo === 'max' ? `% da FC máxima de ${Z.max} bpm (${c.metodo === 'obeso' ? '200 − 0,48 × idade' : c.metodo === 'medida' ? 'medida em teste' : '208 − 0,7 × idade'}).`
+    : Z.tipo === 'pse' ? 'Sem batimentos: só esforço (0–10) e teste da fala.' : 'Preencha a idade na ficha para calcular as faixas.';
+}
+const fcFaixa = (Zc, z) => Zc && Zc.faixa ? Zc.faixa(z) : `${Z_PCT[z - 1][0]}–${Z_PCT[z - 1][1]}% da FC máx.`;
+function imcDe(a) { const p = num(a.dados.peso), h = num(a.dados.altura) / 100; return p > 0 && h > 1 ? p / (h * h) : null; }
+const TESTES = [
+  ['repouso', 'FC de repouso', 'Todos. 3 manhãs, ainda deitado.'],
+  ['fala', 'Teste da fala progressivo', 'Todos, inclusive obesidade e sedentários. Define as zonas.'],
+  ['c6', 'Caminhada de 6 minutos', 'Sedentários, obesidade, idosos ou volta após parada.'],
+  ['rockport', 'Caminhada de 1,6 km (Rockport)', 'Quem caminha bem. Estima o VO₂máx.'],
+  ['cooper', 'Corrida de 12 minutos (Cooper)', 'Só para quem já corre 20 min sem parar. Estima o VO₂máx.']];
+function sugestaoFC(a) {
+  const imc = imcDe(a), i = idadeDe(a.dados), med = norm(a.dados.medicamentos || '');
+  if (/olol\b|olol |carvedilol|betabloq|beta bloq|verapamil|diltiazem/.test(med)) return { met: 'pse', t: ['repouso', 'c6'], txt: 'Os medicamentos da ficha parecem alterar a FC: use esforço e fala, e caminhada de 6 min para acompanhar.' };
+  if ((imc && imc >= 30) || (isFinite(i) && i >= 60)) return { met: 'fala', t: ['repouso', 'fala', 'c6'], txt: `${imc && imc >= 30 ? `IMC ${fmt(imc, 1)}` : `${i} anos`}: fórmulas pela idade erram mais aqui. Teste da fala para as zonas e caminhada de 6 min para acompanhar a evolução.` };
+  if ((imc && imc >= 25) || a.dados.nivel === 'Iniciante') return { met: 'fala', t: ['repouso', 'fala', 'rockport'], txt: `${imc && imc >= 25 ? `IMC ${fmt(imc, 1)}` : 'Iniciante'}: teste da fala para as zonas e caminhada de 1,6 km para estimar o VO₂máx.` };
+  return { met: 'fala', t: ['repouso', 'fala', 'cooper'], txt: 'Teste da fala para as zonas. Se ele já corre, o Cooper estima o VO₂máx.' };
+}
+function zonasSheet() {
+  const a = cur(), c = clone(cfgFC(a)); c.testes = Array.isArray(c.testes) ? c.testes : [];
+  const imc = imcDe(a), i = idadeDe(a.dados), sg = sugestaoFC(a);
+  const ult = ((a.registros || {}).testes || []);
+  const body = () => { const Z = zonasCalc({ met: c.metodo, idade: i, fcMax: num(c.fcMax) || 0, rep: num(c.fcRep) || 0, l1: num(c.l1) || 0, l2: num(c.l2) || 0 }); const tf = ult.find(t => t.tipo === 'fala');
+    return `<p class="note">${[isFinite(i) ? i + ' anos' : 'sem idade', imc ? 'IMC ' + fmt(imc, 1) : 'sem peso/altura', a.dados.nivel].filter(Boolean).join(' · ')}</p>
+    <div class="zsug"><b>Sugestão para ${esc(primeiroNome(a.dados.nome))}</b><span>${esc(sg.txt)}</span><button class="btn btn-line btn-sm" type="button" id="zSug">Usar sugestão</button></div>
+    <div><span class="lbl">Como calcular as zonas</span><div class="zm" id="zM">${FC_MET.map(([k, t, d]) => `<button type="button" class="zmo${c.metodo === k ? ' on' : ''}" data-v="${k}"><b>${t}</b><span>${d}</span></button>`).join('')}</div></div>
+    <div class="form">
+      ${c.metodo === 'medida' ? `<label class="campo">FC máxima do teste (bpm)<input id="zMax" inputmode="numeric" value="${esc(c.fcMax)}"></label>` : ''}
+      ${c.metodo === 'fala' || c.metodo === 'medida' ? `<label class="campo">FC no limiar 1 (L1)<input id="zL1" inputmode="numeric" value="${esc(c.l1)}" placeholder="${c.metodo === 'fala' ? 'vem do teste do aluno' : 'opcional'}"></label><label class="campo">FC no limiar 2 (L2)<input id="zL2" inputmode="numeric" value="${esc(c.l2)}" placeholder="${c.metodo === 'fala' ? 'vem do teste do aluno' : 'opcional'}"></label>` : ''}
+      ${c.metodo !== 'pse' ? `<label class="campo">FC de repouso (bpm)<input id="zRep" inputmode="numeric" value="${esc(c.fcRep)}" placeholder="o aluno pode medir no app"></label>` : ''}</div>
+    ${c.metodo === 'fala' ? `<p class="note">${tf ? `Último teste da fala: ${dataBR(tf.data)}, L1 ${tf.v.l1 || '–'} e L2 ${tf.v.l2 || '–'} bpm. Quando ele refaz o teste, os limiares atualizam sozinhos.` : 'Quando o aluno fizer o teste da fala no app, L1 e L2 entram aqui sozinhos. Até lá, as faixas ficam provisórias pela idade.'}</p>` : ''}
+    <table class="dt zt" style="margin:4px 0 2px"><tbody>${ZONAS.map(Zn => `<tr><th>Z${Zn.z} ${esc(Zn.n)}</th><td>${Z.faixa(Zn.z)}</td><td>PSE ${Zn.pse}</td></tr>`).join('')}</tbody></table>
+    <div><span class="lbl">Testes que aparecem para o aluno</span><div class="zm" id="zT">${TESTES.map(([k, t, d]) => `<button type="button" class="zmo zck${c.testes.includes(k) ? ' on' : ''}" data-v="${k}"><b>${t}</b><span>${d}</span></button>`).join('')}</div>
+      <p class="note" style="margin-top:6px">Ficam na aba Evolução do aluno, com passo a passo e o cálculo pronto. Os resultados chegam em Registros. Testes máximos (Cooper) só com o aluno liberado para esforço intenso.</p></div>`; };
+  openSheet({ title: 'Zonas e testes de cardio', tall: true, body: body(),
+    foot: `<button class="btn btn-line" type="button" data-act="closeSheet">Cancelar</button><button class="btn btn-ink" type="button" id="zOk">Salvar</button>`,
+    onMount: () => {
+      const B = $('shB');
+      const sync = () => { [['zMax', 'fcMax'], ['zL1', 'l1'], ['zL2', 'l2'], ['zRep', 'fcRep']].forEach(([id, k]) => { const el = $(id); if (el) c[k] = el.value.replace(/\D/g, '').slice(0, 3); }); };
+      const redraw = () => { const st = B.scrollTop; sync(); B.innerHTML = body(); B.scrollTop = st; };
+      B.addEventListener('click', ev => {
+        if (ev.target.closest('#zSug')) { c.metodo = sg.met; c.testes = sg.t.slice(); return redraw(); }
+        const b = ev.target.closest('.zmo'); if (!b) return;
+        if (b.parentElement.id === 'zM') { c.metodo = b.dataset.v; return redraw(); }
+        const k = b.dataset.v; c.testes = c.testes.includes(k) ? c.testes.filter(x => x !== k) : TESTES.map(t => t[0]).filter(x => x === k || c.testes.includes(x)); redraw();
+      });
+      B.addEventListener('input', ev => { if (ev.target.matches('input')) { sync(); const st = B.scrollTop; const f = document.activeElement && document.activeElement.id; B.innerHTML = body(); B.scrollTop = st; if (f && $(f)) { const el = $(f); el.focus(); el.setSelectionRange(el.value.length, el.value.length); } } });
+      $('zOk').onclick = () => { sync(); a.cardioCfg = c; touch(a); closeSheet(); renderPane(); toast('Zonas atualizadas. Envie o protocolo para o aluno ver.'); };
+    } });
+}
+ACT.zonasCfg = () => zonasSheet();
+
+/* ---------- periodização: fase do treino e semana do bloco ---------- */
+const FASES = [
+  ['adaptacao', 'Adaptação', 'Aprender a técnica e acostumar o corpo. Cargas moderadas, longe da falha.', [3, 4]],
+  ['hipertrofia', 'Hipertrofia', 'Ganho de massa muscular. Séries de 6 a 15 repetições terminando perto da falha.', [1, 3]],
+  ['forca', 'Força', 'Ficar mais forte. Cargas altas, 3 a 6 repetições e descansos maiores (2 a 5 min).', [1, 3]],
+  ['resistencia', 'Resistência muscular', 'Mais repetições (15 a 25) e descansos curtos.', [1, 3]],
+  ['manutencao', 'Manutenção', 'Manter o que foi conquistado com menos volume.', [2, 3]],
+  ['deload', 'Semana leve (deload)', 'Recuperar: cerca de metade das séries e cargas mais leves, longe da falha.', [3, 5]]];
+const faseDe = k => FASES.find(f => f[0] === k) || FASES[1];
+/* semana atual do bloco e o RIR alvo: começa mais longe da falha e chega mais perto a cada semana; a última pode ser deload */
+function mesoStatus(m, hoje) {
+  if (!m || !m.fase || !dOk(m.ini)) return null;
+  const sem = Math.max(1, Math.min(16, parseInt(m.sem, 10) || 4)), d = Math.floor(difDias(m.ini, hoje || todayISO()) / 7) + 1;
+  const F = faseDe(m.fase), cargas = m.deload && m.fase !== 'deload' ? sem - 1 : sem, w = Math.max(1, Math.min(d, sem));
+  const del = m.fase === 'deload' || (m.deload && w === sem);
+  const [lo, hi] = del ? [3, 5] : F[3]; const r = cargas > 1 ? hi - (hi - lo) * (Math.min(w, cargas) - 1) / (cargas - 1) : (lo + hi) / 2;
+  const rir = del ? '3 a 5' : `${Math.max(lo, Math.floor(r))}${Math.ceil(r) > Math.floor(r) ? ' a ' + Math.ceil(r) : ''}`;
+  return { fase: F, sem, w, d, antes: d < 1, fim: d > sem, del, rir, fimISO: isoMenosDias(m.ini, -sem * 7) };
+}
+function mesoSheet() {
+  const a = cur(), m = clone(a.treino.meso || { fase: 'hipertrofia', ini: todayISO(), sem: 6, deload: true, nota: '' });
+  const body = () => { const S = mesoStatus(m);
+    return `<p class="note">Organize o treino em blocos. O aluno vê a fase, a semana do bloco e o esforço alvo de cada semana, que começa mais longe da falha e chega mais perto até a semana leve.</p>
+    <div><span class="lbl">Fase</span><div class="zm" id="mF">${FASES.map(([k, t, d]) => `<button type="button" class="zmo${m.fase === k ? ' on' : ''}" data-v="${k}"><b>${t}</b><span>${d}</span></button>`).join('')}</div></div>
+    <div class="form"><label class="campo">Início do bloco<input id="mI" type="date" value="${esc(m.ini)}"></label><label class="campo">Semanas<input id="mS" inputmode="numeric" value="${esc(m.sem)}"></label></div>
+    ${m.fase !== 'deload' ? `<label class="row-sw" style="gap:10px"><span><b>Última semana leve (deload)</b><span class="note" style="display:block">Metade das séries e mais longe da falha para recuperar antes do próximo bloco.</span></span><span class="switch"><input type="checkbox" id="mD" ${m.deload ? 'checked' : ''}><i></i></span></label>` : ''}
+    <label class="campo" style="margin:0">Recado do bloco para o aluno<textarea id="mN" placeholder="ex: foco em subir as cargas dos básicos">${esc(m.nota || '')}</textarea></label>
+    ${S ? `<p class="note">${S.antes ? 'Começa em ' + dataBR(m.ini) : S.fim ? 'Bloco terminado em ' + dataBR(S.fimISO) + '. Defina o próximo.' : `Agora: semana ${S.w} de ${S.sem}${S.del ? ' (leve)' : ''} · RIR alvo ${S.rir} · termina em ${dataBR(S.fimISO)}`}</p>` : ''}`; };
+  openSheet({ title: 'Periodização', tall: true, body: body(),
+    foot: `${a.treino.meso ? '<button class="btn btn-line" type="button" id="mX">Encerrar bloco</button>' : '<button class="btn btn-line" type="button" data-act="closeSheet">Cancelar</button>'}<button class="btn btn-ink" type="button" id="mOk">Salvar</button>`,
+    onMount: () => {
+      const B = $('shB');
+      const sync = () => { m.ini = $('mI').value || m.ini; m.sem = Math.max(1, Math.min(16, parseInt($('mS').value, 10) || 4)); const d = $('mD'); if (d) m.deload = d.checked; m.nota = $('mN').value.trim(); };
+      const redraw = () => { const st = B.scrollTop; sync(); B.innerHTML = body(); B.scrollTop = st; };
+      B.addEventListener('click', ev => { const b = ev.target.closest('.zmo'); if (b) { m.fase = b.dataset.v; if (m.fase === 'deload') m.sem = 1; else if (m.sem < 3) m.sem = 6; redraw(); } });
+      B.addEventListener('change', ev => { if (ev.target.matches('#mI,#mS,#mD')) redraw(); });
+      const guardar = novo => { const ant = a.treino.meso; if (ant && (!novo || ant.fase !== novo.fase || ant.ini !== novo.ini)) { a.mesoHist = [{ fase: ant.fase, ini: ant.ini, sem: ant.sem, fim: novo ? (novo.ini < isoMenosDias(ant.ini, -ant.sem * 7) ? novo.ini : isoMenosDias(ant.ini, -ant.sem * 7)) : todayISO() }, ...a.mesoHist.filter(h => h.ini !== ant.ini)].slice(0, 24); }
+        a.treino.meso = novo; touch(a); closeSheet(); renderPane(); };
+      $('mOk').onclick = () => { sync(); guardar(m); toast('Bloco salvo. Envie o protocolo para o aluno ver.'); };
+      const x = $('mX'); if (x) x.onclick = () => { guardar(null); toast('Bloco encerrado'); };
+    } });
+}
+ACT.mesoCfg = () => mesoSheet();
 function cardioResumo(c) {
   const Z = ZONAS[(c.zona || 2) - 1];
   if (ehInterv(c)) return `${c.n || 8} × ${c.on || 30} s forte + ${c.off || 60} s leve · zona ${c.zona || 4} no forte${c.min ? ` · ~${c.min} min com aquecimento` : ''}`;
@@ -977,7 +1112,7 @@ function cardioCardCoach(c, i) {
 function cardioSheet(idx) {
   const a = cur(); const d = a.treino.dias[UI.dia]; d.cardio = d.cardio || []; const edit = idx != null;
   const c = edit ? clone(d.cardio[idx]) : Object.assign({ mod: 'leve', eq: 'esteira', min: 30, zona: 2, on: 30, off: 60, n: 8, obs: '' }, CFG.ultCardio || {});
-  const fm = fcMaxDe(a);
+  const fm = zonasDe(a);
   const chips = (id, list, val) => `<div class="opts" id="${id}">${list.map(([v, t]) => `<button class="opt${String(v) === String(val) ? ' on' : ''}" type="button" data-v="${esc(v)}">${esc(t)}</button>`).join('')}</div>`;
   const body = () => `
     <div><span class="lbl">Modalidade</span>${chips('cM', CARD_MOD, c.mod)}</div>
@@ -989,7 +1124,7 @@ function cardioSheet(idx) {
         <label class="campo">Tempo total com aquecimento (min)<input id="cT" inputmode="numeric" value="${esc(c.min)}"></label></div>`
       : `<label class="campo">Tempo (min)<input id="cT" inputmode="numeric" value="${esc(c.min)}"></label><div class="opts" id="cTq" style="margin-top:-6px">${[15, 20, 25, 30, 40, 45, 60].map(m => `<button class="opt sm" type="button" data-v="${m}">${m} min</button>`).join('')}</div>`}
     <div><span class="lbl">${ehInterv(c) ? 'Zona nos estímulos fortes' : 'Zona de frequência cardíaca'}</span><div class="zl" id="cZ">${ZONAS.map(Z => `<button class="zb${Z.z === +c.zona ? ' on' : ''}" type="button" data-v="${Z.z}"><b>Z${Z.z}</b><span><b>${Z.n}</b>${fcFaixa(fm, Z.z)} · PSE ${Z.pse}<i>${Z.fala}</i></span></button>`).join('')}</div>
-      <p class="note" style="margin-top:6px">${fm ? `FC máxima estimada de ${fm} bpm (208 − 0,7 × idade). Na página do aluno, a faixa fica ainda mais certa quando ele informa a FC de repouso.` : 'Preencha a idade na ficha para mostrar a faixa em batimentos.'}</p></div>
+      <div class="zinfo"><span>${esc(zonasTxt(a))}</span><button class="btn btn-line btn-sm" type="button" id="cZcfg">Método e testes</button></div></div>
     <label class="campo" style="margin:0">Observação para o aluno<textarea id="cO" placeholder="ex: inclinação 8%, velocidade 5,5 km/h">${esc(c.obs)}</textarea></label>`;
   openSheet({ title: edit ? 'Editar cardio' : 'Cardio', tall: true, body: body(),
     foot: `<button class="btn btn-line" type="button" data-act="closeSheet">Cancelar</button><button class="btn btn-ink" type="button" id="cOk">${edit ? 'Salvar' : 'Adicionar ao dia'}</button>`,
@@ -998,6 +1133,7 @@ function cardioSheet(idx) {
       const sync = () => { const v = id => { const el = $(id); return el ? Math.max(0, Math.round(num(el.value) || 0)) : null; }; const t = v('cT'); if (t != null) c.min = t; const n = v('cN'); if (n != null) c.n = n || 1; const on = v('cOn'); if (on != null) c.on = on || 10; const off = v('cOff'); if (off != null) c.off = off; c.obs = $('cO').value.trim(); };
       const redraw = () => { const st = B.scrollTop; sync(); B.innerHTML = body(); B.scrollTop = st; };
       B.addEventListener('click', ev => {
+        if (ev.target.closest('#cZcfg')) { return swapSheet(() => zonasSheet()); }
         const z = ev.target.closest('.zb'); if (z) { c.zona = +z.dataset.v; return redraw(); }
         const ch = ev.target.closest('.opt[data-v]'); if (!ch) return; const g = ch.parentElement.id;
         if (g === 'cM') { const era = ehInterv(c); c.mod = ch.dataset.v; if (ehInterv(c) && !era) { c.zona = c.mod === 'tiros' ? 5 : 4; c.min = c.min || 20; } if (!ehInterv(c) && era) c.zona = c.mod === 'moderado' ? 3 : 2; if (c.mod === 'leve' && c.zona > 2) c.zona = 2; return redraw(); }
@@ -1088,6 +1224,7 @@ function paneTreino(p, a) {
   const vol = volumeSemanal(t); const max = Math.max(20, ...vol.map(x => x[1]));
   p.innerHTML = `
     <div class="block" style="padding:12px 15px"><div class="row-sw"><div><h3 style="margin:0">Intensidade por RIR</h3><span class="note">${t.usarRIR ? 'Ligado: o RIR aparece no treino e no protocolo do aluno.' : 'Desligado: sem RIR no treino nem no protocolo. Indicado para iniciantes e intermediários.'}</span></div><label class="switch"><input type="checkbox" data-act="toggleRIR" ${t.usarRIR ? 'checked' : ''} aria-label="Usar RIR"><i></i></label></div></div>
+    ${(() => { const S = mesoStatus(t.meso); return `<div class="block pz" style="padding:12px 15px"><div class="row-sw"><div><h3 style="margin:0">Periodização</h3><span class="note">${S ? (S.antes ? `${esc(S.fase[1])} começa em ${dataBR(t.meso.ini)}` : S.fim ? `${esc(S.fase[1])} terminou em ${dataBR(S.fimISO)}: defina o próximo bloco` : `${esc(S.fase[1])} · semana ${S.w} de ${S.sem}${S.del ? ' (leve)' : ''} · RIR alvo ${S.rir}`) : 'Sem bloco definido. Defina a fase e as semanas: o aluno vê a semana e o esforço alvo.'}</span></div><button class="btn btn-line btn-sm" type="button" data-act="mesoCfg">${S ? 'Editar' : 'Definir'}</button></div></div>`; })()}
     <div class="week" role="group" aria-label="Dias da semana">${DIAS.map(([dk, ab]) => { const d = t.dias[dk]; const has = d.ex.length, cd = (d.cardio || []).length; return `<button class="day${dk === k ? ' on' : ''}${has || cd ? '' : ' rest'}" type="button" data-act="dia" data-v="${dk}"><span class="d">${ab}</span><span class="s">${esc(has ? (d.sigla || d.nome.slice(0, 4) || ab) : cd ? 'Card' : '—')}</span></button>`; }).join('')}</div>
     <div class="block">
       <div class="sess-head">
@@ -1100,6 +1237,7 @@ function paneTreino(p, a) {
     <div id="exList">${(B => dia.ex.map((x, i) => exCardCoach(x, i, dia.ex.length, t.usarRIR, B[i], dia.ex)).join(''))(biMapa(dia.ex)) || `<div class="empty"><b>${nomeDia} sem treino</b>Fica como dia de descanso no protocolo. Adicione exercícios para virar dia de treino.</div>`}</div>
     <button class="btn btn-ink btn-full" type="button" data-act="addEx" style="margin-top:4px">Adicionar exercício</button>
     <div class="sec-h"><h3>Cardio de ${esc(nomeDia.toLowerCase())}</h3><span>${(dia.cardio || []).length ? plur((dia.cardio || []).length, 'bloco', 'blocos') : 'opcional'}</span></div>
+    <button class="zinfo zbt" type="button" data-act="zonasCfg"><span><b>Zonas: ${esc((FC_MET.find(m => m[0] === cfgFC(a).metodo) || FC_MET[1])[1])}</b>${esc(zonasTxt(a))}</span><i>›</i></button>
     ${(dia.cardio || []).map((c, i) => cardioCardCoach(c, i)).join('')}
     <button class="btn btn-line btn-full" type="button" data-act="addCardio">+ Adicionar cardio</button>
     <div class="btns" style="margin-top:8px"><button class="btn btn-line" type="button" data-act="copiarDia">Copiar dia</button><button class="btn btn-line" type="button" data-act="limparDia" ${dia.ex.length || (dia.cardio || []).length ? '' : 'disabled'}>Limpar dia</button></div>
@@ -2200,7 +2338,7 @@ function gerarProtocoloHTML(a, inc = { treino: true, dieta: true, protocolo: tru
       <div class="week">${DIAS.map(([k, ab]) => { const d = T[k], cd = (d.cardio || []).length; return `<label for="d-${k}" class="day${d.ex.length || cd ? '' : ' rest'}"><span class="d">${ab}</span><span class="s">${esc(d.ex.length ? (d.sigla || d.nome.slice(0, 4) || ab) : cd ? 'Card' : '—')}</span></label>`; }).join('')}</div><div class="sesss">`;
     DIAS.forEach(([k, ab, nomeDia]) => {
       const d = T[k]; const st = statsDia(d);
-      const CD = d.cardio || [], fm = fcMaxDe(a);
+      const CD = d.cardio || [], fm = zonasDe(a);
       if (!d.ex.length && !CD.length) { h += `<div class="sess s-${k}"><section class="head"><h1>Descanso</h1><p class="foco">${esc(nomeDia)} é dia sem treino de musculação. A recuperação também faz parte do protocolo.</p></section></div>`; return; }
       if (!d.ex.length) { h += `<div class="sess s-${k}"><section class="head"><h1>${esc(d.nome || 'Cardio')}</h1><p class="foco">${esc(d.desc || nomeDia + ' é dia de cardio.')}</p></section>${CD.map(c => cardioProtoHTML(c, fm)).join('')}</div>`; return; }
       h += `<div class="sess s-${k}"><section class="head"><h1>${esc(d.nome || nomeDia)}</h1>${d.desc ? `<p class="foco">${esc(d.desc)}</p>` : ''}<div class="stats"><div class="stat"><span class="n">${st.ex}</span><span class="l">exercícios</span></div><div class="stat"><span class="n">${st.series}</span><span class="l">séries</span></div><div class="stat"><span class="n">~${st.min} min</span><span class="l">duração</span></div></div></section>`;
@@ -2290,16 +2428,21 @@ function cardioProtoHTML(c, fm) {
     <p class="cd-fala"><b>Teste da fala:</b> ${esc(Z.fala)}</p>${c.obs ? `<p class="ex-nota">${esc(c.obs)}</p>` : ''}</article>`;
 }
 function guiaCardioHTML(a) {
-  const fm = fcMaxDe(a);
+  const Z = zonasDe(a), c = cfgFC(a), T = (c.testes || []).map(k => (TESTES.find(t => t[0] === k) || [k, k])[1]);
+  const como = Z.tipo === 'lim' ? `Pelos <b>seus limiares</b>${c.metodo === 'fala' ? ' do teste da fala' : ' do seu teste de esforço'}: até <b>${Math.round(num(c.l1))} bpm</b> você ainda conversa (zonas 1 e 2); a partir de <b>${Math.round(num(c.l2))} bpm</b> já não dá para falar (zona 5). Não depende de idade nem de peso: é o seu corpo.`
+    : Z.tipo === 'prov' ? `Faça o <b>teste da fala</b> no app (aba Evolução, em Testes). Ele acha os seus limiares e as faixas passam a ser suas. Até lá, os batimentos acima são uma estimativa pela idade e podem errar uns 10 bpm: confira sempre com a fala e o esforço.`
+    : Z.tipo === 'karv' ? `Pela sua <b>reserva cardíaca</b> (método de Karvonen), com FC máxima de ${Z.max} bpm e de repouso de ${Math.round(num(c.fcRep))} bpm.`
+    : Z.tipo === 'max' ? `Pela FC máxima de <b>${Z.max} bpm</b> (${c.metodo === 'medida' ? 'medida no seu teste' : c.metodo === 'obeso' ? 'fórmula 200 − 0,48 × idade' : 'fórmula 208 − 0,7 × idade'}). Fórmulas são médias e podem errar uns 10 bpm, por isso confira com a fala e o esforço. Medir a FC de repouso no app deixa as faixas mais certas.`
+    : Z.tipo === 'pse' ? `No seu caso, <b>guie-se pelo esforço e pela fala</b>, não pelos batimentos.` : 'Use o esforço e a fala para se guiar.';
   return `<div class="block"><h3>Cardio: como achar a sua zona</h3>
     <p>Cada cardio do seu treino tem uma <b>zona</b>. Use três sinais juntos: o batimento, o esforço que você sente e a fala.</p>
-    <table class="dt zt"><thead><tr><th>Zona</th><th>FC alvo</th><th>Esforço</th><th>Fala</th></tr></thead><tbody>${ZONAS.map(Z => `<tr><th>Z${Z.z} ${esc(Z.n)}</th><td>${fcFaixa(fm, Z.z)}</td><td>${Z.pse}</td><td>${esc(Z.fala)}</td></tr>`).join('')}</tbody></table>
-    <p><b>1. FC máxima.</b> ${fm ? `Pela sua idade, a estimativa é <b>${fm} bpm</b>` : 'Faça a conta 208 − 0,7 × sua idade'} (fórmula de Tanaka, mais precisa que o antigo 220 − idade). É uma média: em algumas pessoas a real fica 10 bpm acima ou abaixo, por isso confira sempre com o esforço e a fala.</p>
-    <p><b>2. FC de repouso (deixa as zonas mais certas).</b> Ao acordar, ainda deitado, conte os batimentos por 60 segundos (no pulso ou no pescoço) ou veja no relógio. Faça 3 manhãs e use a média. Coloque esse número no app, na aba Evolução: as faixas passam a usar a sua reserva cardíaca (método de Karvonen).</p>
-    <p><b>3. Teste da fala.</b> Na zona 2 você conversa em frases inteiras; quando só sai frase curta, passou para a zona 3. É um jeito validado de achar o seu limiar sem laboratório.</p>
-    <p><b>4. Esforço de 0 a 10 (PSE).</b> 0 é parado, 10 é o máximo que você aguenta. No fim de cada cardio, anote a nota da sessão inteira.</p>
-    <p><b>Como medir no treino:</b> relógio ou cinta cardíaca são o mais prático; sem eles, conte o pulso por 15 segundos e multiplique por 4. Esteira e bike com sensor na mão costumam errar mais.</p>
-    <p><b>Como evoluir:</b> primeiro aumente o tempo, depois a intensidade, um passo por vez. Com o tempo, o mesmo ritmo passa a sair com <b>batimento mais baixo</b> e esforço menor: é o sinal de que o condicionamento melhorou.</p></div>`;
+    <table class="dt zt"><thead><tr><th>Zona</th><th>FC alvo</th><th>Esforço</th><th>Fala</th></tr></thead><tbody>${ZONAS.map(Zn => `<tr><th>Z${Zn.z} ${esc(Zn.n)}</th><td>${Z.faixa(Zn.z)}</td><td>${Zn.pse}</td><td>${esc(Zn.fala)}</td></tr>`).join('')}</tbody></table>
+    <p><b>Como as suas faixas foram feitas.</b> ${como}</p>
+    ${T.length ? `<p><b>Seus testes:</b> ${esc(T.join(', '))}. Estão no app, na aba Evolução, com o passo a passo e a conta pronta. Refaça a cada 6 a 8 semanas para ver a evolução.</p>` : ''}
+    <p><b>Teste da fala no dia a dia.</b> Na zona 2 você conversa em frases inteiras; quando só sai frase curta, passou para a zona 3; quando não dá para falar, está na 5.</p>
+    <p><b>Esforço de 0 a 10 (PSE).</b> 0 é parado, 10 é o máximo que você aguenta. No fim de cada cardio, anote a nota da sessão inteira.</p>
+    <p><b>Como medir:</b> relógio ou cinta cardíaca são o mais prático; sem eles, conte o pulso por 15 segundos e multiplique por 4. Sensor de mão da esteira e da bike costuma errar mais.</p>
+    <p><b>Como evoluir:</b> primeiro aumente o tempo, depois a intensidade, um passo por vez. Com o tempo, o mesmo ritmo sai com <b>batimento mais baixo</b> e esforço menor: é o condicionamento melhorando.</p></div>`;
 }
 /* exercício reserva ("ou") no protocolo do aluno */
 function ouHTML(alt) {
@@ -3260,10 +3403,14 @@ function juntarRegistro(a, reg, quando) {
   if (reg.tipo === 'treino') {
     const t = { id: cortar(reg.id, 40), data, dia: cortar(reg.dia, 3), nomeDia: cortar(reg.nomeDia, 80), em: quando,
       exs: (Array.isArray(reg.exs) ? reg.exs : []).slice(0, 40).map(x => { const o = { uid: cortar(x.uid, 40), exId: cortar(x.exId, 80), n: cortar(x.n, 120), nota: cortar(x.nota, 1000),
-        sets: (Array.isArray(x.sets) ? x.sets : []).slice(0, 20).map(z => { const o = { kg: cortar(z.kg, 8), reps: cortar(z.reps, 8) }; if (z.rot && !/^\d+$/.test(String(z.rot))) o.rot = cortar(z.rot, 14); return o; }) }; if (x.alt) o.alt = 1; return o; }) };
+        sets: (Array.isArray(x.sets) ? x.sets : []).slice(0, 20).map(z => { const o = { kg: cortar(z.kg, 8), reps: cortar(z.reps, 8) }; if (z.rot && !/^\d+$/.test(String(z.rot))) o.rot = cortar(z.rot, 14); return o; }) }; if (x.alt) o.alt = 1; if (x.rir !== undefined && x.rir !== '' && isFinite(+x.rir)) o.rir = Math.max(0, Math.min(5, Math.round(+x.rir))); return o; }) };
+    if (reg.pse !== undefined && reg.pse !== '' && isFinite(+reg.pse)) t.pse = Math.max(0, Math.min(10, Math.round(+reg.pse))); if (num(reg.min) > 0) t.min = Math.min(400, Math.round(num(reg.min)));
     const nr = (v, max) => { const n = num(v); return isFinite(n) && n > 0 ? Math.min(max, Math.round(n * 10) / 10) : 0; };
     const cd = (Array.isArray(reg.cardio) ? reg.cardio : []).slice(0, 8).map(c => ({ id: cortar(c.id, 40), mod: cortar(c.mod, 20), eq: cortar(c.eq, 20), zona: Math.max(0, Math.min(5, parseInt(c.zona, 10) || 0)), min: nr(c.min, 600), fc: nr(c.fc, 230), pse: nr(c.pse, 10), km: nr(c.km, 200), nota: cortar(c.nota, 600) })).filter(c => c.min || c.fc || c.pse || c.km || c.nota);
     if (cd.length) t.cardio = cd;
+    const TS = (Array.isArray(reg.testes) ? reg.testes : []).slice(0, 5).map(x => sanTeste(x, data)).filter(Boolean);
+    if (TS.length) { R.testes = [...TS, ...(R.testes || []).filter(y => !TS.some(z => z.id === y.id))].sort((x, y) => y.data.localeCompare(x.data)).slice(0, 80); aplicarTestes(a); }
+    if (!t.exs.length && !cd.length) return;
     R.treinos = [t, ...R.treinos.filter(y => y.id !== t.id)].sort((x, y) => y.data.localeCompare(x.data) || String(y.em).localeCompare(String(x.em))).slice(0, 300);
   } else if (reg.tipo === 'feedback') {
     const f = { id: cortar(reg.id, 40), data, em: quando };
@@ -3284,6 +3431,30 @@ function juntarRegistro(a, reg, quando) {
     const f = { id: cortar(reg.id, 40), data, pos: FOTO_POS[reg.pos] ? reg.pos : 'outra', path, em: quando };
     R.fotos = [f, ...R.fotos.filter(y => y.id !== f.id)].sort((x, y) => y.data.localeCompare(x.data) || String(y.em).localeCompare(String(x.em))).slice(0, 240);
   }
+}
+/* resultados dos testes de cardio feitos pelo aluno no app */
+const TESTE_CAMPOS = ['rep', 'm1', 'm2', 'm3', 'l1', 'l2', 'm', 'fc', 'fc1', 'pse', 't', 'vo2', 'prev', 'pct'];
+function sanTeste(x, data) {
+  if (!x || !TESTES.some(t => t[0] === x.tipo)) return null;
+  const v = {}, X = x.v || {}; TESTE_CAMPOS.forEach(k => { const n = num(X[k]); if (isFinite(n) && n > 0) v[k] = Math.min(100000, Math.round(n * 10) / 10); });
+  if (X.eq) v.eq = cortar(X.eq, 20);
+  if (Array.isArray(X.est)) v.est = X.est.slice(0, 20).map(e => [cortar((e || [])[0], 30), Math.max(0, Math.min(240, Math.round(num((e || [])[1])) || 0)), ['s', 'm', 'n'].includes((e || [])[2]) ? e[2] : '']);
+  return { id: cortar(x.id, 40), tipo: x.tipo, data: /^\d{4}-\d{2}-\d{2}$/.test(x.data) ? x.data : data, v };
+}
+/* o teste mais recente atualiza a FC de repouso e os limiares do aluno (no método do teste da fala) */
+function aplicarTestes(a) {
+  const L = (a.registros || {}).testes || [], c = a.cardioCfg = a.cardioCfg || {};
+  const r = L.find(t => t.tipo === 'repouso' && t.v.rep); if (r) c.fcRep = String(Math.round(r.v.rep));
+  const f = L.find(t => t.tipo === 'fala' && t.v.l1 && t.v.l2); if (f && c.metodo !== 'medida') { c.l1 = String(Math.round(f.v.l1)); c.l2 = String(Math.round(f.v.l2)); }
+}
+function testeResumo(t) {
+  const v = t.v || {}, rec = v.fc && v.fc1 && v.fc > v.fc1 ? ` · recuperou ${Math.round(v.fc - v.fc1)} bpm em 1 min` : '';
+  const mmss = x => `${Math.floor(x / 60)}:${String(Math.round(x % 60)).padStart(2, '0')}`;
+  return t.tipo === 'repouso' ? `${Math.round(v.rep)} bpm em repouso`
+    : t.tipo === 'fala' ? `L1 ${v.l1 || '–'} · L2 ${v.l2 || '–'} bpm${v.eq ? ' · ' + v.eq : ''}`
+    : t.tipo === 'c6' ? `${fmt(v.m, 0)} m${v.pct ? ` · ${fmt(v.pct, 0)}% do previsto` : ''}${v.fc ? ` · FC final ${Math.round(v.fc)}` : ''}${rec}`
+    : t.tipo === 'rockport' ? `VO₂máx ~${fmt(v.vo2, 1)}${v.t ? ` · ${mmss(v.t)}` : ''}${v.fc ? ` · FC final ${Math.round(v.fc)}` : ''}${rec}`
+    : t.tipo === 'cooper' ? `VO₂máx ~${fmt(v.vo2, 1)} · ${fmt(v.m, 0)} m${rec}` : '';
 }
 async function processarPortalIn() {
   const mud = new Set();
@@ -3310,40 +3481,49 @@ function histDe(a) {
   for (const t of ((a.registros || {}).treinos || [])) for (const x of t.exs) {
     if (!x.sets.some(z => z.kg || z.reps)) continue;
     const ku = x.uid && (x.alt ? x.uid + '|alt' : x.uid);
-    if (ku && !H[ku]) H[ku] = { data: t.data, sets: x.sets };
-    if (x.exId && !HE[x.exId]) HE[x.exId] = { data: t.data, sets: x.sets };
+    if (ku && !H[ku]) H[ku] = x.rir != null ? { data: t.data, sets: x.sets, rir: x.rir } : { data: t.data, sets: x.sets };
+    if (x.exId && !HE[x.exId]) HE[x.exId] = x.rir != null ? { data: t.data, sets: x.sets, rir: x.rir } : { data: t.data, sets: x.sets };
   }
   return { porUid: H, porEx: HE };
 }
 /* ---------- evolução: força estimada (1RM), cargas, repetições e cardio ---------- */
 /* 1RM estimado por Epley (peso × (1 + reps/30)). Só usa séries de 1 a 12 repetições: acima disso a estimativa erra demais. */
 function e1rm(kg, reps) { kg = num(kg); reps = parseInt(reps, 10); if (!(kg > 0) || !(reps >= 1) || reps > 12) return null; return reps === 1 ? kg : kg * (1 + reps / 30); }
+const serieNum = z => !z.rot || /^\d+$/.test(String(z.rot));
 function evoDe(a) {
   const T = ((a.registros || {}).treinos || []).slice().sort((x, y) => x.data.localeCompare(y.data));
-  const ex = {}, cardio = [];
+  const ex = {}, cardio = [], sess = [];
   for (const t of T) {
     for (const x of t.exs || []) {
       const sets = (x.sets || []).filter(z => (z.kg || z.reps) && !(z.rot && /^(C\d|Bloco|Mini)/.test(z.rot)));
       if (!sets.length) continue;
       let best = 0, top = null, vol = 0, maxR = 0;
       sets.forEach(z => { const kg = num(z.kg) || 0, r = parseInt(z.reps, 10) || 0; vol += kg * r; if (r > maxR) maxR = r; const e = e1rm(kg, r); if (e && e > best) { best = e; top = [kg, r]; } });
+      /* repetições que sobraram na última série (RIR): Epley com reps + RIR, como no RPE por repetições em reserva */
+      const ns = sets.filter(serieNum), ul = ns[ns.length - 1];
+      if (ul && x.rir != null && x.rir > 0) { const kg = num(ul.kg) || 0, r = parseInt(ul.reps, 10) || 0, e = e1rm(kg, r + x.rir); if (e && e > best) { best = e; top = [kg, r]; } }
       if (!top) { const z = sets.reduce((m, z) => (num(z.kg) || 0) > (num(m.kg) || 0) ? z : m, sets[0]); top = [num(z.kg) || 0, parseInt(z.reps, 10) || 0]; }
-      const key = x.exId || x.n; const E = ex[key] = ex[key] || { n: x.n, p: [] }; E.n = x.n;
+      const key = x.exId || x.n; const E = ex[key] = ex[key] || { n: x.n, p: [], pr: {}, u: [] }; E.n = x.n;
       const pt = [t.data, Math.round(best * 10) / 10, top[0], top[1], Math.round(vol), maxR];
+      if (x.rir != null) pt[6] = x.rir;
       const j = E.p.findIndex(q => q[0] === t.data); if (j >= 0) { if (pt[1] > E.p[j][1] || (!pt[1] && pt[4] > E.p[j][4])) E.p[j] = pt; } else E.p.push(pt);
+      ns.forEach(z => { const kg = num(z.kg) || 0, r = parseInt(z.reps, 10) || 0; if (kg > 0 && r >= 1 && r <= 20 && (!E.pr[r] || kg > E.pr[r][0])) E.pr[r] = [kg, t.data]; });
+      E.u = [[t.data, ns.slice(0, 8).map(z => [num(z.kg) || 0, parseInt(z.reps, 10) || 0])], ...E.u.filter(q => q[0] !== t.data)].slice(0, 5);
     }
     (t.cardio || []).forEach(c => cardio.push([t.data, c.mod || '', c.eq || '', c.min || 0, c.fc || 0, c.pse || 0, c.km || 0, c.zona || 0]));
+    if (t.pse != null || t.min) sess.push([t.data, t.min || 0, t.pse != null ? t.pse : -1, (t.cardio || []).reduce((s2, c) => s2 + (c.min || 0), 0)]);
   }
   const ks = Object.keys(ex).sort((x, y) => ex[y].p.length - ex[x].p.length).slice(0, 40);
-  const out = {}; ks.forEach(k => { out[k] = { n: ex[k].n, p: ex[k].p.slice(-40) }; });
-  return { ex: out, cardio: cardio.slice(-150) };
+  const out = {}; ks.forEach(k => { out[k] = { n: ex[k].n, p: ex[k].p.slice(-40), pr: ex[k].pr, u: ex[k].u }; });
+  const tst = ((a.registros || {}).testes || []).slice(0, 40).map(t => [t.data, t.tipo, t.v]);
+  return { ex: out, cardio: cardio.slice(-150), sess: sess.slice(-120), tst };
 }
 function montarPortal(a) {
   const P = a.portal;
   if (!P.ativo) return { v: 1, ativo: false, pin: P.h, pubEm: Date.now() };
   const bak = new Map(IMG_OK); IMG_OK.clear();
   let html; try { html = gerarProtocoloHTML(a, { treino: true, dieta: true, protocolo: true }); } finally { bak.forEach((v, k) => IMG_OK.set(k, v)); }
-  const treino = {}; DIAS.forEach(([k, ab, nomeDia]) => { const d = a.treino.dias[k]; treino[k] = { nome: d.nome || (d.ex.length ? nomeDia : 'Cardio'), ex: d.ex.map(x => { const o = { uid: x.uid, exId: x.exId, n: x.n, series: Math.max(1, Math.min(10, parseInt(x.series, 10) || 1)) }; if (x.fmt && x.fmt !== 'normal') o.rot = rotulosSeries(x); if (x.fmt === 'cluster') o.rp = String((x.cl || {}).r || 4); else if (x.reps) o.faixa = String(x.reps); if (x.alt) o.alt = { exId: x.alt.exId, n: x.alt.n }; return o; }),
+  const treino = {}; DIAS.forEach(([k, ab, nomeDia]) => { const d = a.treino.dias[k]; treino[k] = { nome: d.nome || (d.ex.length ? nomeDia : 'Cardio'), ex: d.ex.map(x => { const o = { uid: x.uid, exId: x.exId, n: x.n, series: Math.max(1, Math.min(10, parseInt(x.series, 10) || 1)), pm: x.pm || [], sm: x.sm || [] }; if (a.treino.usarRIR && x.rir) o.rir = String(x.rir); if (x.fmt && x.fmt !== 'normal') o.rot = rotulosSeries(x); if (x.fmt === 'cluster') o.rp = String((x.cl || {}).r || 4); else if (x.reps) o.faixa = String(x.reps); if (x.alt) o.alt = { exId: x.alt.exId, n: x.alt.n, pm: x.alt.pm || [], sm: x.alt.sm || [] }; return o; }),
     cardio: (d.cardio || []).map(c => ({ id: c.id, mod: c.mod, eq: c.eq, min: c.min, zona: c.zona, on: c.on, off: c.off, n: c.n, iv: ehInterv(c) })) }; });
   const D = a.dieta, tipos = D.ciclo.ativa ? ['alto', 'medio', 'baixo'] : ['unico'], refs = {};
   const mac4 = m => [Math.round(m.k), Math.round(m.p), Math.round(m.c), Math.round(m.g)], det = {}, alvo = {};
@@ -3364,7 +3544,10 @@ function montarPortal(a) {
     pedidoFb: CFG.pedidoFb && difDias(CFG.pedidoFb.data, todayISO()) <= 7 ? { id: CFG.pedidoFb.id, data: CFG.pedidoFb.data, msg: CFG.pedidoFb.msg || '' } : null, hist: histDe(a), ultFeedback: fb ? fb.data : '',
     fotosOn: scriptOk(), fotos: (R.fotos || []).slice(0, 60).map(f => ({ id: f.id, data: f.data, pos: f.pos })),
     treinosFeitos: (R.treinos || []).slice(0, 30).map(t => ({ id: t.id, data: t.data, dia: t.dia })),
-    fc: { idade: (n => isFinite(n) ? n : null)(idadeDe(a.dados)), max: fcMaxDe(a) }, evo: evoDe(a) };
+    fc: (() => { const c = cfgFC(a), i = idadeDe(a.dados); return { idade: isFinite(i) ? i : null, sexo: a.dados.sexo || '', peso: num(a.dados.peso) || null, altura: num(a.dados.altura) || null, met: c.metodo || 'tanaka', fcMax: num(c.fcMax) || null, rep: num(c.fcRep) || null, l1: num(c.l1) || null, l2: num(c.l2) || null, testes: c.testes || [], max: fcMaxDe(a) }; })(),
+    meso: a.treino.meso ? { ...a.treino.meso } : null, mesoHist: (a.mesoHist || []).slice(0, 8), usarRIR: !!a.treino.usarRIR,
+    musc: (() => { const M = {}; DIAS.forEach(([k]) => a.treino.dias[k].ex.forEach(x => [...(x.pm || []), ...(x.sm || []), ...((x.alt || {}).pm || []), ...((x.alt || {}).sm || [])].forEach(m => { M[m] = MUSC[m] || m; }))); return M; })(),
+    evo: evoDe(a) };
 }
 async function publicarPortal(a) {
   const path = `portal/${a.portal.t}.json`, obj = montarPortal(a);
@@ -3422,13 +3605,13 @@ function paneRegistros(p, a) {
       <div class="fb-g">${[['Peso', f.peso ? fmt(num(f.peso)) + ' kg' : ''], ['Sono', f.sono ? f.sono + ' de 5' : ''], ['Energia', f.energia ? f.energia + ' de 5' : ''], ['Fome', f.fome ? f.fome + ' de 5' : ''], ['Dieta seguida', f.dieta], ['Treinos na semana', f.treinos]].filter(x => x[1]).map(([l, v]) => `<div><span>${l}</span><b>${esc(v)}</b></div>`).join('')}</div>
       ${f.dores ? `<p class="fb-t"><b>Dores ou desconfortos:</b> ${esc(f.dores)}</p>${respBox(a, 'fb:' + f.id + ':dores')}` : ''}${f.comentario ? `<p class="fb-t">${esc(f.comentario)}</p>${respBox(a, 'fb:' + f.id + ':com')}` : ''}</div>`).join('');
   const dietaH = Object.keys(Dd).length ? dietaDetHTML(a, Dd, dias) + `<div class="block"><h3>Dieta: refeições marcadas</h3><div class="dt-g">${dias.map(d => { const x = Dd[d]; const pc = x && x.total ? x.feitas.length / x.total : null; return `<div class="dt${pc === null ? ' vz' : pc >= .99 ? ' ok' : pc >= .5 ? ' md' : ' bx'}" title="${esc(dataBR(d))}"><span>${dataCurta(d)}</span><b>${x ? `${x.feitas.length}/${x.total}` : '—'}</b></div>`; }).join('')}</div><p class="note" style="margin-top:8px">Últimos 14 dias. Só aparecem os dias em que o aluno marcou alguma refeição.</p></div>` : '';
-  const trH = T.slice(0, UI.regMais ? 60 : 8).map(t => `<div class="block tr"><div class="row-sw"><h3 style="margin:0">${esc(t.nomeDia || 'Treino')}</h3><span class="tag">${esc(dataBR(t.data))}</span></div>
-      <div class="tr-l">${(t.cardio || []).map(c => `<div class="tr-x"><span class="tr-n">♥ ${esc(modNome(c.mod))}${c.eq ? ' · ' + esc(eqNome(c.eq)) : ''}</span><span class="tr-s">${esc([c.min ? fmt(c.min) + ' min' : '', c.km ? fmt(c.km) + ' km' : '', c.fc ? 'FC média ' + Math.round(c.fc) : '', c.pse ? 'esforço ' + fmt(c.pse) + '/10' : ''].filter(Boolean).join(' · ') || 'sem dados')}</span>${c.nota ? `<span class="tr-nota">${esc(c.nota)}</span>` : ''}</div>`).join('')}${t.exs.map(x => `<div class="tr-x"><span class="tr-n">${esc(x.n)}${x.alt ? ' <i class="tag">alternativa</i>' : ''}</span><span class="tr-s">${esc(setsTxt(x.sets) || 'sem carga anotada')}</span>${x.nota ? `<span class="tr-nota">${esc(x.nota)}</span>${respBox(a, 'tr:' + t.id + ':' + x.uid)}` : ''}</div>`).join('')}</div></div>`).join('');
+  const trH = T.slice(0, UI.regMais ? 60 : 8).map(t => `<div class="block tr"><div class="row-sw"><h3 style="margin:0">${esc(t.nomeDia || 'Treino')}</h3><span class="tag">${esc(dataBR(t.data))}</span></div>${t.pse != null || t.min ? `<p class="note" style="margin:2px 0 0">${[t.min ? t.min + ' min' : '', t.pse != null ? 'esforço da sessão ' + t.pse + '/10' : ''].filter(Boolean).join(' · ')}</p>` : ''}
+      <div class="tr-l">${(t.cardio || []).map(c => `<div class="tr-x"><span class="tr-n">♥ ${esc(modNome(c.mod))}${c.eq ? ' · ' + esc(eqNome(c.eq)) : ''}</span><span class="tr-s">${esc([c.min ? fmt(c.min) + ' min' : '', c.km ? fmt(c.km) + ' km' : '', c.fc ? 'FC média ' + Math.round(c.fc) : '', c.pse ? 'esforço ' + fmt(c.pse) + '/10' : ''].filter(Boolean).join(' · ') || 'sem dados')}</span>${c.nota ? `<span class="tr-nota">${esc(c.nota)}</span>` : ''}</div>`).join('')}${t.exs.map(x => `<div class="tr-x"><span class="tr-n">${esc(x.n)}${x.alt ? ' <i class="tag">alternativa</i>' : ''}</span><span class="tr-s">${esc(setsTxt(x.sets) || 'sem carga anotada')}${x.rir != null ? ` · sobraram ${x.rir}${x.rir >= 4 ? '+' : ''} na última` : ''}</span>${x.nota ? `<span class="tr-nota">${esc(x.nota)}</span>${respBox(a, 'tr:' + t.id + ':' + x.uid)}` : ''}</div>`).join('')}</div></div>`).join('');
   p.innerHTML = `${blocoPortal(a)}
     ${a.portal && a.portal.ativo ? `<div class="block cobreg"><div><b>Cobrar registros</b><span class="note">${(() => { const u = ultRegistro(a); return u ? 'Último registro em ' + dataBR(u) + (difDias(u, todayISO()) >= 4 ? ' · há ' + difDias(u, todayISO()) + ' dias' : '') : 'Ainda não registrou nada pelo app'; })()}</span></div><button class="btn btn-ink btn-sm" type="button" data-act="finMsg" data-id="${esc(a.id)}" data-t="registro">Cobrar registros</button></div>` : ''}
-    ${F.length || T.length || Object.keys(Dd).length || (R.fotos || []).length ? '' : `<div class="empty"><b>Nenhum registro ainda</b>Quando o aluno anotar cargas, marcar refeições, mandar feedback ou fotos na página dele, aparece aqui.</div>`}
+    ${F.length || T.length || Object.keys(Dd).length || (R.fotos || []).length || (R.testes || []).length ? '' : `<div class="empty"><b>Nenhum registro ainda</b>Quando o aluno anotar cargas, marcar refeições, mandar feedback ou fotos na página dele, aparece aqui.</div>`}
     ${fotosHTML(a)}${fbH ? `<h2 class="sub-t">Feedbacks</h2>${fbH}` : ''}${dietaH ? `<h2 class="sub-t">Dieta</h2>${dietaH}` : ''}
-    ${T.length ? evoCoachHTML(a) : ''}
+    ${T.length || (R.testes || []).length ? evoCoachHTML(a) : ''}
     ${trH ? `<h2 class="sub-t">Treinos registrados</h2><div class="tr-grid">${trH}</div>${T.length > 8 && !UI.regMais ? `<div class="btns"><button class="btn btn-line" type="button" data-act="regMais">Ver todos os ${T.length} treinos</button></div>` : ''}` : ''}`;
   carregarFotos(p);
   if (a.regNovo || regNovos(a)) marcarRegVisto(a);
@@ -3442,37 +3625,81 @@ function sparkSVG(v, w = 92, h = 28) {
 }
 const isoMenosDias = (iso, n) => { const x = dObj(iso); x.setDate(x.getDate() - n); return x.toISOString().slice(0, 10); };
 const semanaDe = d => { const x = dObj(d); const k = (x.getDay() + 6) % 7; x.setDate(x.getDate() - k); return x.toISOString().slice(0, 10); };
-/* visão do coach: 1RM estimado, melhor série, tonelagem, quem já pode subir carga (progressão dupla) e cardio */
+/* inclinação (mínimos quadrados) em unidades por dia */
+function inclinacao(P) { const n = P.length; if (n < 3) return null; const mx = P.reduce((s, p) => s + p[0], 0) / n, my = P.reduce((s, p) => s + p[1], 0) / n; let a = 0, b = 0; P.forEach(([x, y]) => { a += (x - mx) * (y - my); b += (x - mx) ** 2; }); return b ? a / b : null; }
+/* peso de cada série anotada no volume semanal: série normal, backoff e drop contam 1; mini-série do rest-pause meia; bloco de cluster 1/3 */
+const pesoSerie = z => !z.rot || /^\d+$/.test(z.rot) || /^(Backoff|Drop)/.test(z.rot) ? 1 : /^Mini/.test(z.rot) ? 0.5 : 1 / 3;
+function muscDoEx(a, id) { for (const [k] of DIAS) for (const x of a.treino.dias[k].ex) { if (x.exId === id) return [x.pm || [], x.sm || []]; if (x.alt && x.alt.exId === id) return [x.alt.pm || [], x.alt.sm || []]; } const e = exById(id); return e ? [e.pm || [], e.sm || []] : [[], []]; }
+/* visão do coach: força (1RM, ritmo, platô), volume feito x planejado, carga interna (PSE da sessão), testes e fases */
 function evoCoachHTML(a) {
-  const E = evoDe(a), hoje = todayISO();
+  const E = evoDe(a), hoje = todayISO(), T = (a.registros || {}).treinos || [], dia0 = iso => Math.round(dObj(iso) / 864e5);
   const faixaTopo = id => { for (const [k] of DIAS) for (const x of a.treino.dias[k].ex) if (x.exId === id || (x.alt && x.alt.exId === id)) { const m = String(x.reps || '').match(/(\d+)\s*$/); return m ? +m[1] : null; } return null; };
-  const ultSess = id => { const t = ((a.registros || {}).treinos || []).find(t => t.exs.some(x => x.exId === id && x.sets.some(z => z.reps))); return t ? t.exs.find(x => x.exId === id) : null; };
-  const linhas = Object.entries(E.ex).filter(([, v]) => v.p.length >= 1).slice(0, 14).map(([id, v]) => {
+  const ultSess = id => { const t = T.find(t => t.exs.some(x => x.exId === id && x.sets.some(z => z.reps))); return t ? t.exs.find(x => x.exId === id) : null; };
+  const h28 = isoMenosDias(hoje, 28), h42 = isoMenosDias(hoje, 42), h56 = isoMenosDias(hoje, 56);
+  let nPlato = 0, nSobe = 0;
+  const linhas = Object.entries(E.ex).filter(([, v]) => v.p.length >= 1).slice(0, 16).map(([id, v]) => {
     const P = v.p, comE = P.filter(q => q[1] > 0), f = comE[0], l = comE[comE.length - 1], best = comE.reduce((m, q) => q[1] > m[1] ? q : m, comE[0] || P[0]);
     const dl = f && l && f !== l ? (l[1] / f[1] - 1) * 100 : null;
-    const topo = faixaTopo(id), us = ultSess(id), sobe = topo && us && us.sets.filter(z => /^\d*$/.test(z.rot || '') && z.reps).length >= 2 && us.sets.filter(z => /^\d*$/.test(z.rot || '') && z.reps).every(z => parseInt(z.reps, 10) >= topo);
-    return `<tr><th>${esc(v.n)}<small>${plur(P.length, 'sessão', 'sessões')}${sobe ? ' · <b class="up">pode subir carga</b>' : ''}</small></th><td>${comE.length ? `${fmt(l[1])} kg${dl !== null ? ` <i class="${dl >= 0 ? 'up' : 'dn'}">${dl >= 0 ? '+' : ''}${fmt(dl, 0)}%</i>` : ''}` : `${P[P.length - 1][5]} reps`}</td><td>${best && best[2] ? `${fmt(best[2])} × ${best[3]}` : '–'}</td><td class="spkc">${sparkSVG(comE.length >= 2 ? comE.map(q => q[1]) : P.map(q => q[5]))}</td></tr>`;
+    const rec = comE.filter(q => q[0] >= h56), sl = inclinacao(rec.map(q => [dia0(q[0]), q[1]])), med = rec.length ? rec.reduce((s, q) => s + q[1], 0) / rec.length : 0;
+    const ritmo = sl != null && med ? sl * 7 / med * 100 : null;
+    const antes = comE.filter(q => q[0] < h28), dep = comE.filter(q => q[0] >= h28);
+    const plato = comE.length >= 6 && antes.length >= 3 && dep.length >= 2 && Math.max(...dep.map(q => q[1])) <= Math.max(...antes.map(q => q[1])) * 1.01;
+    const r42 = comE.filter(q => q[0] >= h42), queda = l && r42.length >= 3 && l[1] < Math.max(...r42.map(q => q[1])) * 0.93;
+    const topo = faixaTopo(id), us = ultSess(id), ns = us ? us.sets.filter(z => serieNum(z) && z.reps) : [];
+    const sobe = (topo && ns.length >= 2 && ns.every(z => parseInt(z.reps, 10) >= topo)) || (us && us.rir >= 3 && ns.length);
+    if (plato) nPlato++; if (sobe) nSobe++;
+    const flag = sobe ? '<b class="up">pode subir carga</b>' : queda ? '<b class="dn">caiu mais de 7%</b>' : plato ? '<b class="pl">estagnado há 4 semanas</b>' : '';
+    return `<tr><th>${esc(v.n)}<small>${plur(P.length, 'sessão', 'sessões')}${flag ? ' · ' + flag : ''}</small></th><td>${comE.length ? `${fmt(l[1])} kg${dl !== null ? ` <i class="${dl >= 0 ? 'up' : 'dn'}">${dl >= 0 ? '+' : ''}${fmt(dl, 0)}%</i>` : ''}` : `${P[P.length - 1][5]} reps`}</td><td>${ritmo != null ? `<i class="${ritmo >= 0.2 ? 'up' : ritmo <= -0.2 ? 'dn' : ''}">${ritmo >= 0 ? '+' : ''}${fmt(ritmo, 1)}%/sem</i>` : '–'}</td><td>${best && best[2] ? `${fmt(best[2])} × ${best[3]}` : '–'}</td><td class="spkc">${sparkSVG(comE.length >= 2 ? comE.map(q => q[1]) : P.map(q => q[5]))}</td></tr>`;
   }).join('');
   /* tonelagem: últimas 4 semanas x 4 anteriores */
   const tons = {}; Object.values(E.ex).forEach(v => v.p.forEach(q => { const w = semanaDe(q[0]); tons[w] = (tons[w] || 0) + q[4]; }));
   const ws = [...Array(8)].map((_, i) => semanaDe(isoMenosDias(hoje, (7 - i) * 7)));
   const t4 = ws.slice(4).reduce((s, w) => s + (tons[w] || 0), 0), t0 = ws.slice(0, 4).reduce((s, w) => s + (tons[w] || 0), 0);
-  /* cardio: minutos e carga (minutos × esforço, método sRPE de Foster) por semana */
+  /* volume da última semana por músculo (séries feitas) x planejado no treino */
+  const feito = {}, h7 = isoMenosDias(hoje, 7);
+  T.filter(t => t.data > h7).forEach(t => t.exs.forEach(x => { const n = x.sets.filter(z => z.reps && parseInt(z.reps, 10) > 0).reduce((s, z) => s + pesoSerie(z), 0); if (!n) return; const [pm, sm] = muscDoEx(a, x.exId); pm.forEach(m => feito[m] = (feito[m] || 0) + n); sm.forEach(m => feito[m] = (feito[m] || 0) + n * 0.5); }));
+  const plan = Object.fromEntries(volumeSemanal(a.treino));
+  const grupos = [...new Set([...Object.keys(plan), ...Object.keys(feito)])].sort((x, y) => (plan[y] || 0) - (plan[x] || 0)).slice(0, 12);
+  const volH = grupos.length && Object.keys(feito).length ? `<h3 style="margin-top:16px">Séries por músculo nos últimos 7 dias</h3><p class="note" style="margin-top:2px">Feito x planejado. Principal conta 1, secundário 0,5 (método fracionado). Mais séries tendem a dar mais hipertrofia, com retorno cada vez menor; para força, poucas séries por semana já rendem bem.</p>
+    <div class="evo-v">${grupos.map(m => { const fz = feito[m] || 0, pl = plan[m] || 0, mx = Math.max(20, pl, fz); return `<div class="mb"><span>${esc(MUSC[m] || m)}</span><span class="tr tr2"><i style="width:${Math.min(100, fz / mx * 100)}%"></i>${pl ? `<em style="left:${Math.min(100, pl / mx * 100)}%"></em>` : ''}</span><b>${fmt(fz)}<small>/${fmt(pl)}</small></b></div>`; }).join('')}</div>` : '';
+  /* carga interna: PSE da sessão × minutos (Foster). Monotonia = média / desvio da carga diária da semana; tensão = carga semanal × monotonia */
+  const cargaDia = {}; T.forEach(t => { let c = 0; if (t.pse != null && t.min) c = t.pse * t.min; else (t.cardio || []).forEach(x => { c += (x.min || 0) * (x.pse || 0); }); if (c) cargaDia[t.data] = (cargaDia[t.data] || 0) + c; });
+  const temCarga = Object.keys(cargaDia).length >= 3;
+  const dias7 = [...Array(7)].map((_, i) => cargaDia[isoMenosDias(hoje, i)] || 0), sem = k => [...Array(7)].reduce((s, _, i) => s + (cargaDia[isoMenosDias(hoje, i + 7 * k)] || 0), 0);
+  const c0 = sem(0), c1 = sem(1), md = c0 / 7, sd = Math.sqrt(dias7.reduce((s, x) => s + (x - md) ** 2, 0) / 7), mono = sd ? md / sd : null, cron = (sem(0) + sem(1) + sem(2) + sem(3)) / 4;
+  const cargaH = temCarga ? `<h3 style="margin-top:16px">Carga de treino (PSE da sessão × minutos)</h3><div class="evo-g">
+      <div><span>Últimos 7 dias</span><b>${fmt(c0, 0)}</b><small>${c1 ? `${c0 >= c1 ? '+' : ''}${fmt((c0 / c1 - 1) * 100, 0)}% vs. semana anterior` : 'unidades arbitrárias'}</small></div>
+      <div><span>Média de 4 semanas</span><b>${fmt(cron, 0)}</b><small>${cron ? `semana atual = ${fmt(c0 / cron, 2)} × a média${c0 / cron > 1.5 ? ' · salto grande: cuidado' : ''}` : ''}</small></div>
+      <div><span>Monotonia</span><b>${mono ? fmt(mono, 1) : '–'}</b><small>acima de 2 = semana muito igual; com carga alta, mais risco de doença e excesso (Foster)</small></div>
+      <div><span>Tensão</span><b>${mono ? fmt(c0 * mono, 0) : '–'}</b><small>carga × monotonia; compare com as semanas dele mesmo</small></div></div>` : '';
+  /* testes */
+  const TT = (a.registros || {}).testes || [];
+  const testesH = TT.length ? `<h3 style="margin-top:16px">Testes de cardio</h3><div class="evo-t"><table><thead><tr><th>Teste</th><th>Último</th><th>Anterior</th></tr></thead><tbody>${TESTES.filter(([k]) => TT.some(t => t.tipo === k)).map(([k, nome]) => { const L = TT.filter(t => t.tipo === k); return `<tr><th>${esc(nome)}<small>${dataBR(L[0].data)}</small></th><td>${esc(testeResumo(L[0]))}</td><td>${L[1] ? `${esc(testeResumo(L[1]))}<small>${dataBR(L[1].data)}</small>` : '–'}</td></tr>`; }).join('')}</tbody></table></div>` : '';
+  /* fases: mudança mediana do 1RM estimado dentro de cada bloco */
+  const fases = [...(a.treino.meso ? [{ ...a.treino.meso, fim: isoMenosDias(a.treino.meso.ini, -(a.treino.meso.sem || 4) * 7) }] : []), ...(a.mesoHist || [])].filter(f => dOk(f.ini)).slice(0, 6);
+  const fasesH = fases.length ? `<h3 style="margin-top:16px">Blocos</h3><div class="lst">${fases.map(f => { const d = []; Object.values(E.ex).forEach(v => { const q = v.p.filter(x => x[1] > 0 && x[0] >= f.ini && x[0] <= f.fim); if (q.length >= 2) d.push((q[q.length - 1][1] / q[0][1] - 1) * 100); }); d.sort((x, y) => x - y); const mdn = d.length ? d[Math.floor(d.length / 2)] : null;
+      return `<div class="li"><span class="li-m"><span class="li-t">${esc(faseDe(f.fase)[1])}</span><span class="li-s">${dataBR(f.ini)} a ${dataBR(f.fim)}${mdn != null ? ` · 1RM estimado ${mdn >= 0 ? '+' : ''}${fmt(mdn, 1)}% (mediana de ${plur(d.length, 'exercício')})` : ''}</span></span></div>`; }).join('')}</div>` : '';
+  /* cardio */
   const C = E.cardio, cw = {}; C.forEach(c => { const w = semanaDe(c[0]); cw[w] = cw[w] || { min: 0, carga: 0, n: 0, fc: [], pse: [] }; cw[w].min += c[3]; cw[w].carga += c[3] * (c[5] || 0); cw[w].n++; if (c[4]) cw[w].fc.push(c[4]); if (c[5]) cw[w].pse.push(c[5]); });
   const ult4 = ws.slice(4).map(w => cw[w] || { min: 0, carga: 0, n: 0, fc: [], pse: [] });
   const med = L => L.length ? L.reduce((s, x) => s + x, 0) / L.length : 0;
+  const zmin = [0, 0, 0, 0, 0, 0]; C.filter(c => c[0] > h28).forEach(c => { zmin[c[7] || 0] += c[3]; });
   const cardioH = C.length ? `<div class="evo-g">
       <div><span>Minutos por semana</span><b>${fmt(med(ult4.map(w => w.min)), 0)}</b><small>média das últimas 4 semanas · OMS: 150–300 min moderado</small></div>
       <div><span>Sessões nas últimas 4 semanas</span><b>${ult4.reduce((s, w) => s + w.n, 0)}</b><small>${C.length} no total</small></div>
       <div><span>Esforço médio (0–10)</span><b>${fmt(med(ult4.flatMap(w => w.pse)), 1) || '–'}</b><small>PSE da sessão</small></div>
-      <div><span>Carga semanal (min × PSE)</span><b>${fmt(med(ult4.map(w => w.carga)), 0)}</b><small>suba aos poucos; picos grandes de uma semana para outra aumentam o risco de lesão</small></div></div>
+      <div><span>Tempo por zona (4 semanas)</span><b>${zmin.slice(1).some(Boolean) ? zmin.slice(1).map((m, i) => m ? `Z${i + 1} ${fmt(m, 0)}` : '').filter(Boolean).join(' · ') : '–'}</b><small>minutos na zona prescrita</small></div></div>
       <div class="evo-bars">${ws.map(w => { const x = cw[w]; const m = x ? x.min : 0; return `<div title="${dataBR(w)}: ${fmt(m, 0)} min"><i style="height:${Math.min(100, m / Math.max(150, ...ws.map(w2 => (cw[w2] || {}).min || 0)) * 100)}%"></i><span>${dataCurta(w)}</span></div>`; }).join('')}</div>
-      ${(() => { const eqs = {}; C.filter(c => c[4] && c[3]).forEach(c => { (eqs[c[2] + '|' + c[1]] = eqs[c[2] + '|' + c[1]] || []).push(c); }); const L = Object.entries(eqs).filter(([, v]) => v.length >= 3); return L.length ? `<p class="note" style="margin-top:8px">${L.map(([k, v]) => { const [eq, mod] = k.split('|'); const a0 = med(v.slice(0, 3).map(c => c[4])), a1 = med(v.slice(-3).map(c => c[4])); return `${esc(modNome(mod))} na ${esc(eqNome(eq).toLowerCase())}: FC média ${fmt(a0, 0)} → ${fmt(a1, 0)} bpm`; }).join(' · ')}. Mesma atividade com FC mais baixa ao longo das semanas indica melhora do condicionamento, se o ritmo se manteve.</p>` : ''; })()}` : '';
+      ${(() => { const eqs = {}; C.filter(c => c[4] && c[3]).forEach(c => { (eqs[c[2] + '|' + c[1]] = eqs[c[2] + '|' + c[1]] || []).push(c); }); const L = Object.entries(eqs).filter(([, v]) => v.length >= 3); return L.length ? `<p class="note" style="margin-top:8px">${L.map(([k, v]) => { const [eq, mod] = k.split('|'); const a0 = med(v.slice(0, 3).map(c => c[4])), a1 = med(v.slice(-3).map(c => c[4])); const vk = v.filter(c => c[6]); const ef = vk.length >= 3 ? ` · ritmo ${fmt(vk.slice(0, 2).reduce((s, c) => s + c[6] / c[3] * 60, 0) / 2, 1)} → ${fmt(vk.slice(-2).reduce((s, c) => s + c[6] / c[3] * 60, 0) / 2, 1)} km/h` : ''; return `${esc(modNome(mod))} na ${esc(eqNome(eq).toLowerCase())}: FC média ${fmt(a0, 0)} → ${fmt(a1, 0)} bpm${ef}`; }).join(' · ')}. Mesma atividade com FC mais baixa (ou mais rápida com a mesma FC) indica melhora do condicionamento.</p>` : ''; })()}` : '';
+  const S = mesoStatus(a.treino.meso);
   return `<h2 class="sub-t">Evolução</h2><div class="block evo">
-    ${linhas ? `<h3>Força</h3><p class="note" style="margin-top:2px">1RM estimado pela fórmula de Epley, a partir da melhor série de até 12 repetições de cada sessão. Compare o aluno com ele mesmo. “Pode subir carga”: na última sessão bateu o topo da faixa de repetições em todas as séries.</p>
-      <div class="evo-t"><table><thead><tr><th>Exercício</th><th>1RM est.</th><th>Melhor série</th><th>Tendência</th></tr></thead><tbody>${linhas}</tbody></table></div>
+    ${S && !S.fim ? `<p class="evo-fase"><b>${esc(S.fase[1])}</b> · semana ${S.antes ? '–' : S.w} de ${S.sem}${S.del ? ' (leve)' : ''} · RIR alvo ${S.rir}</p>` : ''}
+    ${nSobe || nPlato ? `<p class="evo-res">${nSobe ? `<b class="up">${plur(nSobe, 'exercício pronto', 'exercícios prontos')} para subir carga.</b> ` : ''}${nPlato ? `<b class="pl">${plur(nPlato, 'exercício estagnado', 'exercícios estagnados')}</b> há 4 semanas: vale checar sono, dieta e esforço, variar a faixa de repetições ou programar uma semana leve.` : ''}</p>` : ''}
+    ${linhas ? `<h3>Força</h3><p class="note" style="margin-top:2px">1RM estimado (Epley) pela melhor série de até 12 repetições de cada sessão; quando o aluno informa quantas repetições sobraram, a última série entra com reps + RIR. Ritmo: inclinação das últimas 8 semanas. “Pode subir carga”: bateu o topo da faixa em todas as séries ou sobraram 3 ou mais repetições.</p>
+      <div class="evo-t"><table><thead><tr><th>Exercício</th><th>1RM est.</th><th>Ritmo</th><th>Melhor série</th><th>Tendência</th></tr></thead><tbody>${linhas}</tbody></table></div>
       <div class="evo-g" style="margin-top:10px"><div><span>Tonelagem, últimas 4 semanas</span><b>${fmt(t4 / 1000, 1)} t</b><small>${t0 ? `${t4 >= t0 ? '+' : ''}${fmt((t4 / t0 - 1) * 100, 0)}% vs. 4 semanas antes` : 'carga × repetições somadas'}</small></div></div>` : ''}
-    ${cardioH ? `<h3 style="margin-top:16px">Cardio</h3>${cardioH}` : ''}</div>`;
+    ${volH}${cargaH}${fasesH}
+    ${cardioH || testesH ? `<h3 style="margin-top:16px">Cardio</h3><p class="note" style="margin-top:2px">${esc(zonasTxt(a))} <button class="lnk" type="button" data-act="zonasCfg">Método e testes</button></p>${cardioH}${testesH}` : ''}</div>`;
 }
 /* dieta em detalhe: o que foi feito, o que ficou de fora, opções escolhidas e calorias/macros do dia */
 function dietaDia(a, x) {

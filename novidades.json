@@ -1,6 +1,16 @@
 {
  "itens": [
   {
+   "data": "2026-11-15",
+   "titulo": "Testes de cardio e evolução mais completa",
+   "resumo": "Descubra as suas zonas com testes simples e veja a meta de cada exercício no próximo treino.",
+   "texto": "<b>Testes de cardio</b>: na aba Evolução, em <b>Seus testes</b>, você encontra os testes que o seu coach escolheu para você, com o passo a passo e a conta pronta. O <b>teste da fala</b> acha as suas zonas pela sua respiração, sem depender de idade ou peso.<br><br><b>Evolução por exercício</b>: toque em um exercício para ver a curva da sua força, os seus recordes, as cargas que você deve aguentar e a <b>meta do próximo treino</b>.<br><br><b>No treino</b>: marque quantas repetições ainda dava para fazer na última série e, no fim, como foi o treino de 0 a 10. Isso ajuda a acertar a carga certa para você.<br><br>Se o seu coach montou um bloco de treino, você vê a <b>fase e a semana</b> no topo do Treino.",
+   "acao": {
+    "rotulo": "Ver meus testes",
+    "ir": "tb-e"
+   }
+  },
+  {
    "data": "2026-11-14",
    "titulo": "Nova aba Evolução, cardio e exercício reserva",
    "resumo": "Veja sua força subindo, acompanhe o cardio pela frequência cardíaca e tenha um plano B quando faltar o aparelho.",
