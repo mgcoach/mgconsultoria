@@ -147,6 +147,15 @@ button,input,textarea,select{font:inherit;color:inherit}
 .nv-a{margin-top:12px;border:1px solid var(--ink);background:var(--ink);color:#fff;border-radius:999px;padding:9px 16px;font-weight:600;font-size:14px;cursor:pointer}
 
 .lg-alt{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:9px;font-size:12.5px;color:var(--ink-2)}.lg-alt button{border:1px solid var(--rule);background:var(--card);border-radius:999px;padding:5px 11px;font-size:12.5px;font-weight:500;cursor:pointer}.lg-alt button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.lg-aq{background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:10px 11px;margin:0 0 10px}
+.aq-h{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}.aq-h b{font-size:13.5px}
+.aq-h label small{font-size:11px;color:var(--ink-3)}.aq-h label{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-2)}.aq-h input{width:74px;height:36px;border:1px solid var(--rule);border-radius:9px;background:var(--paper);padding:0 8px;font-size:16px;font-weight:700;text-align:center;outline:none}.aq-h input:focus{border-color:var(--ink)}
+.aq-src{display:block;font-size:11.5px;color:var(--ink-3);margin-top:3px;text-align:right}
+.aq-l{display:grid;grid-template-columns:repeat(auto-fill,minmax(82px,1fr));gap:6px;margin-top:8px}
+.aq-i{background:var(--paper);border-radius:9px;padding:6px 8px;display:flex;flex-direction:column;line-height:1.25}.aq-i span{font-size:11px;color:var(--ink-2);font-weight:600}.aq-i b{font-size:15.5px}.aq-i i{font-style:normal;font-size:12px;color:var(--ink-2)}
+.aq-i.fd{background:#fff4ec;box-shadow:inset 0 0 0 1px rgba(255,90,0,.35)}.aq-i.fd span{color:#c2410c}
+.aq-v{opacity:.55}.aq-t{font-size:12.5px;line-height:1.45;color:var(--ink-2);margin-top:8px}
+.aq-cur{font-size:12.5px;line-height:1.45;color:var(--ink-2);margin-top:8px}.aq-g{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--ink-2)}.aq-g li{display:flex;gap:7px;align-items:baseline}.aq-g li i{font-style:normal;flex:none}
 .lg-dica{font-size:12.5px;line-height:1.45;color:var(--ink-2);background:var(--card);border-radius:10px;padding:8px 10px;margin:0 0 9px}
 article.cardio .cdlg{margin:12px 0 0}.cd-in{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.cd-in label{font-size:11.5px;color:var(--ink-2);display:flex;flex-direction:column;gap:3px}.cd-in input{border:1px solid var(--rule);border-radius:9px;padding:8px;font-size:15px;background:var(--card);width:100%}
 .cd-pse{margin:9px 0 6px}.cd-pse span{font-size:11.5px;color:var(--ink-2)}.pse{display:grid;grid-template-columns:repeat(11,1fr);gap:3px;margin-top:4px}.pse button{border:1px solid var(--rule);background:var(--card);border-radius:7px;padding:7px 0;font-size:13px;font-weight:600;cursor:pointer}.pse button.on{background:#e0245e;border-color:#e0245e;color:#fff}
@@ -780,13 +789,46 @@ function histDe(x, alt) {
   return c[0] || null;
 }
 const rascKey = (k) => `rasc.${dataReg()}.${k}`;
+/* ---------- cargas do aquecimento e dos feeders, calculadas a partir da carga da série válida ----------
+   É uma sugestão para começar: os feeders servem para o aluno sentir o peso e achar a carga certa do dia. */
+function passoCarga(eq, kg) {
+  if (/dumbbell/.test(eq || '')) return kg < 10 ? 1 : 2;
+  if (/kettlebell/.test(eq || '')) return 4;
+  return kg < 10 ? 1 : 2.5;
+}
+function cargaAq(alvo, pct, eq) { if (!(alvo > 0) || pct == null) return null; if (pct >= 100) return alvo; const p = passoCarga(eq, alvo * pct / 100), v = Math.round(alvo * pct / 100 / p) * p; return v > 0 ? Math.min(v, alvo) : null; }
+function alvoSugerido(x, h) {
+  const m = proxMeta(x, h); if (m && (m.novo || m.kg)) return { kg: m.novo || m.kg, de: m.novo ? 'meta de hoje' : 'carga da última vez' };
+  if (h) { const S = h.sets.filter(z => serieNum(z) && numBR(z.kg) > 0); if (S.length) return { kg: Math.max(...S.map(z => numBR(z.kg))), de: 'carga da última vez' }; }
+  return null;
+}
+let _aqGuia = false; /* o guia completo aparece só no primeiro exercício do dia */
+function blocoAq(x, h, r0) {
+  const L = [...(x.aq || []).map((z, i, A) => ({ t: A.length > 1 ? 'Aquec. ' + (i + 1) : 'Aquec.', r: z[0], c: z[1], fd: false })), ...(x.fd || []).map((z, i, A) => ({ t: A.length > 1 ? 'Feeder ' + (i + 1) : 'Feeder', r: z[0], c: z[1], fd: true }))];
+  if (!L.some(z => z.c != null)) return '';
+  const sug = alvoSugerido(x, h), val = r0.alvo != null && r0.alvo !== '' ? r0.alvo : sug ? kgTxt(sug.kg) : '';
+  const sente = L.some(z => z.fd || (z.c != null && z.c >= 85)), hal = /dumbbell/.test(x.eq || ''), cheio = sente && !_aqGuia; if (cheio) _aqGuia = true;
+  const sobe = hal ? 'tente o próximo halter na série válida' : 'tente 2,5 a 5 kg a mais na série válida';
+  return `<div class="lg-aq" data-eq="${esc(x.eq || '')}"><div class="aq-h"><b>🔥 Cargas para aquecer</b><label>Carga da série válida<input class="aq-alvo" inputmode="decimal" value="${esc(val)}"${r0.alvo ? ' data-mexeu="1"' : ''} placeholder="kg" aria-label="Carga da série válida em kg"> kg</label></div>
+    <span class="aq-src">${hal ? 'em cada halter · ' : ''}${r0.alvo ? 'você ajustou' : sug ? 'pela ' + sug.de : 'coloque a carga que pretende usar'}</span>
+    <div class="aq-l">${L.map(z => `<div class="aq-i${z.fd ? ' fd' : ''}" data-c="${z.c == null ? '' : z.c}"><span>${esc(z.t)}${z.c != null ? ' · ' + z.c + '%' : ''}</span><b class="aq-kg">—</b><i>× ${esc(z.r || '—')}</i></div>`).join('')}</div>
+    ${!sente ? '<p class="aq-t"><b>É só um ponto de partida.</b> Se o aquecimento ficou pesado ou leve demais, ajuste a carga da série válida.</p>'
+      : !cheio ? `<p class="aq-cur">Ponto de partida: nos feeders, sinta o peso. 🟢 leve, ${hal ? 'próximo halter' : '+2,5 a 5 kg'} · 🟡 mantém · 🔴 tira 5 a 10%.</p>`
+      : `<p class="aq-t"><b>É só um ponto de partida.</b> Use os feeders para sentir o peso e achar a sua carga de hoje:</p><ul class="aq-g"><li><i>🟢</i><span><b>Subiu leve e rápido</b>: ${sobe}.</span></li><li><i>🟡</i><span><b>Pesou na medida</b>: mantenha a carga.</span></li><li><i>🔴</i><span><b>Pesou demais ou a técnica caiu</b>: tire 5 a 10%.</span></li></ul>`}</div>`;
+}
+function pintarAq(div) {
+  const box = div.querySelector('.lg-aq'); if (!box) return;
+  const alvo = numBR(box.querySelector('.aq-alvo').value), eq = box.dataset.eq;
+  box.querySelectorAll('.aq-i').forEach(it => { const c = it.dataset.c === '' ? null : +it.dataset.c, v = cargaAq(alvo, c, eq);
+    it.querySelector('.aq-kg').textContent = v ? kgTxt(Math.round(v * 100) / 100) + ' kg' : c == null ? 'leve' : '—'; it.classList.toggle('aq-v', !v && c != null); });
+}
 function montarTreino(app) {
   const TR = SNAP.treino || {}; const MS = mesoStatus(SNAP.meso), rirAlvo = MS && !MS.del ? MS.rir : '';
   { const pt = app.querySelector('.pg-t'); const bf = bannerFase(); if (pt && bf) { const ola = pt.querySelector('.ola'); (ola || pt.firstElementChild).insertAdjacentHTML(ola ? 'afterend' : 'beforebegin', bf); } }
   Object.keys(TR).forEach(k => {
     const sess = app.querySelector('.sess.s-' + k); if (!sess) return;
     const arts = sess.querySelectorAll('article.ex'); const L = TR[k].ex || [];
-    const rasc = LS.get(rascKey(k), {});
+    const rasc = LS.get(rascKey(k), {}); _aqGuia = false;
     L.forEach((x, i) => {
       const art = arts[i]; if (!art) return;
       const r0 = rasc[x.uid] || {}; const usaAlt = !!(x.alt && r0.alt); const h = histDe(x, usaAlt);
@@ -798,13 +840,14 @@ function montarTreino(app) {
         const rt = (rot && rot[j]) || String(j + 1), nome = /^\d+$/.test(rt) ? 'série ' + rt : rt.replace('C', 'cluster ').replace('·B', ', bloco ');
         return `<div class="lg-r${/^\d+$/.test(rt) ? '' : ' tec'}" data-rot="${esc(rt)}"><span class="lg-n">${esc(rt)}</span><input class="kg" inputmode="decimal" placeholder="${esc(hs.kg ? kgTxt(hs.kg) + ' kg' : 'kg')}" value="${esc(s.kg || '')}" aria-label="Carga: ${esc(nome)}"><span class="x">×</span><input class="rp" inputmode="numeric" placeholder="${esc(hs.reps ? hs.reps + ' reps' : x.rp ? x.rp + ' reps' : 'reps')}" value="${esc(s.reps || '')}" aria-label="Repetições: ${esc(nome)}"></div>`; };
       const div = document.createElement('div'); div.className = 'lg'; div.dataset.k = k; div.dataset.uid = x.uid;
-      div.innerHTML = `${x.alt ? `<div class="lg-alt" role="group" aria-label="Qual exercício você fez"><span>Fiz:</span><button type="button" data-alt="0" class="${usaAlt ? '' : 'on'}">${esc(curtoN(x.n))}</button><button type="button" data-alt="1" class="${usaAlt ? 'on' : ''}">ou ${esc(curtoN(x.alt.n))}</button></div>` : ''}<div class="lg-h"><b>${rot && /^(Bloco|C\d)/.test(rot[0]) ? 'Anote cada bloco' : 'Anote suas séries'}</b>${ultTxt ? `<span class="lg-ult">${esc(ultTxt)}</span>` : ''}</div>${dica ? `<p class="lg-dica">${dica}</p>` : ''}<div class="lg-rows">${[...Array(n)].map((_, j) => lin(j)).join('')}</div>
+      div.innerHTML = `${x.alt ? `<div class="lg-alt" role="group" aria-label="Qual exercício você fez"><span>Fiz:</span><button type="button" data-alt="0" class="${usaAlt ? '' : 'on'}">${esc(curtoN(x.n))}</button><button type="button" data-alt="1" class="${usaAlt ? 'on' : ''}">ou ${esc(curtoN(x.alt.n))}</button></div>` : ''}<div class="lg-h"><b>${rot && /^(Bloco|C\d)/.test(rot[0]) ? 'Anote cada bloco' : 'Anote suas séries'}</b>${ultTxt ? `<span class="lg-ult">${esc(ultTxt)}</span>` : ''}</div>${dica ? `<p class="lg-dica">${dica}</p>` : ''}${blocoAq(x, h, r0)}<div class="lg-rows">${[...Array(n)].map((_, j) => lin(j)).join('')}</div>
         <button class="lg-add" type="button">+ série</button>
         <div class="lg-rir"><span>Na última série, quantas repetições ainda dava para fazer?${x.rir ? ` <i>alvo: ${esc(x.rir)}</i>` : rirAlvo ? ` <i>alvo da semana: ${esc(rirAlvo)}</i>` : ''}</span><div>${[0, 1, 2, 3, 4].map(n => `<button type="button" data-r="${n}" class="${String(r0.rir) === String(n) ? 'on' : ''}">${n === 4 ? '4+' : n}</button>`).join('')}</div></div>
         <textarea class="lg-nota" rows="1" placeholder="Anotação: como foi, desconforto, ajuste…">${esc(r0.nota || '')}</textarea>`;
       const tb = art.querySelector('.ex-tb'); (tb || art.querySelector('.ex-top')).insertAdjacentElement('afterend', div);
       div.querySelector('.lg-add').onclick = () => { const rows = div.querySelector('.lg-rows'); rows.insertAdjacentHTML('beforeend', lin(rows.children.length)); };
-      div.addEventListener('input', () => { marcarInicio(k); salvarRascunho(k); });
+      pintarAq(div);
+      div.addEventListener('input', ev => { if (ev.target.classList.contains('aq-alvo')) { ev.target.dataset.mexeu = '1'; pintarAq(div); const sc = div.querySelector('.aq-src'); if (sc) sc.textContent = (/dumbbell/.test(div.querySelector('.lg-aq').dataset.eq) ? 'em cada halter · ' : '') + 'você ajustou'; } else marcarInicio(k); salvarRascunho(k); });
       if (r0.rir !== undefined && r0.rir !== '') div.dataset.rir = String(r0.rir);
       div.querySelectorAll('.lg-rir button').forEach(b => b.onclick = () => { div.dataset.rir = div.dataset.rir === b.dataset.r ? '' : b.dataset.r; div.querySelectorAll('.lg-rir button').forEach(o => o.classList.toggle('on', o.dataset.r === div.dataset.rir)); salvarRascunho(k); });
       div.querySelectorAll('[data-alt]').forEach(b => b.onclick = () => { div.dataset.alt = b.dataset.alt; div.querySelectorAll('[data-alt]').forEach(o => o.classList.toggle('on', o === b)); const hh = histDe(x, b.dataset.alt === '1'); const u = div.querySelector('.lg-ult'); const t = hh ? `Última vez (${dataBR(hh.data)}): ${hh.sets.filter(z => z.kg || z.reps).map(z => `${z.kg ? kgTxt(z.kg) : '—'} kg × ${z.reps || '—'}`).join(' · ')}` : ''; if (u) u.textContent = t; else if (t) div.querySelector('.lg-h').insertAdjacentHTML('beforeend', `<span class="lg-ult">${esc(t)}</span>`); salvarRascunho(k); });
@@ -841,6 +884,7 @@ function lerSessao(k) {
     const sets = [...div.querySelectorAll('.lg-r')].map(r => { const o = { kg: r.querySelector('.kg').value.trim().replace(',', '.'), reps: r.querySelector('.rp').value.trim() }; if (r.dataset.rot && !/^\d+$/.test(r.dataset.rot)) o.rot = r.dataset.rot; return o; });
     while (sets.length && !sets[sets.length - 1].kg && !sets[sets.length - 1].reps) sets.pop();
     out[div.dataset.uid] = { sets, nota: div.querySelector('.lg-nota').value.trim(), alt: div.dataset.alt === '1', rir: div.dataset.rir || '' };
+    const al = div.querySelector('.aq-alvo'); if (al && al.dataset.mexeu) out[div.dataset.uid].alvo = al.value.trim();
   });
   const fm = document.querySelector(`.lg-fim[data-k="${k}"]`); if (fm) out._s = { pse: fm.dataset.pse || '', min: (fm.querySelector('.s-min') || {}).value || '' };
   document.querySelectorAll(`.cdlg[data-k="${k}"]`).forEach(b => { const v = c => b.querySelector(c).value.trim().replace(',', '.'); out['c:' + b.dataset.cid] = { min: v('.c-min'), fc: v('.c-fc'), km: v('.c-km'), pse: b.dataset.pse || '', nota: b.querySelector('.lg-nota').value.trim() }; });
