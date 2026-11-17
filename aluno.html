@@ -83,6 +83,56 @@ button,input,textarea,select{font:inherit;color:inherit}
 .dnota{display:block;background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:12px 14px;margin:12px 0}
 .dnota span{display:block;font-weight:600;font-size:14px;margin-bottom:6px}.dnota small{display:block;font-size:12px;color:var(--ink-3);margin-top:4px}
 .dnota textarea{width:100%;min-height:60px;border:1px solid var(--rule);border-radius:10px;background:var(--paper);padding:9px 10px;font-size:15px;resize:vertical;outline:none}
+/* água e semana */
+.agua{background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:12px 15px;margin:0 0 12px}
+.ag-t{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:14px}.ag-t b{font-size:18px}.ag-t span{color:var(--ink-2);font-size:13px}
+.ag-b{height:10px;border-radius:999px;background:#e0f2fe;margin-top:8px;overflow:hidden}.ag-b i{display:block;height:100%;background:linear-gradient(90deg,#38bdf8,#0284c7);border-radius:999px;transition:width .3s}
+.ag-bt{display:flex;gap:6px;margin-top:10px}.ag-bt button{flex:1;min-height:40px;border-radius:10px;border:1px solid #bae6fd;background:#f0f9ff;color:#0369a1;font-weight:700;font-size:13.5px;cursor:pointer}.ag-bt button.mn{flex:0 0 44px;background:var(--paper);border-color:var(--rule);color:var(--ink-2)}
+.sem{background:var(--card);border:1px solid var(--rule);border-radius:14px;margin:0 0 12px;overflow:hidden}
+.sem summary{list-style:none;cursor:pointer;padding:12px 15px;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:14.5px}.sem summary::-webkit-details-marker{display:none}.sem summary::after{content:"▾";color:var(--ink-3)}.sem[open] summary::after{content:"▴"}
+.sem-b{padding:0 15px 14px}.sem-g{display:grid;grid-template-columns:1fr 1fr;gap:8px}.sem-g div{background:var(--paper);border-radius:10px;padding:8px 10px;display:flex;flex-direction:column}.sem-g span{font-size:11.5px;color:var(--ink-2);font-weight:600}.sem-g b{font-size:16px}.sem-g small{font-size:11.5px;color:var(--ink-2)}
+.sem-g .ok{background:#ecfdf3}.sem-g .md{background:#fef9c3}.sem-g .bx{background:#fee2e2}
+.sem-d{display:flex;gap:4px;align-items:flex-end;height:70px;margin:12px 0 4px}.sem-d div{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;height:100%;justify-content:flex-end}.sem-d i{display:block;width:100%;border-radius:5px 5px 2px 2px;background:var(--accent);min-height:2px}.sem-d i.vz{background:var(--rule)}.sem-d span{font-size:10.5px;color:var(--ink-3)}
+.sem-n{font-size:12px;color:var(--ink-3);margin-top:8px;line-height:1.45}
+/* comi outra coisa */
+.oc-bt{display:block;width:calc(100% - 30px);margin:6px 15px 0;min-height:38px;border:1px dashed var(--rule);border-radius:10px;background:transparent;color:var(--ink-2);font-size:13.5px;font-weight:600;cursor:pointer}
+.ck.troca.on{background:#eef6ff!important;color:#1668a8!important;border-color:#93c5fd!important}
+.ov{position:fixed;inset:0;z-index:80;background:rgba(12,26,38,.45);display:flex;align-items:flex-end;justify-content:center}
+.ov-c{background:var(--paper,#f6f7f9);width:100%;max-width:560px;max-height:92vh;border-radius:20px 20px 0 0;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 -10px 40px rgba(0,0,0,.25)}
+.ov-h{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:16px 16px 10px;background:var(--card,#fff);border-bottom:1px solid var(--rule)}
+.ov-h small{display:block;font-size:12px;color:var(--ink-3);font-weight:600}.ov-h h3{font-size:19px;letter-spacing:-.01em}
+.ov-x{flex:none;width:38px;height:38px;border-radius:999px;border:none;background:var(--paper);font-size:20px;cursor:pointer;color:var(--ink-2)}
+.ov-b{flex:1;overflow:auto;padding:12px 16px 16px;-webkit-overflow-scrolling:touch}
+.ov-f{display:flex;gap:8px;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:var(--card,#fff);border-top:1px solid var(--rule)}
+.ov-f button{flex:1;min-height:46px;border-radius:999px;font-weight:700;font-size:15px;cursor:pointer;border:1px solid var(--rule);background:var(--card,#fff);color:var(--ink)}
+.ov-f .pri{background:var(--accent);border-color:var(--accent);color:#fff}.ov-f .pri:disabled{opacity:.45}
+.oc-plan{font-size:12.5px;color:var(--ink-2);background:var(--card,#fff);border:1px solid var(--rule);border-radius:10px;padding:8px 10px}
+.oc-gbt{display:flex;align-items:center;gap:8px;width:100%;margin-top:8px;padding:10px 12px;border-radius:12px;border:1px solid #fed7aa;background:#fff7ed;color:#9a3412;font-weight:600;font-size:13.5px;cursor:pointer;text-align:left}
+.oc-its{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+.oc-it{display:flex;align-items:center;gap:10px;background:var(--card,#fff);border:1px solid var(--rule);border-radius:12px;padding:9px 10px}
+.oc-it div{flex:1;min-width:0}.oc-it b{display:block;font-size:14px}.oc-it span{font-size:12.5px;color:var(--ink-2)}
+.oc-it em{font-style:normal;font-weight:700;font-size:13.5px;white-space:nowrap}.oc-it button{flex:none;width:32px;height:32px;border-radius:999px;border:none;background:var(--paper);color:var(--ink-2);font-size:16px;cursor:pointer}
+.oc-tot{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}.oc-tot div{background:#0c1a26;color:#fff;border-radius:10px;padding:7px 8px;display:flex;flex-direction:column}.oc-tot span{font-size:11px;opacity:.75}.oc-tot b{font-size:15px}
+.oc-vazio{font-size:13.5px;color:var(--ink-3);text-align:center;padding:14px 8px;border:1px dashed var(--rule);border-radius:12px;margin-top:12px}
+.oc-busca{position:relative;margin-top:14px}.oc-busca input{width:100%;height:46px;border:1.5px solid var(--ink);border-radius:12px;background:var(--card,#fff);padding:0 12px 0 38px;font-size:16px;outline:none}
+.oc-busca::before{content:"🔍";position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:15px;opacity:.6}
+.oc-res{display:flex;flex-direction:column;margin-top:6px;background:var(--card,#fff);border-radius:12px;overflow:hidden}
+.oc-res button{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:11px 12px;border:none;border-bottom:1px solid var(--rule);background:transparent;text-align:left;font-size:14px;cursor:pointer;color:var(--ink)}
+.oc-res button small{color:var(--ink-3);font-size:12px;white-space:nowrap}
+.oc-ed{background:var(--card,#fff);border:2px solid var(--accent);border-radius:14px;padding:12px;margin-top:10px}
+.oc-ed h4{font-size:15px;margin-bottom:8px}.oc-q{display:flex;align-items:center;gap:8px}
+.oc-q button{width:44px;height:44px;border-radius:12px;border:1px solid var(--rule);background:var(--paper);font-size:22px;font-weight:700;cursor:pointer;color:var(--ink)}
+.oc-q input{width:80px;height:44px;text-align:center;font-size:18px;font-weight:700;border:1px solid var(--rule);border-radius:12px;background:var(--paper);outline:none}
+.oc-un{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.oc-un button{padding:8px 11px;border-radius:999px;border:1px solid var(--rule);background:var(--paper);font-size:13px;font-weight:600;cursor:pointer;color:var(--ink)}
+.oc-un button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.oc-calc{margin-top:10px;font-size:13.5px;color:var(--ink-2)}.oc-calc b{color:var(--ink)}
+.oc-add{width:100%;min-height:44px;margin-top:10px;border:none;border-radius:999px;background:var(--accent);color:#fff;font-weight:700;font-size:15px;cursor:pointer}
+.gu h4{font-size:15px;margin:14px 0 8px}.gu p{font-size:13.5px;color:var(--ink-2);line-height:1.5}
+.gu-m{display:grid;grid-template-columns:1fr 1fr;gap:8px}.gu-m div{background:var(--card,#fff);border:1px solid var(--rule);border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:3px}
+.gu-m .ic{font-size:30px;line-height:1.1}.gu-m b{font-size:14px}.gu-m span{font-size:12.5px;color:var(--ink-2);line-height:1.4}
+.gu-c{display:flex;flex-direction:column;gap:6px}.gu-c div{display:flex;gap:10px;align-items:center;background:var(--card,#fff);border:1px solid var(--rule);border-radius:12px;padding:8px 10px;font-size:13.5px}
+.gu-c i{font-style:normal;font-size:22px;flex:none;width:30px;text-align:center}.gu-c b{white-space:nowrap}
+.gu-dica{background:#fff7ed;border-radius:12px;padding:10px 12px;font-size:13.5px;color:#9a3412;margin-top:12px;line-height:1.5}
 /* pagamento */
 .mgc.mpg{background:#fff;border:2px solid var(--accent)}.mgc.mpg h3{color:#c2410c}.mgc.mpg p{color:var(--ink-2)}.mgc.mpg button{background:var(--accent);border:none;color:#fff}
 .mgc.pgok{background:#ecfdf3;border:2px solid #86efac}.mgc.pgok h3{color:#15803d}.mgc.pgok p{color:var(--ink-2)}
@@ -266,8 +316,9 @@ function telaPin(msg) {
 let _enviando = false;
 function fila() { return LS.get('fila', []); }
 function enfileirar(reg) { const f = fila().filter(x => x.id !== reg.id || x.tipo !== reg.tipo); f.push(reg); LS.set('fila', f); mostrarFila(); return enviarFila(); }
+let _deNovo = false; /* chegou registro novo enquanto a fila estava sendo enviada: manda de novo no fim */
 async function enviarFila() {
-  if (_enviando || !PIN) return; _enviando = true;
+  if (!PIN) return; if (_enviando) { _deNovo = true; return; } _enviando = true; _deNovo = false;
   let enviados = 0;
   try {
     for (const reg of fila()) {
@@ -278,7 +329,7 @@ async function enviarFila() {
       else if (r === 'codigo' || r === 'link') { LS.del('pin'); PIN = ''; return r === 'link' ? telaInativa() : telaPin('O código mudou. Peça o código novo ao seu coach.'); }
       else break;
     }
-  } finally { _enviando = false; mostrarFila(); }
+  } finally { _enviando = false; mostrarFila(); if (_deNovo) { _deNovo = false; setTimeout(enviarFila, 50); } }
   return enviados;
 }
 function mostrarFila() {
@@ -927,6 +978,10 @@ function montarDieta(app) {
     const arts = pl.querySelectorAll('article.ref'); const nomes = (D.refs || {})[t] || [];
     const topo = document.createElement('div'); topo.className = 'dhoje'; topo.dataset.t = t;
     const al = pl.querySelector('.alvo'); (al || pl.firstChild) && pl.insertBefore(topo, al ? al.nextSibling : pl.firstChild);
+    const ag = document.createElement('div'); ag.className = 'agua'; ag.innerHTML = '<div class="ag-t"><span>💧 <b class="ag-v">0 L</b> de água <i class="ag-q" style="font-style:normal"></i></span><span class="ag-m"></span></div><div class="ag-b"><i></i></div><div class="ag-bt"><button type="button" class="mn" data-ml="-250" aria-label="Tirar 250 ml">−</button><button type="button" data-ml="250">+ Copo 250 ml</button><button type="button" data-ml="500">+ Garrafa 500 ml</button></div>';
+    topo.insertAdjacentElement('afterend', ag);
+    ag.querySelectorAll('[data-ml]').forEach(b => b.onclick = () => { const d = dataReg(), e = LS.get('dieta.' + d, { feitas: {} }); e.agua = Math.max(0, (+e.agua || 0) + +b.dataset.ml); LS.set('dieta.' + d, e); pintarDieta(); agendarDieta(tipoDoDia(d), d, 2500); });
+    const sm = document.createElement('details'); sm.className = 'sem'; ag.insertAdjacentElement('afterend', sm);
     const nt = document.createElement('label'); nt.className = 'dnota'; nt.innerHTML = '<span>Observação sobre a alimentação <b class="dn-d"></b></span><textarea rows="2" maxlength="1000" placeholder="Ex.: não deu para jantar, troquei o arroz por batata, senti muita fome à noite…"></textarea><small>O MG lê e pode te responder aqui no app.</small>';
     pl.appendChild(nt);
     let ntT; nt.querySelector('textarea').addEventListener('input', ev => { const d = dataReg(), e = LS.get('dieta.' + d, { feitas: {} }); e.nota = ev.target.value; LS.set('dieta.' + d, e);
@@ -934,8 +989,10 @@ function montarDieta(app) {
     arts.forEach((art, j) => {
       const b = document.createElement('button'); b.type = 'button'; b.className = 'ck'; b.dataset.t = t; b.dataset.j = j;
       art.appendChild(b);
+      const oc = document.createElement('button'); oc.type = 'button'; oc.className = 'oc-bt'; oc.dataset.t = t; oc.dataset.j = j; oc.textContent = 'Comi outra coisa'; oc.onclick = () => abrirOutra(t, j); art.appendChild(oc);
       const agenda = d => { const k = t + '|' + d, go = () => enviarDieta(t, d); if (_dietaT[k]) clearTimeout(_dietaT[k][0]); _dietaT[k] = [setTimeout(() => { delete _dietaT[k]; go(); mostrarLembrete(); }, 2500), go]; };
       b.onclick = () => { const d = dataReg(), e = LS.get('dieta.' + d, { feitas: {} }); const f = new Set(e.feitas[t] || []);
+        if (((e.outra || {})[t] || {})[j] && f.has(j)) return abrirOutra(t, j);
         if (f.has(j)) f.delete(j); else { f.add(j); e.esc = e.esc || {}; e.esc[t] = e.esc[t] || {}; e.esc[t][j] = escolhaRef(art); }
         e.feitas[t] = [...f]; LS.set('dieta.' + d, e); pintarDieta(); agenda(d); };
       /* trocou a opção ou um alimento de uma refeição já marcada: atualiza o registro */
@@ -947,6 +1004,115 @@ function montarDieta(app) {
   /* plano do dia (ciclo de carboidrato) */
   if (D.ciclo) { const tp = D.ciclo[DIAS_JS[dowISO(dataReg())]]; const r = app.querySelector('#pl-' + tp); if (r) r.checked = true; }
 }
+/* ---------- "Comi outra coisa": o aluno registra o que comeu no lugar da refeição do plano ----------
+   Busca na base de alimentos do app (alimentos.json), com medidas caseiras e um guia para estimar porções. */
+let _alim;
+function carregarAlimentos() {
+  if (_alim) return _alim;
+  _alim = fetch('alimentos.json', { cache: 'force-cache' }).then(r => r.ok ? r.json() : Promise.reject()).then(j => j.a.map(r => ({ n: r[0], k: r[1], p: r[2], c: r[3], g: r[4], s: r[5], un: r[6], u: r[7], ms: r[8] || [], nn: normTxt(r[0]) })))
+    .catch(e => { _alim = null; throw e; });
+  return _alim;
+}
+const normTxt = t => String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+const PRIO = { N: 0, T: 1, I: 2, M: 3 };
+function buscarAlim(A, q) {
+  const w = normTxt(q).split(/[^a-z0-9]+/).filter(x => x.length > 1); if (!w.length) return [];
+  return A.filter(a => w.every(x => a.nn.includes(x))).map(a => ({ a, sc: (a.nn.startsWith(w[0]) ? 0 : 20) + (PRIO[a.s] || 4) * 3 + a.n.length / 12 })).sort((x, y) => x.sc - y.sc).slice(0, 25).map(x => x.a);
+}
+function unidadesDe(a) { const U = []; if (a.u > 0 && a.un) U.push([a.un, a.u]); (a.ms || []).forEach(m => { if (!U.some(x => x[0] === m[0])) U.push(m); }); U.push(['gramas', 1]); return U; }
+const macAlim = (a, g) => [a.k, a.p, a.c, a.g].map(v => v * g / 100);
+const fmtQ = q => String(Math.round(q * 100) / 100).replace('.', ',');
+/* "2 unidades", "3 colheres de sopa", "1,5 fatia" */
+function plurUn(q, un) { if (un === 'gramas') return 'g'; if (!(q >= 2) || /^\d/.test(un)) return un; const [w, ...r] = un.split(' ');
+  const pw = w === 'pão' ? 'pães' : /r$/.test(w) ? w + 'es' : /ão$/.test(w) ? w.replace(/ão$/, 'ões') : /l$/.test(w) ? w.replace(/l$/, 'is') : /[aeiouéêó]$/.test(w) ? w + 's' : w;
+  return [pw, ...r.map(x => /^(médi[oa]|pequen[oa]|grande|chei[oa]|ras[oa])$/.test(x) ? x + 's' : x)].join(' '); }
+const somaM = L => L.reduce((s, x) => s.map((v, i) => v + (x.m[i] || 0)), [0, 0, 0, 0]);
+function planoRef(t, j) { const R = (((SNAP.dieta || {}).det || {})[t] || [])[j]; if (!R) return null; const op = R.ops[0], m = op.base.slice(); op.tr.forEach(alts => alts[0].m.forEach((v, i) => { m[i] += v; })); return m; }
+function agendarDieta(t, d, ms) { const k = t + '|' + d, go = () => enviarDieta(t, d); if (_dietaT[k]) clearTimeout(_dietaT[k][0]); _dietaT[k] = [setTimeout(() => { delete _dietaT[k]; go(); mostrarLembrete(); }, ms || 1500), go]; }
+function fecharOv() { const o = $('ovOc'); if (o) o.remove(); document.body.style.overflow = ''; }
+function abrirOutra(t, j) {
+  const D = SNAP.dieta || {}, d = dataReg(), e0 = LS.get('dieta.' + d, { feitas: {} }), nome = ((D.refs || {})[t] || [])[j] || 'Refeição';
+  let itens = JSON.parse(JSON.stringify((((e0.outra || {})[t] || {})[j] || {}).it || [])), sel = null, A = null, guia = false;
+  const pl = planoRef(t, j), qd = d === hojeISO() ? 'hoje' : d === isoMenos(1) ? 'ontem' : dataBR(d);
+  document.body.insertAdjacentHTML('beforeend', `<div class="ov" id="ovOc" role="dialog" aria-modal="true" aria-labelledby="ocT"><div class="ov-c">
+    <div class="ov-h"><div><small>${esc(nome)} · ${esc(qd)}</small><h3 id="ocT">O que você comeu?</h3></div><button class="ov-x" type="button" aria-label="Fechar">×</button></div>
+    <div class="ov-b" id="ocB"></div><div class="ov-f" id="ocF"></div></div></div>`);
+  document.body.style.overflow = 'hidden';
+  const ov = $('ovOc'), B = $('ocB'), F = $('ocF');
+  ov.querySelector('.ov-x').onclick = fecharOv; ov.onclick = ev => { if (ev.target === ov) fecharOv(); };
+  const salvar = () => { const e = LS.get('dieta.' + d, { feitas: {} }), f = new Set(e.feitas[t] || []); e.outra = e.outra || {}; e.outra[t] = e.outra[t] || {};
+    if (itens.length) { e.outra[t][j] = { it: itens }; f.add(j); if (e.esc && e.esc[t]) delete e.esc[t][j]; } else { delete e.outra[t][j]; }
+    e.feitas[t] = [...f]; LS.set('dieta.' + d, e); fecharOv(); pintarDieta(); agendarDieta(t, d); aviso(itens.length ? 'Refeição registrada' : 'Pronto'); };
+  const voltarPlano = () => { const e = LS.get('dieta.' + d, { feitas: {} }); if (e.outra && e.outra[t]) delete e.outra[t][j]; e.feitas[t] = (e.feitas[t] || []).filter(x => x !== j); LS.set('dieta.' + d, e); fecharOv(); pintarDieta(); agendarDieta(t, d); aviso('Voltou para a refeição do plano'); };
+  const tot = () => { const m = somaM(itens); return `<div class="oc-tot">${[['kcal', 0, ''], ['Proteína', 1, ' g'], ['Carbo', 2, ' g'], ['Gordura', 3, ' g']].map(([l, i, u]) => `<div><span>${l}</span><b>${Math.round(m[i])}${u}</b></div>`).join('')}</div>`; };
+  function desenhar() {
+    if (guia) { B.innerHTML = guiaPorcoes(); F.innerHTML = '<button type="button" class="pri" id="ocGv">Entendi, voltar</button>'; $('ocGv').onclick = () => { guia = false; desenhar(); }; B.scrollTop = 0; return; }
+    B.innerHTML = `${pl ? `<p class="oc-plan">No plano, esta refeição tinha <b>${Math.round(pl[0])} kcal</b> · P ${Math.round(pl[1])} g · C ${Math.round(pl[2])} g · G ${Math.round(pl[3])} g. Coloque abaixo o que você comeu de verdade.</p>` : ''}
+      <button class="oc-gbt" type="button" id="ocG"><span style="font-size:20px">✋</span><span>Não sabe a quantidade? <u>Veja como estimar com a mão e medidas caseiras</u></span></button>
+      ${itens.length ? `<div class="oc-its">${itens.map((x, i) => `<div class="oc-it"><div><b>${esc(x.n)}</b><span>${esc(fmtQ(x.q))} ${esc(plurUn(x.q, x.un))}${x.un !== 'gramas' ? ` · ${Math.round(x.g)} g` : ''}</span></div><em>${Math.round(x.m[0])} kcal</em><button type="button" data-del="${i}" aria-label="Tirar ${esc(x.n)}">✕</button></div>`).join('')}</div>${tot()}` : `<p class="oc-vazio">Busque e adicione cada alimento: pão, ovo, atum, arroz…</p>`}
+      <label class="oc-busca"><input id="ocQ" type="search" placeholder="${itens.length ? 'Adicionar mais um alimento' : 'Buscar alimento: pão, ovo, atum…'}" autocomplete="off" enterkeyhint="search" aria-label="Buscar alimento"></label>
+      <div class="oc-res" id="ocR"></div><div id="ocE"></div>`;
+    F.innerHTML = `${(((e0.outra || {})[t] || {})[j]) ? '<button type="button" id="ocV">Voltar ao plano</button>' : '<button type="button" id="ocC">Cancelar</button>'}<button type="button" class="pri" id="ocS"${itens.length ? '' : ' disabled'}>Salvar refeição</button>`;
+    $('ocG').onclick = () => { guia = true; desenhar(); };
+    B.querySelectorAll('[data-del]').forEach(b => b.onclick = () => { itens.splice(+b.dataset.del, 1); desenhar(); });
+    const q = $('ocQ'), R = $('ocR');
+    q.oninput = () => { sel = null; $('ocE').innerHTML = ''; if (!A) { R.innerHTML = '<p class="oc-vazio" style="margin:0">Carregando alimentos…</p>'; return; } const L = buscarAlim(A, q.value);
+      R.innerHTML = q.value.trim().length < 2 ? '' : L.length ? L.map((a, i) => `<button type="button" data-i="${i}"><span>${esc(a.n)}</span><small>${Math.round(a.k)} kcal/100 g</small></button>`).join('') : '<p class="oc-vazio" style="margin:0">Nada encontrado. Tente outra palavra (ex.: “pão” em vez de “pãozinho”).</p>';
+      R.querySelectorAll('[data-i]').forEach(b => b.onclick = () => { sel = { a: L[+b.dataset.i] }; R.innerHTML = ''; editor(); }); };
+    if ($('ocC')) $('ocC').onclick = fecharOv; if ($('ocV')) $('ocV').onclick = voltarPlano;
+    $('ocS').onclick = salvar;
+    if (!A) carregarAlimentos().then(x => { A = x; if (q.value) q.oninput(); }).catch(() => { R.innerHTML = '<p class="oc-vazio" style="margin:0">Sem internet para buscar os alimentos agora. Tente de novo em instantes.</p>'; });
+  }
+  function editor() {
+    const a = sel.a, U = unidadesDe(a); sel.u = sel.u || U[0]; sel.q = sel.q || (sel.u[0] === 'gramas' ? 100 : 1);
+    const E = $('ocE'), g = () => sel.q * sel.u[1], m = () => macAlim(a, g());
+    E.innerHTML = `<div class="oc-ed"><h4>${esc(a.n)}</h4><div class="oc-q"><button type="button" id="ocMn" aria-label="Menos">−</button><input id="ocQt" inputmode="decimal" value="${fmtQ(sel.q)}" aria-label="Quantidade"><button type="button" id="ocMa" aria-label="Mais">+</button></div>
+      <div class="oc-un" role="group" aria-label="Medida">${U.map((u, i) => `<button type="button" data-u="${i}" class="${u[0] === sel.u[0] ? 'on' : ''}">${esc(u[0])}${u[0] !== 'gramas' ? ` <small>(${u[1]} g)</small>` : ''}</button>`).join('')}</div>
+      <p class="oc-calc" id="ocCa"></p><button class="oc-add" type="button" id="ocAd">Adicionar</button></div>`;
+    const calc = () => { const mm = m(); $('ocCa').innerHTML = `${sel.u[0] !== 'gramas' ? `≈ <b>${Math.round(g())} g</b> · ` : ''}<b>${Math.round(mm[0])} kcal</b> · P ${Math.round(mm[1])} g · C ${Math.round(mm[2])} g · G ${Math.round(mm[3])} g`; };
+    const passo = () => sel.u[0] === 'gramas' ? 10 : 0.5;
+    const setQ = v => { sel.q = Math.max(0, Math.round(v * 100) / 100); $('ocQt').value = fmtQ(sel.q); calc(); };
+    $('ocMn').onclick = () => setQ(sel.q - passo()); $('ocMa').onclick = () => setQ(sel.q + passo());
+    $('ocQt').oninput = () => { sel.q = numBR($('ocQt').value) || 0; calc(); };
+    E.querySelectorAll('[data-u]').forEach(b => b.onclick = () => { const nu = U[+b.dataset.u]; if (nu[0] === sel.u[0]) return; const gAtual = g(); sel.u = nu; sel.q = nu[0] === 'gramas' ? Math.round(gAtual) : Math.max(0.5, Math.round(gAtual / nu[1] * 2) / 2); E.querySelectorAll('[data-u]').forEach(x => x.classList.toggle('on', x === b)); $('ocQt').value = fmtQ(sel.q); calc(); });
+    $('ocAd').onclick = () => { if (!(g() > 0)) return $('ocQt').focus(); itens.push({ n: a.n, q: sel.q, un: sel.u[0], g: Math.round(g() * 10) / 10, m: m().map(v => Math.round(v * 10) / 10) }); sel = null; desenhar(); setTimeout(() => { const t2 = $('ocQ'); if (t2) t2.focus(); }, 50); };
+    calc(); E.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+  desenhar();
+}
+/* ---------- resumo dos últimos 7 dias (calculado com o que foi marcado neste celular) ---------- */
+function resumoSemana() {
+  const D = SNAP.dieta || {}, dias = [...Array(7)].map((_, i) => isoMenos(6 - i)), meta = +D.agua || 0;
+  const L = dias.map(d => { const e = LS.get('dieta.' + d, null), t = tipoDoDia(d), al = (D.alvo || {})[t] || null; if (!e) return { d, al, reg: false, ag: 0 };
+    const det = detDia(t, e), m = det.reduce((s, x) => x.m ? s.map((v, i) => v + x.m[i]) : s, [0, 0, 0, 0]); return { d, al, reg: det.length > 0, m, ag: +e.agua || 0 }; });
+  const R = L.filter(x => x.reg), n = R.length, med = i => n ? R.reduce((s, x) => s + x.m[i], 0) / n : 0, alv = i => { const A = R.filter(x => x.al); return A.length ? A.reduce((s, x) => s + x.al[i], 0) / A.length : 0; };
+  const cl = p => p >= 90 && p <= 110 ? 'ok' : p >= 75 && p <= 125 ? 'md' : 'bx';
+  const card = (lb, i, u) => { const v = med(i), a = alv(i), p = a ? Math.round(v / a * 100) : null; return `<div class="${p === null ? '' : i === 1 ? (p >= 90 ? 'ok' : p >= 75 ? 'md' : 'bx') : cl(p)}"><span>${lb}</span><b>${Math.round(v)}${u}</b>${a ? `<small>meta ${Math.round(a)}${u} · ${p}%</small>` : ''}</div>`; };
+  const AG = L.filter(x => x.ag > 0), agM = AG.length ? AG.reduce((s, x) => s + x.ag, 0) / AG.length : 0, agOk = meta ? L.filter(x => x.ag >= meta).length : 0;
+  const mx = Math.max(1, ...R.map(x => x.m[0]), ...R.map(x => x.al ? x.al[0] : 0));
+  const pOk = R.filter(x => x.al && x.m[1] >= x.al[1] * 0.9).length;
+  return `<summary>📊 Sua semana na dieta <small style="font-weight:500;color:var(--ink-3)">${n} de 7 dias registrados</small></summary><div class="sem-b">
+    ${n ? `<div class="sem-g">${card('Calorias por dia', 0, '')}${card('Proteína por dia', 1, ' g')}${card('Carboidrato por dia', 2, ' g')}${card('Gordura por dia', 3, ' g')}</div>
+    <div class="sem-d" aria-label="Calorias de cada dia">${L.map(x => `<div title="${dataBR(x.d)}"><i class="${x.reg ? '' : 'vz'}" style="height:${x.reg ? Math.max(4, x.m[0] / mx * 100) : 4}%"></i><span>${['D', 'S', 'T', 'Q', 'Q', 'S', 'S'][dowISO(x.d)]}</span></div>`).join('')}</div>
+    <p class="sem-n">Proteína na meta em <b>${pOk} de ${n}</b> dias. ${meta ? `Água: média de <b>${(Math.round(agM / 100) / 10).toString().replace('.', ',')} L</b>, meta batida em <b>${agOk} de 7</b> dias.` : ''}</p>` : '<p class="sem-n" style="margin-top:0">Marque as refeições e a água para ver aqui o resumo da sua semana.</p>'}
+    <p class="sem-n">Conta só os dias com registro neste celular. Refeição sem marcar conta como não comida.</p></div>`;
+}
+function guiaPorcoes() {
+  return `<div class="gu"><p>Sem balança? Use a <b>sua mão</b> e as <b>medidas da cozinha</b>. Não precisa ser exato: uma boa estimativa já me ajuda muito a ajustar o seu plano.</p>
+    <h4>Com a mão</h4><div class="gu-m">
+      <div><span class="ic">✋🍗</span><b>Palma da mão</b><span>A palma, sem os dedos, na espessura dela ≈ <b>100 a 120 g</b> de carne, frango ou peixe.</span></div>
+      <div><span class="ic">✊🍚</span><b>Punho fechado</b><span>≈ <b>1 xícara</b>: uns 150 g de arroz ou macarrão cozido, ou 1 fruta média.</span></div>
+      <div><span class="ic">🤲🥜</span><b>Mão em concha</b><span>≈ <b>30 g</b> de castanhas, granola ou aveia. Duas conchas ≈ 1 xícara.</span></div>
+      <div><span class="ic">👍🥄</span><b>Polegar</b><span>≈ <b>1 colher de sopa</b>: azeite, manteiga, requeijão ou pasta de amendoim (10 a 15 g).</span></div></div>
+    <h4>Com as medidas da cozinha</h4><div class="gu-c">
+      <div><i>🥄</i><span><b>Colher de sopa</b> de arroz ≈ 25 g · de feijão ≈ 20 g · de atum ≈ 20 g</span></div>
+      <div><i>🍲</i><span><b>Escumadeira</b> de arroz ≈ 90 g · <b>concha</b> de feijão ≈ 80 g</span></div>
+      <div><i>🍞</i><span><b>Pão francês</b> ≈ 50 g · <b>fatia</b> de pão de forma ≈ 25 g</span></div>
+      <div><i>🥚</i><span><b>Ovo</b> ≈ 50 g · <b>lata</b> de atum escorrida ≈ 120 g</span></div>
+      <div><i>🍗</i><span><b>Filé de frango</b> pequeno ≈ 90 g · médio ≈ 150 g</span></div></div>
+    <p class="gu-dica">💡 Na dúvida entre duas quantidades, <b>escolha a maior</b>: a gente quase sempre come mais do que acha. E na hora de adicionar, escolha a medida que mais parece com o que você comeu (unidade, fatia, colher, concha…): o app converte em gramas sozinho.</p></div>`;
+}
+
 /* qual opção de refeição e quais trocas estão escolhidas neste card */
 function escolhaRef(art) {
   const o = art.querySelector('input.rd[name^="o-"]:checked'), oi = o ? +o.id.split('-').pop() : 0;
@@ -964,19 +1130,32 @@ function aplicarEscolhas(e) {
 function pintarDieta() {
   const D = SNAP.dieta || {}, d = dataReg(), e = LS.get('dieta.' + d, { feitas: {} }); aplicarEscolhas(e);
   const qd = d === hojeISO() ? 'hoje' : d === isoMenos(1) ? 'ontem' : 'em ' + dataBR(d), Qd = d === hojeISO() ? 'Hoje' : d === isoMenos(1) ? 'Ontem' : 'Em ' + nomeDiaReg(d);
-  document.querySelectorAll('.ck').forEach(b => { const on = (e.feitas[b.dataset.t] || []).includes(+b.dataset.j); b.classList.toggle('on', on); b.textContent = on ? '✓ Refeição feita ' + qd : 'Marcar como feita ' + qd; });
+  document.querySelectorAll('.ck').forEach(b => { const on = (e.feitas[b.dataset.t] || []).includes(+b.dataset.j), o = ((e.outra || {})[b.dataset.t] || {})[b.dataset.j];
+    b.classList.toggle('on', on); b.classList.toggle('troca', !!(on && o)); b.textContent = on && o ? `✓ Comi outra coisa · ${Math.round(somaM(o.it)[0])} kcal` : on ? '✓ Refeição feita ' + qd : 'Marcar como feita ' + qd; });
+  const meta = +D.agua || 0, ml = +e.agua || 0;
+  document.querySelectorAll('.agua').forEach(el => { el.querySelector('.ag-v').textContent = (Math.round(ml / 100) / 10).toString().replace('.', ',') + ' L'; el.querySelector('.ag-q').textContent = qd;
+    el.querySelector('.ag-m').textContent = meta ? `meta ${(Math.round(meta / 100) / 10).toString().replace('.', ',')} L${ml >= meta ? ' ✓' : ''}` : ''; el.querySelector('.ag-b i').style.width = (meta ? Math.min(100, ml / meta * 100) : Math.min(100, ml / 30)) + '%'; });
+  document.querySelectorAll('.sem').forEach(el => { const op = el.open; el.innerHTML = resumoSemana(); el.open = op; });
+  document.querySelectorAll('.oc-bt').forEach(b => { const o = ((e.outra || {})[b.dataset.t] || {})[b.dataset.j]; b.textContent = o ? 'Editar o que comi' : 'Comi outra coisa'; });
   document.querySelectorAll('.dnota').forEach(el => { el.querySelector('.dn-d').textContent = qd; const ta = el.querySelector('textarea'); if (document.activeElement !== ta) ta.value = e.nota || ''; });
   document.querySelectorAll('.dhoje').forEach(el => { const t = el.dataset.t, tot = ((D.refs || {})[t] || []).length, n = (e.feitas[t] || []).length;
     el.innerHTML = `<div style="flex:1"><div>${Qd} você fez <b>${n} de ${tot}</b> refeições</div><div class="barra"><i style="width:${tot ? Math.round(n / tot * 100) : 0}%"></i></div></div>`; });
 }
-function enviarDieta(t, hoje) {
-  const D = SNAP.dieta || {}; hoje = hoje || dataReg(); const e = LS.get('dieta.' + hoje, { feitas: {} });
-  const nomes = (D.refs || {})[t] || []; const f = (e.feitas[t] || []).slice().sort((a, b) => a - b);
-  const det = f.map(j => { const n = nomes[j] || ('Refeição ' + (j + 1)), R = ((D.det || {})[t] || [])[j], c = ((e.esc || {})[t] || {})[j] || { o: 0, s: [] };
+function detDia(t, e) {
+  const D = SNAP.dieta || {}, nomes = (D.refs || {})[t] || [], f = (e.feitas[t] || []).slice().sort((a, b) => a - b);
+  return f.map(j => { const n = nomes[j] || ('Refeição ' + (j + 1)), R = ((D.det || {})[t] || [])[j], c = ((e.esc || {})[t] || {})[j] || { o: 0, s: [] };
+    const ou = ((e.outra || {})[t] || {})[j];
+    if (ou && ou.it && ou.it.length) return { n, troca: 1, it: ou.it.slice(0, 12).map(x => `${x.n}: ${fmtQ(x.q)} ${plurUn(x.q, x.un)}${x.un !== 'gramas' ? ` (${Math.round(x.g)} g)` : ''}`), m: somaM(ou.it).map(v => Math.round(v)) };
     if (!R) return { n }; const op = R.ops[c.o] || R.ops[0], m = op.base.slice(), esc = [];
     op.tr.forEach((alts, ti) => { const x = alts[(c.s || [])[ti] || 0] || alts[0]; x.m.forEach((v, i) => { m[i] += v; }); esc.push(x.n); });
     const o = { n, m, esc }; if (R.ops.length > 1) o.op = op.nome; return o; });
-  enfileirar({ tipo: 'dieta', id: 'dieta-' + hoje, _v: Date.now(), data: hoje, plano: t, feitas: f.map(j => nomes[j] || ('Refeição ' + (j + 1))), total: nomes.length, det, refs: nomes, alvo: (D.alvo || {})[t] || null, nota: String(e.nota || '').trim().slice(0, 1000) });
+}
+const tipoDoDia = d => { const D = SNAP.dieta || {}; return D.ciclo ? (D.ciclo[DIAS_JS[dowISO(d)]] || (D.tipos || ['unico'])[0]) : (D.tipos || ['unico'])[0]; };
+function enviarDieta(t, hoje) {
+  const D = SNAP.dieta || {}; hoje = hoje || dataReg(); t = t || tipoDoDia(hoje); const e = LS.get('dieta.' + hoje, { feitas: {} });
+  const nomes = (D.refs || {})[t] || []; const f = (e.feitas[t] || []).slice().sort((a, b) => a - b);
+  const det = detDia(t, e);
+  enfileirar({ tipo: 'dieta', id: 'dieta-' + hoje, _v: Date.now(), data: hoje, plano: t, feitas: f.map(j => nomes[j] || ('Refeição ' + (j + 1))), total: nomes.length, det, refs: nomes, alvo: (D.alvo || {})[t] || null, nota: String(e.nota || '').trim().slice(0, 1000), agua: Math.max(0, Math.min(10000, Math.round(+e.agua || 0))) });
 }
 
 /* ---------- feedback semanal ---------- */
